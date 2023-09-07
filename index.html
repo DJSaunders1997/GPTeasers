@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTeasers Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        button, input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        #questionContainer {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>GPTeasers 🧠💡</h1>
+<p>Enter a topic and get a quiz instantly!</p>
+
+<div id="inputContainer">
+    <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
+    <button onclick="generateQuiz()">Generate Quiz</button>
+</div>
+
+<div id="questionContainer">
+    <h2>Quiz: <span id="topicTitle"></span></h2>
+    <p id="questionText">Your question will appear here.</p>
+    <div id="answerOptions">
+        <!-- Answer options will be dynamically populated here -->
+    </div>
+    <button onclick="checkAnswer()">Submit Answer</button>
+</div>
+
+<script>
+    function generateQuiz() {
+        // For now, this is static. You'd use the ChatGPT API to dynamically get questions based on the input.
+        let topic = document.getElementById('quizTopic').value;
+        document.getElementById('topicTitle').innerText = topic;
+        
+        document.getElementById('questionText').innerText = "Sample question about " + topic + "?";
+        
+        // Just a static representation, actual options will be fetched dynamically.
+        let optionsHtml = `
+            <label><input type="radio" name="answerOption" value="A"> Option A</label><br>
+            <label><input type="radio" name="answerOption" value="B"> Option B</label><br>
+            <label><input type="radio" name="answerOption" value="C"> Option C</label><br>
+            <label><input type="radio" name="answerOption" value="D"> Option D</label><br>
+        `;
+        document.getElementById('answerOptions').innerHTML = optionsHtml;
+
+        document.getElementById('inputContainer').style.display = 'none';
+        document.getElementById('questionContainer').style.display = 'block';
+    }
+
+    function checkAnswer() {
+        // In a real app, you'd check the answer using your backend or the API. This is just a prototype.
+        alert('Answer submitted!');
+    }
+</script>
+
+</body>
+</html>
