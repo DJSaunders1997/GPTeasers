@@ -71,7 +71,7 @@ jobs:
         with:
           app-name: 'GPTeasers-GenerateQuiz'
           slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          package: "." # ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} # Already in correct directory
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8D1E903F026A45F6AFD68F162BCABB42 }}
           scm-do-build-during-deployment: true
           enable-oryx-build: true
