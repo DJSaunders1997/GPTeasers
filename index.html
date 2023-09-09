@@ -42,25 +42,51 @@
 </div>
 
 <script>
-    function generateQuiz() {
-        // For now, this is static. You'd use the ChatGPT API to dynamically get questions based on the input.
-        let topic = document.getElementById('quizTopic').value;
-        document.getElementById('topicTitle').innerText = topic;
+function generateQuiz() {
+    let topic = document.getElementById('quizTopic').value;
+
+    // Define the data to send in the POST request
+    let data = {
+        prompt: `Create a quiz question about ${topic} with multiple choice answers.`,
+        max_tokens: 100
+    };
+
+    // Send a POST request to the OpenAI API
+    fetch('https://api.openai.com/v1/engines/davinci/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'  // Replace 'YOUR_API_KEY' with your actual key
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Parse the data and display it
+        let output = data.choices[0].text.trim();
         
-        document.getElementById('questionText').innerText = "Sample question about " + topic + "?";
-        
-        // Just a static representation, actual options will be fetched dynamically.
-        let optionsHtml = `
-            <label><input type="radio" name="answerOption" value="A"> Option A</label><br>
-            <label><input type="radio" name="answerOption" value="B"> Option B</label><br>
-            <label><input type="radio" name="answerOption" value="C"> Option C</label><br>
-            <label><input type="radio" name="answerOption" value="D"> Option D</label><br>
-        `;
+        // Split question and options for simplicity (Assuming a specific format)
+        let parts = output.split('\n');
+        let question = parts[0];
+        let options = parts.slice(1);
+
+        document.getElementById('questionText').innerText = question;
+
+        let optionsHtml = options.map((option, index) => {
+            let label = String.fromCharCode(65 + index); // Convert 0 to A, 1 to B, etc.
+            return `<label><input type="radio" name="answerOption" value="${label}"> ${option}</label><br>`;
+        }).join('');
+
         document.getElementById('answerOptions').innerHTML = optionsHtml;
 
         document.getElementById('inputContainer').style.display = 'none';
         document.getElementById('questionContainer').style.display = 'block';
-    }
+    })
+    .catch(error => {
+        console.error("Error fetching data from OpenAI:", error);
+    });
+}
+
 
     function checkAnswer() {
         // In a real app, you'd check the answer using your backend or the API. This is just a prototype.
