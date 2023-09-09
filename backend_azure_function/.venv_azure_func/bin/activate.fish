@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/dave/GPTeasers/backend-azure-function/.venv_azure_func"
+set -gx VIRTUAL_ENV "/home/dave/GPTeasers/backend_azure_function/.venv_azure_func"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

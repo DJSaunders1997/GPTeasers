@@ -58,7 +58,9 @@ def generate_quiz(topic: str, n_questions: str = "5") -> str:
         return None
 
 if __name__ == "__main__":
-    topic = "Hard Roman History"
+    print("Running main:")
+    
+    topic = "Crested Gecko"
     quiz = generate_quiz(topic)
     if quiz:
         print(quiz)

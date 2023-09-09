@@ -31,7 +31,7 @@ def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
         return None
 
 if __name__ == "__main__":
-    image_description = "Hannibal Barca leading his army through the Alps. Realistic Dramatic"
+    image_description = "Crested Gecko showcasing its distinct crests and coloration. Pixel Art"
     image_url = generate_image(image_description)
     if image_url:
         print(f"Generated Image URL: {image_url}")
