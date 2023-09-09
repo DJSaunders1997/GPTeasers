@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend-azure-function' # Set this to the path to your Azure Function project
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend_azure_function' # Set this to the path to your Azure Function project
   PYTHON_VERSION: '3.10'
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd backend-azure-function
+          cd backend_azure_function
           pip install -r requirements.txt
         
       # Optional: Add step to run tests here
