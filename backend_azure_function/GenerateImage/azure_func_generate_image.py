@@ -1,6 +1,6 @@
 import logging
 from azure.functions import HttpRequest, HttpResponse
-from generate_image import generate_image
+from .generate_image import generate_image
 
 def main(req: HttpRequest) -> HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')

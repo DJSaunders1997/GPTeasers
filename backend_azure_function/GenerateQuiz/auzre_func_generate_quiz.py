@@ -1,6 +1,6 @@
 import logging
 from azure.functions import HttpRequest, HttpResponse
-from generate_quiz import generate_quiz
+from .generate_quiz import generate_quiz
 
 def main(req: HttpRequest) -> HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
