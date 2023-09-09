@@ -1,0 +1,9 @@
+{
+    "azureFunctions.deploySubpath": "backend_azure_function",
+    "azureFunctions.scmDoBuildDuringDeployment": true,
+    "azureFunctions.pythonVenv": "venv_azure_func",
+    // "azureFunctions.pythonVenv": "${workspaceFolder}/backend_azure_function/.venv_azure_func",
+    "azureFunctions.projectLanguage": "Python",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen"
+}
