@@ -21,6 +21,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Helpful debug step
+      - name: List directory structure
+        run: ls -al
+      
+
       - name: Setup Python version
         uses: actions/setup-python@v1
         with:
