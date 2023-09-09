@@ -62,8 +62,8 @@ jobs:
         with:
           name: python-app
 
-      - name: List directory contents
-          run: ls -al        
+      - name: "List directory contents"
+        run: ls -al        
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
