@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,87 +13,39 @@
             line-height: 1.6;
             text-align: center;
         }
-        button, input[type="text"] {
+
+        button,
+        input[type="text"] {
             padding: 10px;
             font-size: 16px;
             margin: 10px 0;
         }
+
         #questionContainer {
             display: none;
         }
     </style>
 </head>
+
 <body>
 
-<h1>GPTeasers 🧠💡</h1>
-<p>Enter a topic and get a quiz instantly!</p>
+    <h1>GPTeasers 🧠💡</h1>
+    <p>Enter a topic and get a quiz instantly!</p>
 
-<div id="inputContainer">
-    <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
-    <button onclick="generateQuiz()">Generate Quiz</button>
-</div>
-
-<div id="questionContainer">
-    <h2>Quiz: <span id="topicTitle"></span></h2>
-    <p id="questionText">Your question will appear here.</p>
-    <div id="answerOptions">
-        <!-- Answer options will be dynamically populated here -->
+    <div id="inputContainer">
+        <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
+        <button onclick="generateQuiz()">Generate Quiz</button>
     </div>
-    <button onclick="checkAnswer()">Submit Answer</button>
-</div>
 
-<script>
-function generateQuiz() {
-    let topic = document.getElementById('quizTopic').value;
-
-    // Define the data to send in the POST request
-    let data = {
-        prompt: `Create a quiz question about ${topic} with multiple choice answers.`,
-        max_tokens: 100
-    };
-
-    // Send a POST request to the OpenAI API
-    fetch('https://api.openai.com/v1/engines/davinci/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer <key>'  // Replace 'YOUR_API_KEY' with your actual key
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Parse the data and display it
-        let output = data.choices[0].text.trim();
-        
-        // Split question and options for simplicity (Assuming a specific format)
-        let parts = output.split('\n');
-        let question = parts[0];
-        let options = parts.slice(1);
-
-        document.getElementById('questionText').innerText = question;
-
-        let optionsHtml = options.map((option, index) => {
-            let label = String.fromCharCode(65 + index); // Convert 0 to A, 1 to B, etc.
-            return `<label><input type="radio" name="answerOption" value="${label}"> ${option}</label><br>`;
-        }).join('');
-
-        document.getElementById('answerOptions').innerHTML = optionsHtml;
-
-        document.getElementById('inputContainer').style.display = 'none';
-        document.getElementById('questionContainer').style.display = 'block';
-    })
-    .catch(error => {
-        console.error("Error fetching data from OpenAI:", error);
-    });
-}
-
-
-    function checkAnswer() {
-        // In a real app, you'd check the answer using your backend or the API. This is just a prototype.
-        alert('Answer submitted!');
-    }
-</script>
+    <div id="questionContainer">
+        <h2>Quiz: <span id="topicTitle"></span></h2>
+        <p id="questionText">Your question will appear here.</p>
+        <div id="answerOptions">
+            <!-- Answer options will be dynamically populated here -->
+        </div>
+        <button onclick="checkAnswer()">Submit Answer</button>
+    </div>
 
 </body>
+
 </html>
