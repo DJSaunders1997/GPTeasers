@@ -25,3 +25,20 @@ Deployment is managed via GitHub Actions, which automatically builds and deploys
 ## Environment Variables
 
 Certain functions may require environment variables (e.g., `OPENAI_API_KEY`). These can be set in the Azure Portal under the Application Settings for the Function App.
+
+## Debug 
+To debug locally first install [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python).
+
+Ensure you are in the azure_functions directory: `cd backend_azure_function`
+
+Run the functions locally with `func run`
+
+Test these using PostMan or these cURl's:
+### GenerateQuiz
+
+`curl 'http://localhost:7071/api/GenerateQuiz?topic=UK%20History'`
+
+### GenerateImage
+
+
+`curl 'http://localhost:7071/api/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall'`
