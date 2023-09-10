@@ -6,17 +6,20 @@ import os
 # Set up OpenAI API key from environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
-    raise ValueError("Environment variable OPENAI_API_KEY is not set. Please ensure it's set and try again.")
+    raise ValueError(
+        "Environment variable OPENAI_API_KEY is not set. Please ensure it's set and try again."
+    )
 openai.api_key = OPENAI_API_KEY
+
 
 def generate_quiz(topic: str, n_questions: str = "5") -> str:
     """
     Generate a quiz based on the provided topic using OpenAI API.
-    
+
     Parameters:
     - topic (str): The subject for the quiz, e.g., 'Roman History'.
     - n_questions (str, optional): Number of questions required. Defaults to '5'.
-    
+
     Returns:
     - str: JSON-formatted quiz questions.
     """
@@ -62,9 +65,10 @@ def generate_quiz(topic: str, n_questions: str = "5") -> str:
         print(f"Error {e.http_status}: {e.error}")
         return None
 
+
 if __name__ == "__main__":
     print("Running main:")
-    
+
     topic = "Crested Gecko"
     quiz = generate_quiz(topic)
     if quiz:

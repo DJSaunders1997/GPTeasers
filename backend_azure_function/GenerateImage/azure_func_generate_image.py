@@ -2,17 +2,18 @@ import logging
 from azure.functions import HttpRequest, HttpResponse
 from .generate_image import generate_image
 
-def main(req: HttpRequest) -> HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
 
-    prompt = req.params.get('prompt')
+def main(req: HttpRequest) -> HttpResponse:
+    logging.info("Python HTTP trigger function processed a request.")
+
+    prompt = req.params.get("prompt")
     if not prompt:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            prompt = req_body.get('prompt')
+            prompt = req_body.get("prompt")
 
     if prompt:
         try:
@@ -28,5 +29,5 @@ def main(req: HttpRequest) -> HttpResponse:
     else:
         return HttpResponse(
             "Please provide a prompt in the query string or in the request body to generate an image.",
-            status_code=400
+            status_code=400,
         )

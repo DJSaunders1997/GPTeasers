@@ -2,17 +2,18 @@ import logging
 from azure.functions import HttpRequest, HttpResponse
 from .generate_quiz import generate_quiz
 
-def main(req: HttpRequest) -> HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
 
-    topic = req.params.get('topic')
+def main(req: HttpRequest) -> HttpResponse:
+    logging.info("Python HTTP trigger function processed a request.")
+
+    topic = req.params.get("topic")
     if not topic:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            topic = req_body.get('topic')
+            topic = req_body.get("topic")
 
     if topic:
         try:
@@ -28,5 +29,5 @@ def main(req: HttpRequest) -> HttpResponse:
     else:
         return HttpResponse(
             "Please provide a topic in the query string or in the request body to generate a quiz.",
-            status_code=400
+            status_code=400,
         )
