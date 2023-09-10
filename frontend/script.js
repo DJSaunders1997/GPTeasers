@@ -14,8 +14,11 @@ async function callQuizAPI(topic) {
     console.log("Generating quiz for topic:");
     console.log(topic);
   
+    const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${topic}`;
+    console.log(`Awaiting response from: {url}`);
+
     const response = await fetch(
-      `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${topic}`
+      url
     );
   
     if (!response.ok) {
