@@ -21,8 +21,10 @@
             margin: 10px 0;
         }
 
-        #questionContainer {
-            display: none;
+        #jsonResponseContainer {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
         }
     </style>
 </head>
@@ -34,17 +36,24 @@
 
     <div id="inputContainer">
         <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
-        <button onclick="generateQuiz()">Generate Quiz</button>
+        <button onclick="fetchQuizData()">Fetch Quiz Data</button>
     </div>
 
-    <div id="questionContainer">
-        <h2>Quiz: <span id="topicTitle"></span></h2>
-        <p id="questionText">Your question will appear here.</p>
-        <div id="answerOptions">
-            <!-- Answer options will be dynamically populated here -->
-        </div>
-        <button onclick="checkAnswer()">Submit Answer</button>
+    <div id="jsonResponseContainer">
+        <h3>API Response:</h3>
+        <pre id="jsonResponse"></pre>
     </div>
+
+    <script src="script.js"></script> 
+    <script>
+        async function fetchQuizData() {
+            const topic = document.getElementById("quizTopic").value;
+            const data = await callQuizAPI(topic);
+            
+            // Displaying the JSON response in a readable format on the webpage
+            document.getElementById('jsonResponse').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
 
 </body>
 
