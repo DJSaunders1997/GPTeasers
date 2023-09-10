@@ -3,6 +3,12 @@ import openai
 import json
 import os
 
+# Set up OpenAI API key from environment variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise ValueError("Environment variable OPENAI_API_KEY is not set. Please ensure it's set and try again.")
+openai.api_key = OPENAI_API_KEY
+
 def generate_quiz(topic: str, n_questions: str = "5") -> str:
     """
     Generate a quiz based on the provided topic using OpenAI API.
@@ -15,7 +21,6 @@ def generate_quiz(topic: str, n_questions: str = "5") -> str:
     - str: JSON-formatted quiz questions.
     """
 
-    # Set up OpenAI API key from environment variables
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
     # Example response for guiding the AI on the expected format
