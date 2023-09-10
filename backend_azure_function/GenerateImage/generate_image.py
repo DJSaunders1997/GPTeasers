@@ -32,7 +32,7 @@ def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
 
     try:
         response = openai.Image.create(prompt=prompt, n=n, size=size)
-        return response["data"][0]
+        return response["data"][0]["url"]
     except openai.error.OpenAIError as e:
         print(f"Error Code: {e.http_status}")
         print(f"Error Message: {e.error}")
