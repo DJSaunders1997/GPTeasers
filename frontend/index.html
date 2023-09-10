@@ -30,31 +30,34 @@
 </head>
 
 <body>
-
     <h1>GPTeasers 🧠💡</h1>
     <p>Enter a topic and get a quiz instantly!</p>
-
     <div id="inputContainer">
         <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
         <button onclick="fetchQuizData()">Fetch Quiz Data</button>
     </div>
-
+    <p id="loadingMessage" style="display: none;">Loading ⏳ this can take 10s ...</p>
     <div id="jsonResponseContainer">
         <h3>API Response:</h3>
         <pre id="jsonResponse"></pre>
     </div>
-
-    <script src="script.js"></script> 
+    <script src="script.js"></script>
     <script>
         async function fetchQuizData() {
             const topic = document.getElementById("quizTopic").value;
+
+            // Show loading message
+            document.getElementById('loadingMessage').style.display = 'block';
+
             const data = await callQuizAPI(topic);
-            
+
+            // Hide loading message
+            document.getElementById('loadingMessage').style.display = 'none';
+
             // Displaying the JSON response in a readable format on the webpage
             document.getElementById('jsonResponse').textContent = JSON.stringify(data, null, 2);
         }
     </script>
-
 </body>
 
 </html>
