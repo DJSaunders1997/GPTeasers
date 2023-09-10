@@ -2,6 +2,11 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure Functions: https://aka.ms/python-webapps-actions
 
+
+# TODO: Fix Pipeline
+# This pipeline only deployes the GenerateQuiz function
+# I can't figure out why this is, as local testing, and deploying from VSCode creates
+# the GenerateImage function. Something must be up with this pipeline.
 name: Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz
 
 on:
