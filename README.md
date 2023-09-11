@@ -2,6 +2,9 @@
 
 Welcome to **GPTeasers** - where we tickle your brain with quizzes from the depths of GPT's knowledge! 🎓🤖
 
+[![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
+[![Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml)
+
 ## Overview 🌐
 
 GPTeasers is a webapp that generates quiz-style questions based on the topic you provide. Want to challenge yourself with "Roman History" or dive deep into "Quantum Physics"? We've got you covered! 📚✨
