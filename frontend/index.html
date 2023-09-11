@@ -37,26 +37,43 @@
         <button onclick="fetchQuizData()">Fetch Quiz Data</button>
     </div>
     <p id="loadingMessage" style="display: none;">Loading ⏳ this can take 10s ...</p>
+    <div id="loadingBarContainer" style="width: 100%; background-color: #f3f3f3; display: none;">
+        <p id="loadingMessage">Loading ⏳ </p>
+        <div id="loadingBar" style="width: 0%; height: 30px; background-color: #3498db;"></div>
+    </div>
     <div id="jsonResponseContainer">
         <h3>API Response:</h3>
         <pre id="jsonResponse"></pre>
     </div>
+
     <script src="script.js"></script>
+    <script src="loadingbar.js"></script>
     <script>
         async function fetchQuizData() {
             const topic = document.getElementById("quizTopic").value;
+            const button = document.querySelector('button');
 
-            // Show loading message
-            document.getElementById('loadingMessage').style.display = 'block';
+            // Show loading cues
+            document.body.style.cursor = 'wait';
+            button.disabled = true;
+            startLoadingBar();
 
-            const data = await callQuizAPI(topic);
+            try {
+                const data = await callQuizAPI(topic);
+                document.getElementById('jsonResponse').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("API Call Error:", error);
+                alert("An error occurred. Please check the console for more details.");
+            } finally {
+                // Hide loading cues
+                document.body.style.cursor = 'default';
+                button.disabled = false;
+                stopLoadingBar();
+            }
 
-            // Hide loading message
-            document.getElementById('loadingMessage').style.display = 'none';
 
-            // Displaying the JSON response in a readable format on the webpage
-            document.getElementById('jsonResponse').textContent = JSON.stringify(data, null, 2);
         }
+
     </script>
 </body>
 
