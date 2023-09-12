@@ -71,21 +71,28 @@ class App {
     this.ui.displayCurrentQuestion(question);
   }
 
+  // Calls quiz check answer method
+  // and displays the next question
+checkAnswer(answer){
+  this.quiz.checkAnswer(answer);
+  this.nextQuestion()
+}
+
   // Initilise button listeners
   // Warning quiz doesnt exist when webpage is first created
   // But it should by the time buttons are visible
   createButtonListeners() {
     document
       .querySelector("#option-A")
-      .addEventListener("click", () => this.quiz.checkAnswer("A"));
+      .addEventListener("click", () => this.checkAnswer("A"));
 
     document
       .querySelector("#option-B")
-      .addEventListener("click", () => this.quiz.checkAnswer("B"));
+      .addEventListener("click", () => this.checkAnswer("B"));
 
     document
       .querySelector("#option-C")
-      .addEventListener("click", () => this.quiz.checkAnswer("C"));
+      .addEventListener("click", () => this.checkAnswer("C"));
   }
 }
 
