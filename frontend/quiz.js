@@ -74,7 +74,6 @@ class Quiz {
     }
     if (this.hasMoreQuestions()) {
       this.nextQuestion();
-      ths.displayCurrentQuestion();
     } else {
       alert("Quiz Finished!");
     }
