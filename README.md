@@ -43,19 +43,3 @@ Love **GPTeasers**? Want to make it even better? We welcome contributions!
 2. Make your changes 🛠️.
 3. Submit a **pull request** 👥.
 
-Check out our [contributing guidelines](link-to-contributing.md) for more details.
-
-## Feedback & Issues 💭
-
-Found a bug 🐛 or have a suggestion 💡? Please [create an issue](link-to-issues-page) and we'll get on it!
-
-## License 📄
-
-This project is licensed under the MIT License. See the [LICENSE](link-to-license-file) file for more details.
-
-## Connect with Us 🌎
-
-- [Twitter](your-twitter-url) 🐦
-- [LinkedIn](your-linkedin-url) 💼
-
-Let's make learning fun, one quiz at a time! 🎈🎉
