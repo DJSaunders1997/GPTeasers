@@ -70,10 +70,10 @@ class App {
 
   // Calls quiz check answer method
   // and displays the next question
-checkAnswer(answer){
-  this.quiz.checkAnswer(answer);
-  this.nextQuestion()
-}
+  checkAnswer(answer) {
+    this.quiz.checkAnswer(answer);
+    this.nextQuestion();
+  }
 
   // Initilise button listeners
   // Warning quiz doesnt exist when webpage is first created

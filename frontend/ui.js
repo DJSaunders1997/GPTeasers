@@ -19,7 +19,7 @@ class UI {
     this.buttonB = document.getElementById("option-B");
     this.buttonC = document.getElementById("option-C");
     // Ensure this is hidden by default
-    this.hideQuizContainer()
+    this.hideQuizContainer();
   }
 
   // When loading show loading curson, disable quiz generation button, and show loading bar.
@@ -36,14 +36,12 @@ class UI {
     this.loadingBar.stop();
   }
 
-  showQuizContainer()
-  {
-    this.quizContainer.style.display = 'block';
+  showQuizContainer() {
+    this.quizContainer.style.display = "block";
   }
 
-  hideQuizContainer()
-  {
-    this.quizContainer.style.display = 'none';
+  hideQuizContainer() {
+    this.quizContainer.style.display = "none";
   }
 
   // Display question in ui elements
