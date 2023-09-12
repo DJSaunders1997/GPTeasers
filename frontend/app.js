@@ -55,9 +55,9 @@ class App {
     // Hide loading clues
     this.ui.hideLoading();
 
-    
     // Show first question
-    this.ui.showQuizContainer()
+    this.ui.showQuizContainer();
+    this.createButtonListeners();
     this.nextQuestion();
 
     // Display quiz data in text box
@@ -71,7 +71,22 @@ class App {
     this.ui.displayCurrentQuestion(question);
   }
 
-  // TODO: check answer
+  // Initilise button listeners
+  // Warning quiz doesnt exist when webpage is first created
+  // But it should by the time buttons are visible
+  createButtonListeners() {
+    document
+      .querySelector("#option-A")
+      .addEventListener("click", () => this.quiz.checkAnswer("A"));
+
+    document
+      .querySelector("#option-B")
+      .addEventListener("click", () => this.quiz.checkAnswer("B"));
+
+    document
+      .querySelector("#option-C")
+      .addEventListener("click", () => this.quiz.checkAnswer("C"));
+  }
 }
 
 const app = new App();
