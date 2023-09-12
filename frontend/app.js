@@ -5,6 +5,7 @@
 import Controller from "./controller.js";
 import Game from "./game.js";
 import UI from "./ui.js";
+import Quiz from "./quiz.js";
 
 class App {
   constructor() {
@@ -46,8 +47,11 @@ class App {
 
     // Generate Quiz
     const data = await this.controller.callQuizAPI(topic);
+
+    const quiz = new Quiz(data)
+
     document.getElementById("jsonResponse").textContent = JSON.stringify(
-      data,
+      quiz.questions,
       null,
       2
     );
