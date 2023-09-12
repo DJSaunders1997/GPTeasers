@@ -47,21 +47,31 @@ class App {
 
     // Generate Quiz
     const data = await this.controller.callQuizAPI(topic);
-
-    const quiz = new Quiz(data)
-
-    document.getElementById("jsonResponse").textContent = JSON.stringify(
-      quiz.questions,
-      null,
-      2
-    );
+    if (!data || data.error) {
+      throw new Error("Invalid data received from API");
+    }
+    this.quiz = new Quiz(data);
 
     // Hide loading clues
     this.ui.hideLoading();
 
+    
+    // Show first question
+    this.ui.showQuizContainer()
+    this.nextQuestion();
+
     // Display quiz data in text box
-    this.ui.displayQuizData(data);
+    this.ui.displayQuizData(this.quiz.questions);
   }
+
+  nextQuestion() {
+    // Get question from quiz
+    const question = this.quiz.getCurrentQuestion();
+    // Update UI elements
+    this.ui.displayCurrentQuestion(question);
+  }
+
+  // TODO: check answer
 }
 
 const app = new App();
