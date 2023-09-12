@@ -1,34 +1,47 @@
-let interval;
+/**
+ * Class representing a loading bar.
+ */
+class LoadingBar {
+  constructor() {
+    this.interval = null;
+    this.loadingBar = document.getElementById("loadingBar");
+    this.loadingBarContainer = document.getElementById("loadingBarContainer");
+  }
 
-function startLoadingBar(duration = 25000) {
-    const loadingBar = document.getElementById('loadingBar');
-    const loadingBarContainer = document.getElementById('loadingBarContainer');
-    
+  /**
+   * Start the loading bar animation.
+   * @param {number} [duration=25000] - Duration in milliseconds for the loading bar to complete.
+   */
+  start(duration = 25000) {
     // Reset the bar
-    loadingBar.style.width = '0%';
-    
+    this.loadingBar.style.width = "0%";
+
     // Show the bar container
-    loadingBarContainer.style.display = 'block';
-    
+    this.loadingBarContainer.style.display = "block";
+
     let width = 0;
-    interval = setInterval(function() {
-        if (width >= 100) {
-            clearInterval(interval);
-        } else {
-            width++;
-            loadingBar.style.width = width + '%'; 
-        }
-    }, duration / 100);  // e.g., for 25000ms (25s), it will increase width every 250ms.
+    this.interval = setInterval(() => {
+      if (width >= 100) {
+        clearInterval(this.interval);
+      } else {
+        width++;
+        this.loadingBar.style.width = width + "%";
+      }
+    }, duration / 100); // e.g., for 25000ms (25s), it will increase width every 250ms.
+  }
+
+  /**
+   * Stop the loading bar animation and hide it.
+   */
+  stop() {
+    clearInterval(this.interval);
+
+    // Reset the bar
+    this.loadingBar.style.width = "0%";
+
+    // Hide the bar container
+    this.loadingBarContainer.style.display = "none";
+  }
 }
 
-function stopLoadingBar() {
-    clearInterval(interval);
-    const loadingBar = document.getElementById('loadingBar');
-    const loadingBarContainer = document.getElementById('loadingBarContainer');
-    
-    // Reset the bar
-    loadingBar.style.width = '0%';
-    
-    // Hide the bar container
-    loadingBarContainer.style.display = 'none';
-}
+export default LoadingBar;
