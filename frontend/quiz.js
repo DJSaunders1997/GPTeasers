@@ -53,7 +53,11 @@ class Quiz {
   }
 
   checkAnswer(selectedOption) {
-    this.quiz.getCurrentQuestion();
+    if (!selectedOption) {
+      console.error("No option selected");
+      return;
+    }
+    const currentQuestion = this.getCurrentQuestion();
 
     if (selectedOption === currentQuestion.answer) {
       alert("Correct!");
