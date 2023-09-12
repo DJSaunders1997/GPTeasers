@@ -14,6 +14,11 @@ class UI {
     this.loadingBar = new LoadingBar();
     // ... Add other DOM elements you might want to manipulate.
 
+    //Quiz elements
+    this.questionText = document.getElementById("question-text");
+    this.buttonA = document.getElementById("option-A");
+    this.buttonB = document.getElementById("option-B");
+    this.buttonC = document.getElementById("option-C");
     // Ensure this is hidden by default
     this.hideQuizContainer()
   }
@@ -65,15 +70,10 @@ class UI {
     console.log(currentQuestion);
 
     if (currentQuestion) {
-      const questionText = document.getElementById("question-text");
-      const buttonA = document.getElementById("option-A");
-      const buttonB = document.getElementById("option-B");
-      const buttonC = document.getElementById("option-C");
-
-      questionText.textContent = currentQuestion.question;
-      buttonA.textContent = "A: " + currentQuestion.A;
-      buttonB.textContent = "B: " + currentQuestion.B;
-      buttonC.textContent = "C: " + currentQuestion.C;
+      this.questionText.textContent = currentQuestion.question;
+      this.buttonA.textContent = "A: " + currentQuestion.A;
+      this.buttonB.textContent = "B: " + currentQuestion.B;
+      this.buttonC.textContent = "C: " + currentQuestion.C;
     } else {
       console.error("No current question to display");
     }
