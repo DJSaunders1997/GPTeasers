@@ -1,6 +1,7 @@
 # refactored_openai_image.py
 
 import openai
+import logging
 import os
 
 # Set up OpenAI API key from environment variables
@@ -29,6 +30,8 @@ def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
     """
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    logging.info(f"{prompt=}")
 
     try:
         response = openai.Image.create(prompt=prompt, n=n, size=size)
