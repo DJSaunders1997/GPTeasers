@@ -20,7 +20,7 @@ GPTeasers is a webapp that generates quiz-style questions based on the topic you
 
 ## How to Use 🛠️
 
-1. **Visit the App** 🌍: Go to our [GPTeasers site](your-github-page-url-here).
+1. **Visit the App** 🌍: Go to the [GPTeasers site](https://djsaunders1997.github.io/GPTeasers/).
 2. **Enter a Topic** 🔍: Type in your desired topic in the search box.
 3. **Start the Quiz** 🎉: Answer the questions and see how you fare!
 4. **Share & Challenge Friends** 🤝: Think you did well? Share your results and challenge a friend!
