@@ -59,9 +59,6 @@ class App {
     this.ui.showQuizContainer();
     this.createButtonListeners();
     this.nextQuestion();
-
-    // Display quiz data in text box
-    this.ui.displayQuizData(this.quiz.questions);
   }
 
   nextQuestion() {

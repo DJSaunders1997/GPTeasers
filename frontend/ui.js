@@ -7,7 +7,6 @@ class UI {
 
     this.topicInput = document.getElementById("quizTopic");
     this.button = document.querySelector("button");
-    this.jsonResponseContainer = document.getElementById("jsonResponse");
 
     this.quizContainer = document.getElementById("quiz-container");
 
@@ -45,11 +44,6 @@ class UI {
   hideQuizContainer()
   {
     this.quizContainer.style.display = 'none';
-  }
-
-  displayQuizData(data) {
-    this.jsonResponseContainer.textContent = JSON.stringify(data, null, 2);
-    //TODO: Display responses as buttons n shit
   }
 
   // Display question in ui elements
