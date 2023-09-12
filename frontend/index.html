@@ -34,7 +34,7 @@
     <p>Enter a topic and get a quiz instantly!</p>
     <div id="inputContainer">
         <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
-        <button onclick="fetchQuizData()">Fetch Quiz Data</button>
+        <button id="fetchQuizButton">Fetch Quiz Data</button>
     </div>
     <p id="loadingMessage" style="display: none;">Loading ⏳ this can take 10s ...</p>
     <div id="loadingBarContainer" style="width: 100%; background-color: #f3f3f3; display: none;">
@@ -46,35 +46,32 @@
         <pre id="jsonResponse"></pre>
     </div>
 
-    <script src="script.js"></script>
-    <script src="loadingbar.js"></script>
-    <script>
-        async function fetchQuizData() {
-            const topic = document.getElementById("quizTopic").value;
-            const button = document.querySelector('button');
+    <div id="questionsContainer">
+        <!-- Questions will be dynamically added here -->
+    </div>
 
-            // Show loading cues
-            document.body.style.cursor = 'wait';
-            button.disabled = true;
-            startLoadingBar();
+    <!-- This is a template for each question. It will be hidden by default and cloned for each question. -->
+    <template id="questionTemplate">
+        <div class="question">
+            <h2></h2> <!-- Question text will be inserted here -->
+            <label><input type="radio" name="answer" value="A"> <span class="optionA"></span></label>
+            <label><input type="radio" name="answer" value="B"> <span class="optionB"></span></label>
+            <label><input type="radio" name="answer" value="C"> <span class="optionC"></span></label>
+            <button onclick="checkAnswer(this)">Submit</button>
+            <p class="explanation" style="display:block;"></p>
+        </div>
+    </template>
 
-            try {
-                const data = await callQuizAPI(topic);
-                document.getElementById('jsonResponse').textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                console.error("API Call Error:", error);
-                alert("An error occurred. Please check the console for more details.");
-            } finally {
-                // Hide loading cues
-                document.body.style.cursor = 'default';
-                button.disabled = false;
-                stopLoadingBar();
-            }
+    <footer>
+        Website by David Saunders.
+        <br>
+        View the code on
+        <a href="https://github.com/DJSaunders1997/GPTeasers">Github</a>
+        <br>
+      </footer>
 
+    <script type="module" src="app.js"></script>
 
-        }
-
-    </script>
 </body>
 
 </html>
