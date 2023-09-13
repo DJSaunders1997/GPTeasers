@@ -8,12 +8,13 @@ class UI {
     this.topicInput = document.getElementById("quizTopic");
     this.button = document.querySelector("button");
 
-    this.quizContainer = document.getElementById("quiz-container");
+    //Image elements
+    this.AIImage = document.getElementById("AIImage");
 
     this.loadingBar = new LoadingBar();
-    // ... Add other DOM elements you might want to manipulate.
-
+    
     //Quiz elements
+    this.quizContainer = document.getElementById("quiz-container");
     this.questionText = document.getElementById("question-text");
     this.buttonA = document.getElementById("option-A");
     this.buttonB = document.getElementById("option-B");
@@ -42,6 +43,15 @@ class UI {
 
   hideQuizContainer() {
     this.quizContainer.style.display = "none";
+  }
+
+  showAIImage(data){
+    this.AIImage.style.display = "block"
+    this.AIImage.src = data;
+  }
+
+  hideAIImage(){
+    this.AIImage.style.display = "none"
   }
 
   // Display question in ui elements
