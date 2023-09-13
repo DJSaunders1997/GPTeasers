@@ -29,6 +29,7 @@ class Quiz {
   constructor(data) {
     this.questions = data;
     this.currentIndex = 0;
+    this.score = 0;
   }
 
   // Get the current question without moving to the next one
@@ -52,6 +53,7 @@ class Quiz {
     return this.currentIndex < this.questions.length - 1;
   }
 
+  // TODO: Convert this to return bool, and handle UI in UI.js and app.js
   checkAnswer(selectedOption) {
     if (!selectedOption) {
       console.error("No option selected");
@@ -60,22 +62,44 @@ class Quiz {
     const currentQuestion = this.getCurrentQuestion();
 
     if (selectedOption === currentQuestion.answer) {
-      alert("Correct!");
+      this.score++;
+
+      const returnMessage =
+        "Correct!" +
+        "\n\nExplanation: " +
+        currentQuestion.explanation +
+        "\n" +
+        currentQuestion.wikipedia +
+        "\nScore: " +
+        this.score;
+
+      alert(returnMessage);
     } else {
-      //TODO: Eventuall move this UI to UI class
-      alert(
-        "Wrong! The correct answer is: " +
-          currentQuestion.answer +
-          ".\nExplanation: " +
-          currentQuestion.explanation +
-          ".\nWikipedia: " +
-          currentQuestion.wikipedia
-      );
+      //TODO: Eventually move this UI to UI class
+      const returnMessage =
+        "Wrong!" +
+        "\n\nThe Correct Answer is:" +
+        currentQuestion.answer +
+        "\nExplanation: " +
+        currentQuestion.explanation +
+        "\n" +
+        currentQuestion.wikipedia +
+        "\nScore: " +
+        this.score;
+
+      alert(returnMessage);
     }
     if (this.hasMoreQuestions()) {
       this.nextQuestion();
     } else {
-      alert("Quiz Finished!");
+      alert(
+        "Quiz Finished!" +
+          "\nFinal Score:" +
+          this.score +
+          "/" +
+          (this.currentIndex + 1)
+      );
+      location.reload(); // This will reload the page
     }
   }
 }
