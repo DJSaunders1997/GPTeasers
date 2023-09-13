@@ -1,11 +1,11 @@
+[![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
+[![Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml)
 # GPTeasers 🧠💡
 
 Welcome to **GPTeasers** - where we tickle your brain with quizzes from the depths of GPT's knowledge! 🎓🤖
 
 https://djsaunders1997.github.io/GPTeasers/
 
-[![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
-[![Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml)
 
 ## Overview 🌐
 
