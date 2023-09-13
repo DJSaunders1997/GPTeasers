@@ -16,7 +16,6 @@ class Game {
 
     try {
       const data = await callQuizAPI(this.ui.topicInput.value);
-      this.ui.displayQuizData(data);
     } catch (error) {
       console.error("API Call Error:", error);
       alert("An error occurred. Please check the console for more details.");

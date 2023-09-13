@@ -20,12 +20,6 @@
             font-size: 16px;
             margin: 10px 0;
         }
-
-        #jsonResponseContainer {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
     </style>
 </head>
 
@@ -41,9 +35,13 @@
         <p id="loadingMessage">Loading ⏳ </p>
         <div id="loadingBar" style="width: 0%; height: 30px; background-color: #3498db;"></div>
     </div>
-    <div id="jsonResponseContainer">
-        <h3>API Response:</h3>
-        <pre id="jsonResponse"></pre>
+
+    <div id="quiz-container">
+        <h2 id="question-text">Question</h2>
+
+        <button id="option-A">A</button>
+        <button id="option-B">B</button>
+        <button id="option-C">C</button>
     </div>
 
     <div id="questionsContainer">
