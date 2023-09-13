@@ -15,7 +15,7 @@ if not OPENAI_API_KEY:
 openai.api_key = OPENAI_API_KEY
 
 
-def generate_quiz(topic: str, n_questions: str = "5") -> str:
+def generate_quiz(topic: str, n_questions: str = "10") -> str:
     """
     Generate a quiz based on the provided topic using OpenAI API.
 
