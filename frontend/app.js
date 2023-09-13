@@ -14,11 +14,16 @@ class App {
     this.ui = new UI();
     this.game = new Game(this.ui);
 
-    // Initialise button event listener.
+
+
+    // Initialise button event listeners.
     // The arrow function implicitly binds the method to the current instance of this class.
     document
       .querySelector("#fetchQuizButton")
       .addEventListener("click", () => this.fetchQuizData());
+      document
+      .querySelector("#fetchQuizButton")
+      .addEventListener("click", () => this.fetchAIImage());
 
     // If Enter key is pressed then simulate button press
     document
@@ -48,7 +53,7 @@ class App {
     // Generate Quiz
     const data = await this.controller.callQuizAPI(topic);
     if (!data || data.error) {
-      throw new Error("Invalid data received from API");
+      throw new Error("Invalid data received from Quiz API");
     }
     this.quiz = new Quiz(data);
 
@@ -60,6 +65,28 @@ class App {
     this.createButtonListeners();
     this.nextQuestion();
   }
+
+  async fetchAIImage() {
+    // Use the topic as a prompt to image
+    const prompt = document.getElementById("quizTopic").value;
+  
+    // Check if promptText is empty or contains only whitespace
+    if (!prompt.trim()) {
+      alert("Please enter a valid prompt.");
+      return; // Exit the function early without further processing
+    }
+  
+    // Fetch Image
+    const data = await this.controller.callImageAPI(prompt);
+    if (!data || data.error) {
+      throw new Error("Invalid data received from Image API");
+    }
+
+    // Display Image
+    this.ui.showAIImage(data)
+
+  }
+  
 
   nextQuestion() {
     // Get question from quiz
