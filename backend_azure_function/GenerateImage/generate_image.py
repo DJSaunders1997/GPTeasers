@@ -4,6 +4,8 @@ import openai
 import logging
 import os
 
+logger = logging.getLogger(__name__)
+
 # Set up OpenAI API key from environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
@@ -37,8 +39,11 @@ def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
         response = openai.Image.create(prompt=prompt, n=n, size=size)
         return response["data"][0]["url"]
     except openai.error.OpenAIError as e:
-        print(f"Error Code: {e.http_status}")
-        print(f"Error Message: {e.error}")
+        logger.error(f"Error {e.http_status}: {e.error}")
+        return None
+
+    except Exception as e:
+        logger.error(f"Non-OpenAI Error when calling OpenAI api: {e}")
         return None
 
 
