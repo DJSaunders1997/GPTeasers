@@ -44,7 +44,7 @@ class Controller {
   async callImageAPI(prompt) {
     console.log("Generating image for prompt:", prompt);
 
-    const encodedPrompt = encodeURIComponent(prompt);
+    const encodedPrompt = encodeURIComponent(prompt + " Pixel art");
     const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage?code=&prompt=${encodedPrompt}`;
     console.log(`Sending request to: ${url}`);
 
