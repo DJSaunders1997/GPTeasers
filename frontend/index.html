@@ -21,19 +21,35 @@
             margin: 10px 0;
         }
 
+        #quizTopic {
+    width: 300px;
+}
+
         #quiz-container {
             display: none;
+        }
+
+        /* Center Image and set size */
+        #AIImage {
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+            width: 300px;
+            height: auto;
         }
     </style>
 </head>
 
 <body>
     <h1>GPTeasers 🧠💡</h1>
-    <p>Enter a topic and get a quiz instantly!</p>
+    <p>Enter a topic, get an AI generated Quiz, and enjoy AI generated art!</p>
     <div id="inputContainer">
         <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
         <button id="fetchQuizButton">Fetch Quiz Data</button>
     </div>
+
+    <img id="AIImage" alt="Generated Image">
+
     <p id="loadingMessage" style="display: none;">Loading ⏳ this can take 10s ...</p>
     <div id="loadingBarContainer" style="width: 100%; background-color: #f3f3f3; display: none;">
         <p id="loadingMessage">Loading ⏳ </p>
@@ -41,6 +57,7 @@
     </div>
 
     <div id="quiz-container">
+        <h1 id="quizTitle">Title</h1>
         <h2 id="question-text">Question</h2>
 
         <button id="option-A">A</button>

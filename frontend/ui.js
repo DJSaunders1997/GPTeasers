@@ -2,18 +2,18 @@ import LoadingBar from "./loadingbar.js";
 
 class UI {
   constructor() {
-    this.topic = document.getElementById("quizTopic").value;
-    this.button = document.querySelector("button");
-
+    this.inputContainer = document.getElementById("inputContainer");
     this.topicInput = document.getElementById("quizTopic");
     this.button = document.querySelector("button");
 
-    this.quizContainer = document.getElementById("quiz-container");
+    //Image elements
+    this.AIImage = document.getElementById("AIImage");
 
     this.loadingBar = new LoadingBar();
-    // ... Add other DOM elements you might want to manipulate.
-
+    
     //Quiz elements
+    this.quizContainer = document.getElementById("quiz-container");
+    this.quizTitle = document.getElementById("quizTitle");
     this.questionText = document.getElementById("question-text");
     this.buttonA = document.getElementById("option-A");
     this.buttonB = document.getElementById("option-B");
@@ -36,12 +36,26 @@ class UI {
     this.loadingBar.stop();
   }
 
-  showQuizContainer() {
+  showQuizContainer(quizTitle) {
+
+    // Hide button inputs
+    this.inputContainer.style.display = "none"
+
     this.quizContainer.style.display = "block";
+    this.quizTitle.textContent = quizTitle;
   }
 
   hideQuizContainer() {
     this.quizContainer.style.display = "none";
+  }
+
+  showAIImage(data){
+    this.AIImage.style.display = "block"
+    this.AIImage.src = data;
+  }
+
+  hideAIImage(){
+    this.AIImage.style.display = "none"
   }
 
   // Display question in ui elements
