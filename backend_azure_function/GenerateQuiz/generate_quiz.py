@@ -1,5 +1,6 @@
 # https://github.com/openai/openai-python
 import openai
+import logging
 import json
 import os
 
@@ -50,6 +51,8 @@ def generate_quiz(topic: str, n_questions: str = "5") -> str:
     Your task is to generate similar responses for {topic}.
     ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS!
     """
+
+    logging.info(f"{role=}")
 
     try:
         completion = openai.ChatCompletion.create(

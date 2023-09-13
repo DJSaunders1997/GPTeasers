@@ -5,6 +5,7 @@
 import Controller from "./controller.js";
 import Game from "./game.js";
 import UI from "./ui.js";
+import Quiz from "./quiz.js";
 
 class App {
   constructor() {
@@ -46,17 +47,49 @@ class App {
 
     // Generate Quiz
     const data = await this.controller.callQuizAPI(topic);
-    document.getElementById("jsonResponse").textContent = JSON.stringify(
-      data,
-      null,
-      2
-    );
+    if (!data || data.error) {
+      throw new Error("Invalid data received from API");
+    }
+    this.quiz = new Quiz(data);
 
     // Hide loading clues
     this.ui.hideLoading();
 
-    // Display quiz data in text box
-    this.ui.displayQuizData(data);
+    // Show first question
+    this.ui.showQuizContainer();
+    this.createButtonListeners();
+    this.nextQuestion();
+  }
+
+  nextQuestion() {
+    // Get question from quiz
+    const question = this.quiz.getCurrentQuestion();
+    // Update UI elements
+    this.ui.displayCurrentQuestion(question);
+  }
+
+  // Calls quiz check answer method
+  // and displays the next question
+  checkAnswer(answer) {
+    this.quiz.checkAnswer(answer);
+    this.nextQuestion();
+  }
+
+  // Initilise button listeners
+  // Warning quiz doesnt exist when webpage is first created
+  // But it should by the time buttons are visible
+  createButtonListeners() {
+    document
+      .querySelector("#option-A")
+      .addEventListener("click", () => this.checkAnswer("A"));
+
+    document
+      .querySelector("#option-B")
+      .addEventListener("click", () => this.checkAnswer("B"));
+
+    document
+      .querySelector("#option-C")
+      .addEventListener("click", () => this.checkAnswer("C"));
   }
 }
 
