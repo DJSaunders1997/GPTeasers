@@ -14,8 +14,6 @@ class App {
     this.ui = new UI();
     this.game = new Game(this.ui);
 
-
-
     // Initialise button event listeners.
     // The arrow function implicitly binds the method to the current instance of this class.
     document
@@ -61,7 +59,7 @@ class App {
     this.ui.hideLoading();
 
     // Show first question
-    this.ui.showQuizContainer();
+    this.ui.showQuizContainer(topic);
     this.createButtonListeners();
     this.nextQuestion();
   }
