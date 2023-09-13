@@ -4,6 +4,8 @@ import logging
 import json
 import os
 
+logger = logging.getLogger(__name__)
+
 # Set up OpenAI API key from environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
@@ -64,8 +66,11 @@ def generate_quiz(topic: str, n_questions: str = "5") -> str:
         return json.dumps(formatted_response, indent=2)
 
     except openai.error.OpenAIError as e:
-        # Handle the error appropriately for your application
-        print(f"Error {e.http_status}: {e.error}")
+        logger.error(f"Error {e.http_status}: {e.error}")
+        return None
+
+    except Exception as e:
+        logger.error(f"Non-OpenAI Error when calling OpenAI api: {e}")
         return None
 
 
