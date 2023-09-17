@@ -7,7 +7,7 @@ name: Deploy Backend Azure Function App
 on:
   push:
     branches:
-      - intial
+      - main
   workflow_dispatch:
 
 env:
