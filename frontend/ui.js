@@ -3,6 +3,7 @@ import LoadingBar from "./loadingbar.js";
 class UI {
   constructor() {
     this.inputContainer = document.getElementById("inputContainer");
+    this.intro = document.getElementById("intro");
     this.topicInput = document.getElementById("quizTopic");
     this.quizDifficulty = document.getElementById("quizDifficulty");
     this.button = document.querySelector("button");
@@ -41,6 +42,7 @@ class UI {
 
     // Hide button inputs
     this.inputContainer.style.display = "none"
+    this.intro.style.display = "none" 
 
     this.quizContainer.style.display = "block";
     this.quizTitle.textContent = quizTitle;
@@ -93,7 +95,6 @@ class UI {
       console.error("No current question to display");
     }
   }
-  // ... You can add more UI related methods as needed.
 }
 
 export default UI;
