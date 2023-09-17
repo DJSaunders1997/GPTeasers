@@ -14,20 +14,19 @@ if not OPENAI_API_KEY:
     )
 openai.api_key = OPENAI_API_KEY
 
-
-def generate_quiz(topic: str, n_questions: str = "10") -> str:
+def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     """
-    Generate a quiz based on the provided topic using OpenAI API.
+    Generate a quiz based on the provided topic and difficulty using OpenAI API.
 
     Parameters:
     - topic (str): The subject for the quiz, e.g., 'Roman History'.
-    - n_questions (str, optional): Number of questions required. Defaults to '5'.
+    - difficulty (str): The desired difficulty of the quiz e.g., 'Easy', 'Medium'.
+    - n_questions (str, optional): Number of questions required. Defaults to '10'.
 
     Returns:
     - str: JSON-formatted quiz questions.
     """
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
 
     # Example response for guiding the AI on the expected format
     example_response = [
@@ -47,10 +46,10 @@ def generate_quiz(topic: str, n_questions: str = "10") -> str:
     example_response_string = json.dumps(example_response)
 
     role = f"""You are an AI to generate quiz questions. 
-    You will be given a topic e.g. Roman History. 
+    You will be given a topic e.g. Roman History with a difficulty of Normal.
     Give {n_questions} responses in a json format such as:
     {example_response_string}.
-    Your task is to generate similar responses for {topic}.
+    Your task is to generate similar responses for {topic} with the difficulty of {difficulty}.
     ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS!
     """
 
@@ -62,23 +61,29 @@ def generate_quiz(topic: str, n_questions: str = "10") -> str:
         )
 
         response = completion.choices[0].message.content
+        logging.debug(f"Raw OpenAI response: {response}")
+
         formatted_response = json.loads(response)
         return json.dumps(formatted_response, indent=2)
 
     except openai.error.OpenAIError as e:
-        logger.error(f"Error {e.http_status}: {e.error}")
+        logger.error(f"OpenAI API Error {e.http_status}: {e.error}")
+        return None
+
+    except json.JSONDecodeError as je:
+        logging.error(f"JSON decoding error: {je}")
         return None
 
     except Exception as e:
-        logger.error(f"Non-OpenAI Error when calling OpenAI api: {e}")
+        logging.error(f"General error when calling OpenAI api: {e}")
         return None
-
 
 if __name__ == "__main__":
     print("Running main:")
 
     topic = "Crested Gecko"
-    quiz = generate_quiz(topic)
+    difficulty = "Medium"
+    quiz = generate_quiz(topic, difficulty)
     if quiz:
         print(quiz)
     else:

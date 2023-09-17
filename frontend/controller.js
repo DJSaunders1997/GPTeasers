@@ -9,11 +9,13 @@ class Controller {
    * @returns {Promise<Object>} The JSON response from the API containing quiz information.
    * @throws {Error} When the network response is not ok.
    */
-  async callQuizAPI(topic) {
+  async callQuizAPI(topic, difficulty) {
     console.log("Generating quiz for topic:", topic);
+    console.log("Generating quiz with difficulty:", difficulty);
 
     const encodedTopic = encodeURIComponent(topic);
-    const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${encodedTopic}`;
+    const encodedDifficulty = encodeURIComponent(topic);
+    const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${encodedTopic}&difficulty=${difficulty}`;
     console.log(`Sending request to: ${url}`);
 
     try {
