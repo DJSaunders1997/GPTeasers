@@ -22,8 +22,12 @@
         }
 
         #quizTopic {
-    width: 300px;
-}
+            width: 300px;
+        }
+
+        #quizDifficulty {
+            height: 40px;
+        }
 
         #quiz-container {
             display: none;
@@ -42,8 +46,15 @@
 
 <body>
     <h1>GPTeasers 🧠💡</h1>
-    <p>Enter a topic, get an AI generated Quiz, and enjoy AI generated art!</p>
+    <p>Enter a topic with a difficulty, get an AI generated Quiz, and enjoy AI generated art!</p>
     <div id="inputContainer">
+        <select id="quizDifficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="extremely-hard">Extremely Hard</option>
+            <option value="impossible">Impossible</option>
+        </select>
         <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
         <button id="fetchQuizButton">Fetch Quiz Data</button>
     </div>
