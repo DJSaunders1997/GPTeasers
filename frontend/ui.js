@@ -4,6 +4,7 @@ class UI {
   constructor() {
     this.inputContainer = document.getElementById("inputContainer");
     this.topicInput = document.getElementById("quizTopic");
+    this.quizDifficulty = document.getElementById("quizDifficulty");
     this.button = document.querySelector("button");
 
     //Image elements
@@ -56,6 +57,14 @@ class UI {
 
   hideAIImage(){
     this.AIImage.style.display = "none"
+  }
+
+  getTopic(){
+    return this.topicInput.value;
+  }
+
+  getDifficulty(){
+    return this.quizDifficulty.value;
   }
 
   // Display question in ui elements

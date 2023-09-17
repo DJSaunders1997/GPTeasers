@@ -36,8 +36,9 @@ class App {
   }
 
   async fetchQuizData() {
-    // Get the topic from the input field
-    const topic = document.getElementById("quizTopic").value;
+    // Get the topic and difficulty from the input field
+    const topic = this.ui.getTopic();
+    const difficulty = this.ui.getDifficulty();
 
     // Check if topic is empty or contains only whitespace
     if (!topic.trim()) {
@@ -49,7 +50,7 @@ class App {
     this.ui.showLoading();
 
     // Generate Quiz
-    const data = await this.controller.callQuizAPI(topic);
+    const data = await this.controller.callQuizAPI(topic, difficulty);
     if (!data || data.error) {
       throw new Error("Invalid data received from Quiz API");
     }
