@@ -30,11 +30,12 @@ class Quiz {
     this.questions = data;
     this.currentIndex = 0;
     this.score = 0;
+    this.numQuestions = this.questions.length;
   }
 
   // Get the current question without moving to the next one
   getCurrentQuestion() {
-    if (this.currentIndex < this.questions.length) {
+    if (this.currentIndex < this.numQuestions) {
       return this.questions[this.currentIndex];
     } else {
       alert("Quiz over!");
@@ -50,7 +51,7 @@ class Quiz {
 
   // Check if there are more questions in the quiz
   hasMoreQuestions() {
-    return this.currentIndex < this.questions.length - 1;
+    return this.currentIndex < this.numQuestions - 1;
   }
 
   // TODO: Convert this to return bool, and handle UI in UI.js and app.js
@@ -70,6 +71,8 @@ class Quiz {
         currentQuestion.explanation +
         "\n" +
         currentQuestion.wikipedia +
+        "\nQuestion: " +
+        (this.currentIndex + 1) + " / " + this.numQuestions
         "\nScore: " +
         this.score;
 
@@ -84,6 +87,8 @@ class Quiz {
         currentQuestion.explanation +
         "\n" +
         currentQuestion.wikipedia +
+        "\nQuestion: " +
+        (this.currentIndex + 1) + " / " + this.numQuestions
         "\nScore: " +
         this.score;
 
