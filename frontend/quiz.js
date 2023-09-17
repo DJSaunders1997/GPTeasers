@@ -72,7 +72,7 @@ class Quiz {
         "\n" +
         currentQuestion.wikipedia +
         "\nQuestion: " +
-        (this.currentIndex + 1) + " / " + this.numQuestions
+        (this.currentIndex + 1) + " / " + this.numQuestions +
         "\nScore: " +
         this.score;
 
@@ -88,7 +88,7 @@ class Quiz {
         "\n" +
         currentQuestion.wikipedia +
         "\nQuestion: " +
-        (this.currentIndex + 1) + " / " + this.numQuestions
+        (this.currentIndex + 1) + " / " + this.numQuestions +
         "\nScore: " +
         this.score;
 
