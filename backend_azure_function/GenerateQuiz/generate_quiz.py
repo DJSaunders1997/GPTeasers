@@ -67,16 +67,19 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
         return json.dumps(formatted_response, indent=2)
 
     except openai.error.OpenAIError as e:
-        logger.error(f"OpenAI API Error {e.http_status}: {e.error}")
-        return None
+        error_message = f"OpenAI API Error {e.http_status}: {e.error}"
+        logger.error(error_message)
+        return json.dumps({"error": error_message})
 
     except json.JSONDecodeError as je:
-        logging.error(f"JSON decoding error: {je}")
-        return None
+        error_message = f"JSON decoding error: {je}. Response causing error: {response}"
+        logging.error(error_message)
+        return json.dumps({"error": error_message})
 
     except Exception as e:
-        logging.error(f"General error when calling OpenAI api: {e}")
-        return None
+        error_message = f"General error when calling OpenAI api: {e}"
+        logging.error(error_message)
+        return json.dumps({"error": error_message})
 
 if __name__ == "__main__":
     print("Running main:")
