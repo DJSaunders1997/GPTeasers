@@ -23,30 +23,22 @@ def main(req: HttpRequest) -> HttpResponse:
     topic = req.params.get("topic")
     difficulty = req.params.get("difficulty")
 
-    if not topic or not difficulty:
-        logging.debug("Topic or difficulty not found in request parameters, trying request body...")
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            logging.warning("Error decoding JSON from request body.")
-            pass
-        else:
-            topic = req_body.get("topic", topic)  # Default to previous value if not in body
-            difficulty = req_body.get("difficulty", difficulty)  # Default to previous value if not in body
-
     if topic and difficulty:
         logging.info(f"Generating quiz for topic: {topic} with difficulty: {difficulty}")
         try:
             quiz = generate_quiz(topic, difficulty)
-
+            if "error" in quiz:  # Check for the error key in the response.
+                logging.error(quiz)
+                return HttpResponse(quiz, status_code=500)
             logging.info(f"Quiz generation successful.\n{quiz}")
             return HttpResponse(quiz, status_code=200)
 
         except Exception as e:
-            logging.error(f"Error generating quiz: {str(e)}")
-            return HttpResponse(f"Error generating quiz: {str(e)}", status_code=500)
+            error_message = f"Error generating quiz: {str(e)}"
+            logging.error(error_message)
+            return HttpResponse(error_message, status_code=500)
     else:
-        logging.warning("No topic and/or difficulty provided in request.")
+        logging.error("No topic and/or difficulty provided in request.")
         return HttpResponse(
             "Please provide a topic and difficulty in the query string or in the request body to generate a quiz.",
             status_code=400,
