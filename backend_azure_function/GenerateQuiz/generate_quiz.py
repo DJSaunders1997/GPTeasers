@@ -39,7 +39,6 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
             "answer": "B",
             "explanation": "Augustus, originally Octavian, was the first to hold the title of Roman Emperor. Julius Caesar, while pivotal, never held the emperor title.",
             "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
-            "dalle_prompt": "Augustus Caesar looking regal",
         }
     ]
 
