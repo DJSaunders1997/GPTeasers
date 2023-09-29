@@ -9,7 +9,7 @@ The .js files control dynamic logic, and calling the backend.
 .
 ├── app.js              # Main application logic
 ├── controller.js       # Backend API interaction
-├── game.js             # Game related logic
+├── quiz.js             # Quiz related logic
 ├── index.html          # Main HTML page for the
 ├── loadingbar.js       # Loading bar animation
 └── ui.js               # User Interface related
@@ -28,9 +28,9 @@ It also handles user interactions, such as clicking the "Fetch Quiz Data" button
 This class is responsible for interacting with the backend API. 
 It contains methods to call the Quiz API based on a given topic and processes the API response.
 
-### `game.js`
+### `quiz.js`
 
-The Game class contains methods related to game logic, 
+The Quiz class contains methods related to quiz logic, 
 such as parsing quiz data, checking answers, calculating scores, etc.
 
 ### `index.html`
@@ -47,7 +47,7 @@ It provides methods to start and stop a loading bar animation, which gives users
 
 The UI class provides methods related to the user interface. 
 It contains methods to show/hide loading animations, 
-display fetched quiz data on the web page, and manipulate other UI elements based on user interactions and game logic.
+display fetched quiz data on the web page, and manipulate other UI elements based on user interactions and quiz logic.
 
 ## Setup and Usage
 
