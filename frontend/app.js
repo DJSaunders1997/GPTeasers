@@ -3,7 +3,6 @@
  * It manages the fetching of quiz data from the API and its presentation on the web page.
  */
 import Controller from "./controller.js";
-import Game from "./game.js";
 import UI from "./ui.js";
 import Quiz from "./quiz.js";
 
@@ -12,7 +11,6 @@ class App {
     // Initialise app elements as JS objects.
     this.controller = new Controller();
     this.ui = new UI();
-    this.game = new Game(this.ui);
 
     // Initialise button event listeners.
     // The arrow function implicitly binds the method to the current instance of this class.
