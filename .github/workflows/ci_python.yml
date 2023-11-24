@@ -1,0 +1,31 @@
+name: Python Linting CI 🐍
+
+on:
+  push:
+    paths:
+      - "backend_azure_function/**"
+  pull_request:
+    paths:
+      - "backend_azure_function/**"
+  workflow_dispatch:
+
+jobs:
+  ci_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository 🛒
+        uses: actions/checkout@v2
+
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install Python dependencies 📦
+        run: pip install -r backend_azure_function/requirements.txt
+
+      - name: Install ruff 🦜
+        run: pip install ruff
+
+      - name: Lint Python with ruff 🚀
+        run: ruff backend_azure_function/*.py
