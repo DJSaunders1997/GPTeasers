@@ -28,4 +28,4 @@ jobs:
         run: pip install ruff
 
       - name: Lint Python with ruff 🚀
-        run: ruff backend_azure_function/*.py
+        run: ruff backend_azure_function/
