@@ -5,7 +5,16 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Configuration for JavaScript dependencies in the frontend
+  - package-ecosystem: "npm"
+    directory: "/frontend" # Path to the directory containing package.json
     schedule:
       interval: "weekly"
+    # Additional configurations like 'open-pull-requests-limit', 'ignore', etc.
+
+  # Configuration for Python dependencies in the backend
+  - package-ecosystem: "pip"
+    directory: "/backend_azure_function" # Path to the directory containing requirements.txt
+    schedule:
+      interval: "weekly"
+
