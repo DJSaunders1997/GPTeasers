@@ -24,7 +24,9 @@ def main(req: HttpRequest) -> HttpResponse:
     difficulty = req.params.get("difficulty")
 
     if topic and difficulty:
-        logging.info(f"Generating quiz for topic: {topic} with difficulty: {difficulty}")
+        logging.info(
+            f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
+        )
         try:
             quiz = generate_quiz(topic, difficulty)
             if "error" in quiz:  # Check for the error key in the response.
@@ -40,6 +42,7 @@ def main(req: HttpRequest) -> HttpResponse:
     else:
         logging.error("No topic and/or difficulty provided in request.")
         return HttpResponse(
-            "Please provide a topic and difficulty in the query string or in the request body to generate a quiz.",
+            "Please provide a topic and difficulty in the query string "
+            "or in the request body to generate a quiz.",
             status_code=400,
         )
