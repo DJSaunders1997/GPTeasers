@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise ValueError(
-        "Environment variable OPENAI_API_KEY is not set. Please ensure it's set and try again."
+        "Environment variable OPENAI_API_KEY is not set."
+        "Please ensure it's set and try again."
     )
 openai.api_key = OPENAI_API_KEY
+
 
 def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     """
@@ -27,7 +29,6 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     - str: JSON-formatted quiz questions.
     """
 
-
     # Example response for guiding the AI on the expected format
     example_response = [
         {
@@ -37,7 +38,11 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
             "B": "Augustus",
             "C": "Constantine",
             "answer": "B",
-            "explanation": "Augustus, originally Octavian, was the first to hold the title of Roman Emperor. Julius Caesar, while pivotal, never held the emperor title.",
+            "explanation": (
+                "Augustus, originally Octavian, "
+                "was the first to hold the title of Roman Emperor. "
+                "Julius Caesar, while pivotal, never held the emperor title. "
+            ),
             "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
         }
     ]
@@ -48,7 +53,8 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     You will be given a topic e.g. Roman History with a difficulty of Normal.
     Give {n_questions} responses in a json format such as:
     {example_response_string}.
-    Your task is to generate similar responses for {topic} with the difficulty of {difficulty}.
+    Your task is to generate similar responses for {topic} 
+    with the difficulty of {difficulty}.
     ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS!
     """
 
@@ -79,6 +85,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
         error_message = f"General error when calling OpenAI api: {e}"
         logging.error(error_message)
         return json.dumps({"error": error_message})
+
 
 if __name__ == "__main__":
     print("Running main:")

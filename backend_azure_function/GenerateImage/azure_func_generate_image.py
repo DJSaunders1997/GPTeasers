@@ -49,6 +49,7 @@ def main(req: HttpRequest) -> HttpResponse:
     else:
         logging.warning("No prompt provided for image generation.")
         return HttpResponse(
-            "Please provide a prompt in the query string or in the request body to generate an image.",
+            "Please provide a prompt in the query string " 
+            "or in the request body to generate an image.",
             status_code=400,
         )
