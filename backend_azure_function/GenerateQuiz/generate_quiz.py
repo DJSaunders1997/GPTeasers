@@ -1,5 +1,5 @@
 # https://github.com/openai/openai-python
-import openai
+from openai import OpenAI
 import logging
 import json
 import os
@@ -13,8 +13,7 @@ if not OPENAI_API_KEY:
         "Environment variable OPENAI_API_KEY is not set."
         "Please ensure it's set and try again."
     )
-openai.api_key = OPENAI_API_KEY
-
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     """
@@ -61,9 +60,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     logging.info(f"{role=}")
 
     try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=[{"role": "user", "content": role}]
-        )
+        completion = client.chat.completions.create(model="gpt-4-1106-preview", messages=[{"role": "user", "content": role}])
 
         response = completion.choices[0].message.content
         logging.debug(f"Raw OpenAI response: {response}")
@@ -71,10 +68,6 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
         formatted_response = json.loads(response)
         return json.dumps(formatted_response, indent=2)
 
-    except openai.error.OpenAIError as e:
-        error_message = f"OpenAI API Error {e.http_status}: {e.error}"
-        logger.error(error_message)
-        return json.dumps({"error": error_message})
 
     except json.JSONDecodeError as je:
         error_message = f"JSON decoding error: {je}. Response causing error: {response}"
