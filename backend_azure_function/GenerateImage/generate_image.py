@@ -1,6 +1,7 @@
 # refactored_openai_image.py
 
-import openai
+from openai import OpenAI
+
 import logging
 import os
 
@@ -13,7 +14,8 @@ if not OPENAI_API_KEY:
         "Environment variable OPENAI_API_KEY is not set. " 
         "Please ensure it's set and try again."
     )
-openai.api_key = OPENAI_API_KEY
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
@@ -32,17 +34,12 @@ def generate_image(prompt: str, n: int = 1, size: str = "256x256") -> str:
     - openai.error.OpenAIError: If there's an error in the request.
     """
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
 
     logging.info(f"{prompt=}")
 
     try:
-        response = openai.Image.create(prompt=prompt, n=n, size=size)
-        return response["data"][0]["url"]
-    except openai.error.OpenAIError as e:
-        logger.error(f"Error {e.http_status}: {e.error}")
-        return None
-
+        response = client.images.generate(prompt=prompt, n=n, size=size)
+        return response.data[0].url
     except Exception as e:
         logger.error(f"Non-OpenAI Error when calling OpenAI api: {e}")
         return None
