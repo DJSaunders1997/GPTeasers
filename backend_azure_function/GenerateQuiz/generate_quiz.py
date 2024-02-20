@@ -55,6 +55,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     Your task is to generate similar responses for {topic} 
     with the difficulty of {difficulty}.
     ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS!
+    DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON!
     """
 
     logging.info(f"{role=}")
@@ -65,7 +66,12 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
         response = completion.choices[0].message.content
         logging.debug(f"Raw OpenAI response: {response}")
 
-        formatted_response = json.loads(response)
+        # Remove any prefix or suffix before raw json e.g. ```json\n and remove it
+        # I think this is done for code responses so the ChatGPT UI can render code
+        cleaned_response = response[response.find('['):response.find(']')+1]
+        logging.debug(f"Cleaned response: {cleaned_response}")
+
+        formatted_response = json.loads(cleaned_response)
         return json.dumps(formatted_response, indent=2)
 
 

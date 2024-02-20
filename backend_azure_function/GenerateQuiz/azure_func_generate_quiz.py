@@ -30,6 +30,7 @@ def main(req: HttpRequest) -> HttpResponse:
         try:
             quiz = generate_quiz(topic, difficulty)
             if "error" in quiz:  # Check for the error key in the response.
+                logging.error("Error in quiz response:")
                 logging.error(quiz)
                 return HttpResponse(quiz, status_code=500)
             logging.info(f"Quiz generation successful.\n{quiz}")
