@@ -15,6 +15,7 @@ if not OPENAI_API_KEY:
     )
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+
 def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     """
     Generate a quiz based on the provided topic and difficulty using OpenAI API.
@@ -61,19 +62,20 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     logging.info(f"{role=}")
 
     try:
-        completion = client.chat.completions.create(model="gpt-4-1106-preview", messages=[{"role": "user", "content": role}])
+        completion = client.chat.completions.create(
+            model="gpt-4-1106-preview", messages=[{"role": "user", "content": role}]
+        )
 
         response = completion.choices[0].message.content
         logging.debug(f"Raw OpenAI response: {response}")
 
         # Remove any prefix or suffix before raw json e.g. ```json\n and remove it
         # I think this is done for code responses so the ChatGPT UI can render code
-        cleaned_response = response[response.find('['):response.find(']')+1]
+        cleaned_response = response[response.find("[") : response.find("]") + 1]
         logging.debug(f"Cleaned response: {cleaned_response}")
 
         formatted_response = json.loads(cleaned_response)
         return json.dumps(formatted_response, indent=2)
-
 
     except json.JSONDecodeError as je:
         error_message = f"JSON decoding error: {je}. Response causing error: {response}"
