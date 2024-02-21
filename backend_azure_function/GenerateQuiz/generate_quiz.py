@@ -63,7 +63,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
 
     try:
         completion = client.chat.completions.create(
-            model="gpt-4-1106-preview", messages=[{"role": "user", "content": role}]
+            model="gpt-4-turbo-preview", messages=[{"role": "user", "content": role}]
         )
 
         response = completion.choices[0].message.content
