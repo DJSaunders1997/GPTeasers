@@ -66,7 +66,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
         # https://platform.openai.com/docs/guides/text-generation/json-mode
         completion = client.chat.completions.create(
             model="gpt-4-turbo-preview", 
-            response_format={ "type": "json_object" },
+            #response_format={ "type": "json_object" },
             messages=[{"role": "user", "content": role}]
         )
 
