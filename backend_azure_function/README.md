@@ -4,7 +4,7 @@ This directory contains the Azure Functions that serve as the backend for the GP
 
 ## Structure
 
-There are 2 Azure Functions defined n the backend_azure_function app:
+There are 2 Azure Functions defined in the backend_azure_function app:
 
 ### GenerateQuiz
 
@@ -36,9 +36,10 @@ Run the functions locally with `func start`
 Test these using PostMan or these cURl's:
 ### GenerateQuiz
 
-`curl 'http://localhost:7071/api/GenerateQuiz?topic=UK%20History'`
+`curl 'http://localhost:7071/api/GenerateQuiz?topic=UK%20History&difficulty=Medium&n_questions=2'`
 
 ### GenerateImage
 
 
 `curl 'http://localhost:7071/api/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall'`
+

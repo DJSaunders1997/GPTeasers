@@ -4,12 +4,11 @@ from .generate_quiz import generate_quiz
 
 
 def main(req: HttpRequest) -> HttpResponse:
-    """Azure Function to generate a quiz based on a provided topic and difficulty.
+    """Azure Function to generate a quiz based on a provided topic, difficulty, and number of questions.
 
-    The function expects a 'topic' parameter in the HTTP request query
-    or body. If a valid topic is received, the function uses the
-    generate_quiz() function to create an image URL corresponding to
-    the prompt and returns it in the HTTP response.
+    The function expects 'topic', 'difficulty', and optionally 'n_questions' parameters in the HTTP request query
+    or body. If a valid topic is received, the function uses the generate_quiz() function to create a quiz
+    with the specified number of questions and returns it in the HTTP response.
 
     Parameters:
     - req (HttpRequest): The HTTP request object containing the client request.
@@ -22,13 +21,14 @@ def main(req: HttpRequest) -> HttpResponse:
 
     topic = req.params.get("topic")
     difficulty = req.params.get("difficulty")
+    n_questions = req.params.get("n_questions", "10")  # Default to 10 questions if not provided
 
     if topic and difficulty:
         logging.info(
-            f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
+            f"Generating quiz for topic: {topic} with difficulty: {difficulty} and {n_questions} questions"
         )
         try:
-            quiz = generate_quiz(topic, difficulty)
+            quiz = generate_quiz(topic, difficulty, n_questions)
             if "error" in quiz:  # Check for the error key in the response.
                 logging.error("Error in quiz response:")
                 logging.error(quiz)
