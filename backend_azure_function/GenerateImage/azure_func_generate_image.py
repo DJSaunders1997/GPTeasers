@@ -24,32 +24,22 @@ def main(req: HttpRequest) -> HttpResponse:
     prompt = req.params.get("prompt")
 
     if not prompt:
-        try:
-            req_body = req.get_json()
-        except ValueError as e:
-            logging.warning(f"Error decoding JSON: {str(e)}")
-            pass
-        else:
-            prompt = req_body.get("prompt")
+        error_message = "No prompt query param provided for image generation."
+        logging.warning(error_message)
+        return HttpResponse(error_message, status_code=400)
 
-    if prompt:
-        logging.info(f"Received prompt: {prompt}")
-        try:
-            # generate_image() function returns the URL of the generated image
-            image_url = generate_image(prompt)
-            logging.info(f"Generated image for prompt {prompt}: {image_url}")
+    logging.info(f"Received prompt: {prompt}")
+    image_url = generate_image(prompt)
 
-            # Return the image URL in the HTTP response
-            return HttpResponse(image_url, status_code=200)
+    if image_url is None:
+        error_message = "Error - Image generation failed."
+        logging.error(error_message)
+        return HttpResponse(error_message, status_code=500)
 
-        except Exception as e:
-            logging.error(f"Error generating image for prompt {prompt}: {str(e)}")
-            # Handle exceptions that might occur during image generation
-            return HttpResponse(f"Error generating image: {str(e)}", status_code=500)
-    else:
-        logging.warning("No prompt provided for image generation.")
-        return HttpResponse(
-            "Please provide a prompt in the query string "
-            "or in the request body to generate an image.",
-            status_code=400,
-        )
+    # Return the image URL in the HTTP response
+    logging.info(f"Generated image for prompt {prompt}: {image_url}")
+    return HttpResponse(image_url, status_code=200)
+
+
+
+

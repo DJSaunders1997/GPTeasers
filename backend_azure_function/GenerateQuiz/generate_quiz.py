@@ -26,7 +26,7 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     - n_questions (str, optional): Number of questions required. Defaults to '10'.
 
     Returns:
-    - str: JSON-formatted quiz questions.
+    - str: JSON-formatted quiz questions. If an error occurs, an empty string is returned.
     """
 
     # Example response for guiding the AI on the expected format
@@ -84,12 +84,12 @@ def generate_quiz(topic: str, difficulty: str, n_questions: str = "10") -> str:
     except json.JSONDecodeError as je:
         error_message = f"JSON decoding error: {je}. Response causing error: {response}"
         logging.error(error_message)
-        return json.dumps({"error": error_message})
+        return ""
 
     except Exception as e:
         error_message = f"General error when calling OpenAI api: {e}"
         logging.error(error_message)
-        return json.dumps({"error": error_message})
+        return ""
 
 
 if __name__ == "__main__":

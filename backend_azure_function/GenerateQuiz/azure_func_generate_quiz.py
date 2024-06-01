@@ -23,27 +23,26 @@ def main(req: HttpRequest) -> HttpResponse:
     topic = req.params.get("topic")
     difficulty = req.params.get("difficulty")
 
-    if topic and difficulty:
-        logging.info(
-            f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
-        )
-        try:
-            quiz = generate_quiz(topic, difficulty)
-            if "error" in quiz:  # Check for the error key in the response.
-                logging.error("Error in quiz response:")
-                logging.error(quiz)
-                return HttpResponse(quiz, status_code=500)
-            logging.info(f"Quiz generation successful.\n{quiz}")
-            return HttpResponse(quiz, status_code=200)
-
-        except Exception as e:
-            error_message = f"Error generating quiz: {str(e)}"
-            logging.error(error_message)
-            return HttpResponse(error_message, status_code=500)
-    else:
+    # If either 'topic' or 'difficulty' is not provided in the request, 
+    # the function will return an error message and a 400 status code.
+    if not topic or not difficulty:
         logging.error("No topic and/or difficulty provided in request.")
         return HttpResponse(
             "Please provide a topic and difficulty in the query string "
             "or in the request body to generate a quiz.",
             status_code=400,
         )
+
+    logging.info(
+        f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
+    )
+
+    quiz = generate_quiz(topic, difficulty)
+
+    if quiz == "":  # Will be empty if theres an error
+        error_message = "Error - Quiz generation returned an empty string."
+        logging.error(error_message)
+        return HttpResponse(error_message, status_code=500)
+    
+    logging.info(f"Quiz generation successful.\n{quiz}")
+    return HttpResponse(quiz, status_code=200)
