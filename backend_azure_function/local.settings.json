@@ -2,6 +2,8 @@
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
-    "AzureWebJobsStorage": ""
+    "AzureWebJobsStorage": "",
+    "PYTHON_ENABLE_INIT_INDEXING": "1",
+    "PYTHON_ISOLATE_WORKER_DEPENDENCIES": "1"
   }
 }

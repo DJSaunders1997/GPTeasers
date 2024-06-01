@@ -1,4 +1,4 @@
-#!/home/dave/GPTeasers/backend_azure_function/venv_azure_func/bin/python
+#!/home/dave/GPTeasers/backend_azure_function/venv_azure_func/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
