@@ -5,3 +5,5 @@
 azure-functions
 openai
 azurefunctions-extensions-http-fastapi
+fastapi
+uvicorn
