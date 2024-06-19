@@ -1,5 +1,5 @@
 # https://github.com/openai/openai-python
-from openai import OpenAI
+from openai import OpenAI, Stream
 import logging
 import json
 import os
@@ -57,9 +57,7 @@ class QuizGenerator:
         logging.info(f"Role content for OpenAI API: {role}")
 
         response = self._create_response(role)
-        clean_response = self._clean_response(response)
-        
-        return clean_response
+        return self._clean_response(response)
 
     def _create_role(self, topic: str, difficulty: str, n_questions: str) -> str:
         """
@@ -82,7 +80,8 @@ class QuizGenerator:
             f"Your task is to generate similar responses for {topic} "
             f"with the difficulty of {difficulty}. "
             f"ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS! "
-            f"DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON!"
+            f"DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON! "
+            f"Return each question on a new line. "
         )
 
     def _create_response(self, role: str) -> str:
@@ -95,19 +94,41 @@ class QuizGenerator:
         Returns:
         - str: The raw response from the OpenAI API.
         
-        This method handles the API call to OpenAI and returns the raw response. If an error occurs, it logs the error and returns an empty string.
+        This method handles the API call to OpenAI and returns the raw response by streaming chunks.
+        If an error occurs, it logs the error and returns an empty string.
         """
         try:
-            completion = self.client.chat.completions.create(
+            chat_completion_stream = self.client.chat.completions.create(
                 model="gpt-4-turbo-preview",
-                messages=[{"role": "user", "content": role}]
+                messages=[{"role": "user", "content": role}],
+                stream=True
             )
-            response = completion.choices[0].message.content
-            logging.debug(f"Raw OpenAI response: {response}")
+            response = self._stream_response(chat_completion_stream)
+            logging.debug(f"Full streamed OpenAI response: {response}")
             return response
         except Exception as e:
             logging.error(f"General error when calling OpenAI API: {e}")
             return ""
+
+    def _stream_response(self, chat_completion_stream: Stream) -> str:
+        """
+        Streams the response from the OpenAI API in chunks and accumulates it into a single response string.
+
+        Parameters:
+        - chat_completion_stream (Stream): The streaming response generator from OpenAI API.
+
+        Returns:
+        - str: The accumulated response string from the OpenAI API.
+        
+        This method handles the streaming of response chunks from the OpenAI API.
+        """
+        response = ""
+        for chunk in chat_completion_stream:
+            if chunk.choices[0].delta.content is not None:
+                chunk_contents = chunk.choices[0].delta.content
+                print(chunk_contents, end="")
+            response += chunk_contents
+        return response
 
     def _clean_response(self, response: str) -> str:
         """
@@ -118,7 +139,7 @@ class QuizGenerator:
 
         Returns:
         - str: The cleaned and properly formatted JSON response as a string. 
-            If an error occurs during cleaning or formatting, an empty string is returned.
+               If an error occurs during cleaning or formatting, an empty string is returned.
 
         This method extracts the JSON content from the raw response by locating the JSON array within the response string. 
         It then parses the JSON content to ensure it is valid and formats it with indentation for readability. 
@@ -142,5 +163,5 @@ if __name__ == "__main__":
 
     topic = "Crested Gecko"
     difficulty = "Medium"
-    quiz = quiz_generator.generate_quiz(topic, difficulty, 5)
+    quiz = quiz_generator.generate_quiz(topic, difficulty, "5")
     print(quiz)
