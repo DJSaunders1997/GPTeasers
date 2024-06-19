@@ -41,4 +41,4 @@ Test these using PostMan or these cURl's:
 ### GenerateImage
 
 
-`curl 'http://localhost:7071/api/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall'`
+`curl 'http://localhost:7071/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall'`
