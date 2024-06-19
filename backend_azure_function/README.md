@@ -31,6 +31,15 @@ To debug locally first install [Azure Functions Core Tools](https://learn.micros
 
 Ensure you are in the azure_functions directory: `cd backend_azure_function`
 
+Create a python 3.10 venv, activate, and install the requirements: 
+```
+python -m venv venv_azure_func
+source venv_azure_func/bin/activate
+pip install -r requirements.txt
+```
+
+
+
 Run the functions locally with `func start`
 
 Test these using PostMan or these cURl's:
