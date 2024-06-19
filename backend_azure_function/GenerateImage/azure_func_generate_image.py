@@ -3,22 +3,20 @@ from .generate_image import generate_image
 import fastapi
 from fastapi import Request
 from fastapi.responses import JSONResponse
-
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 import azure.functions as func
-from fastapi.middleware.cors import CORSMiddleware # https://iotespresso.com/azure-function-to-fastapi-app-service/
 
 # Copy Azure Docs Example
 # https://github.com/Azure-Samples/fastapi-on-azure-functions/tree/main
 app = fastapi.FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+# https://iotespresso.com/azure-function-to-fastapi-app-service/
+# Might not need CORS 
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"]
+# )
 
 # @app.get("/api/GenerateImage")
 @app.get("/GenerateImage")
@@ -38,7 +36,6 @@ async def main(request: Request) -> JSONResponse:
     - JSONResponse: The HTTP response object containing the image URL or
                     an appropriate error message.
     """
-    print("WEVE MADE IT BOYOS")
 
     logging.info("Python HTTP trigger function processed a request.")
 
