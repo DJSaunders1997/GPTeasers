@@ -1,3 +1,5 @@
+# Example of openai streaming 
+# https://platform.openai.com/docs/api-reference/streaming
 from openai import OpenAI
 import os
 import json
