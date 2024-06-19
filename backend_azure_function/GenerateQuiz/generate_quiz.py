@@ -37,7 +37,7 @@ class QuizGenerator:
             )
         self.client = OpenAI(api_key=api_key)
 
-    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10") -> str:
+    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10", stream: bool = False) -> str:
         """
         Generate a quiz based on the provided topic and difficulty using OpenAI API.
         
@@ -45,6 +45,7 @@ class QuizGenerator:
         - topic (str): The subject for the quiz, e.g., 'Roman History'.
         - difficulty (str): The desired difficulty of the quiz e.g., 'Easy', 'Medium'.
         - n_questions (str, optional): Number of questions required. Defaults to '10'.
+        - stream (bool, optional): Whether to stream the response. Defaults to False.
         
         Returns:
         - str: JSON-formatted quiz questions. If an error occurs, an empty string is returned.
@@ -56,7 +57,7 @@ class QuizGenerator:
 
         logging.info(f"Role content for OpenAI API: {role}")
 
-        response = self._create_response(role)
+        response = self._create_response(role, stream)
         return self._clean_response(response)
 
     def _create_role(self, topic: str, difficulty: str, n_questions: str) -> str:
@@ -84,27 +85,32 @@ class QuizGenerator:
             f"Return each question on a new line. "
         )
 
-    def _create_response(self, role: str) -> str:
+    def _create_response(self, role: str, stream: bool) -> str:
         """
         Creates the response from the OpenAI API based on the given role.
         
         Parameters:
         - role (str): The role string to be sent to the OpenAI API.
+        - stream (bool): Whether to stream the response.
         
         Returns:
         - str: The raw response from the OpenAI API.
         
-        This method handles the API call to OpenAI and returns the raw response by streaming chunks.
+        This method handles the API call to OpenAI and returns the raw response.
         If an error occurs, it logs the error and returns an empty string.
         """
         try:
             chat_completion_stream = self.client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[{"role": "user", "content": role}],
-                stream=True
+                stream=stream
             )
-            response = self._stream_response(chat_completion_stream)
-            logging.debug(f"Full streamed OpenAI response: {response}")
+
+            if stream:
+                response = self._stream_response(chat_completion_stream)
+            else:
+                response = completion.choices[0].message.content
+                logging.debug(f"Full OpenAI response: {response}")
             return response
         except Exception as e:
             logging.error(f"General error when calling OpenAI API: {e}")
@@ -163,5 +169,5 @@ if __name__ == "__main__":
 
     topic = "Crested Gecko"
     difficulty = "Medium"
-    quiz = quiz_generator.generate_quiz(topic, difficulty, "5")
+    quiz = quiz_generator.generate_quiz(topic, difficulty, "5", stream=True)
     print(quiz)
