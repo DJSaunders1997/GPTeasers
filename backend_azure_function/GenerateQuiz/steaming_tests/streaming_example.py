@@ -45,12 +45,6 @@ DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON!
 RETURN EACH JSON ITEM AS A NEW ROW!
 """
 
-stream = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": role}],
-    stream=True,
-)
-
 def stream_generator(stream:Stream):
     """Parses streamed data chunks from OpenAI into complete JSON objects and yields them.
 
@@ -119,6 +113,13 @@ async def stream_quiz_questions():
     suitable for long-running data streams. Learn more at:
     https://fastapi.tiangolo.com/advanced/custom-response/#streamingresponse
     """
+
+    # Create new stream per request
+    stream = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": role}],
+        stream=True,
+    )
 
     # Ensure stream is properly initialized and configured here.
     generator = stream_generator(stream)  # Adjust as needed based on actual stream setup
