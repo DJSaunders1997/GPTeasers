@@ -1,4 +1,5 @@
 # https://github.com/openai/openai-python
+from typing import Generator
 from openai import OpenAI, Stream
 import logging
 import json
@@ -6,10 +7,11 @@ import os
 
 # Set up logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 class QuizGenerator:
-    EXAMPLE_RESPONSE = json.dumps([{
+    # TODO: Implement a method of getting the quiz in the old format, even if it takes a while.
+    EXAMPLE_RESPONSE = json.dumps({
         "question_id": 1,
         "question": "Who was the first emperor of Rome?",
         "A": "Julius Caesar",
@@ -22,7 +24,7 @@ class QuizGenerator:
             "Julius Caesar, while pivotal, never held the emperor title."
         ),
         "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
-    }])
+    })
 
     def __init__(self):
         """
@@ -37,7 +39,7 @@ class QuizGenerator:
             )
         self.client = OpenAI(api_key=api_key)
 
-    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10", stream: bool = False) -> str:
+    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10", stream: bool = False) -> Generator[str, None, None]:
         """
         Generate a quiz based on the provided topic and difficulty using OpenAI API.
         
@@ -57,8 +59,11 @@ class QuizGenerator:
 
         logging.info(f"Role content for OpenAI API: {role}")
 
-        response = self._create_response(role, stream)
-        return self._clean_response(response)
+        stream = self._create_openai_stream(role)
+
+        response_generator = self._create_question_generator(stream)
+
+        return response_generator
 
     def _create_role(self, topic: str, difficulty: str, n_questions: str) -> str:
         """
@@ -85,13 +90,12 @@ class QuizGenerator:
             f"Return each question on a new line. "
         )
 
-    def _create_response(self, role: str, stream: bool) -> str:
+    def _create_openai_stream(self, role: str) -> Stream:
         """
-        Creates the response from the OpenAI API based on the given role.
+        Creates the stream from the OpenAI API based on the given role.
         
         Parameters:
         - role (str): The role string to be sent to the OpenAI API.
-        - stream (bool): Whether to stream the response.
         
         Returns:
         - str: The raw response from the OpenAI API.
@@ -100,74 +104,79 @@ class QuizGenerator:
         If an error occurs, it logs the error and returns an empty string.
         """
         try:
-            chat_completion_stream = self.client.chat.completions.create(
+            openai_stream = self.client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[{"role": "user", "content": role}],
-                stream=stream
+                stream=True
             )
-
-            if stream:
-                response = self._stream_response(chat_completion_stream)
-            else:
-                response = completion.choices[0].message.content
-                logging.debug(f"Full OpenAI response: {response}")
-            return response
         except Exception as e:
-            logging.error(f"General error when calling OpenAI API: {e}")
-            return ""
+            logging.error(f"General error when creating OpenAI stream: {e}")
+        return openai_stream
+            
 
-    def _stream_response(self, chat_completion_stream: Stream) -> str:
-        """
-        Streams the response from the OpenAI API in chunks and accumulates it into a single response string.
+    def _create_question_generator(self, openai_stream: Stream) -> Generator[str, None, None]:
+        """Parses streamed data chunks from OpenAI into complete JSON objects and yields them.
 
-        Parameters:
-        - chat_completion_stream (Stream): The streaming response generator from OpenAI API.
+        Accumulates data in a buffer and attempts to parse complete JSON objects. If successful,
+        the JSON object is yielded as a string and the buffer is cleared for the next object.
+        Ignores empty chunks and continues buffering if the JSON is incomplete.
 
-        Returns:
-        - str: The accumulated response string from the OpenAI API.
+        Similar-ish SSE Fast API blog: https://medium.com/@nandagopal05/server-sent-events-with-python-fastapi-f1960e0c8e4b
+        Helpful SO that says about the SSE format of data: {your-json}: https://stackoverflow.com/a/49486869/11902832
         
-        This method handles the streaming of response chunks from the OpenAI API.
+        Args:
+            openai_stream (Stream): Stream from OpenAI's api
+
+        Yields:
+            str: Complete JSON object of a quiz question in string representation.
+        
+        Raises:
+            json.JSONDecodeError: If parsing fails due to malformed JSON data.
         """
-        response = ""
-        for chunk in chat_completion_stream:
-            if chunk.choices[0].delta.content is not None:
-                chunk_contents = chunk.choices[0].delta.content
-                print(chunk_contents, end="")
-            response += chunk_contents
-        return response
 
-    def _clean_response(self, response: str) -> str:
-        """
-        Cleans and formats the raw response from the OpenAI API.
 
-        Parameters:
-        - response (str): The raw response from the OpenAI API, expected to contain JSON content.
+        buffer = ""
+        for chunk in openai_stream:
+            chunk_contents = chunk.choices[0].delta.content
+            # Ignore empty chunks.
+            if chunk_contents is None:
+                logger.info("Chunk was empty!")
+                continue
+            buffer += chunk_contents  # Append new data to buffer
+            try:
+                while buffer:
+                    obj = json.loads(buffer)  # Try to parse buffer as JSON
+                    logger.info(f"Successfully parsed response as JSON object! {obj}")
+                    formatted_sse = f"data: {json.dumps(obj)}\n\n"  # Format as SSE
+                    logger.info(f"Successfully formatted data as SSE event: {formatted_sse}")
+                    yield formatted_sse  # Yield the JSON string
+                    buffer = ""  # Clear buffer since JSON was successfully parsed
+            except json.JSONDecodeError:
+                continue  # Continue buffering if JSON is incomplete
+        
+        logger.info("Finished stream!")
 
-        Returns:
-        - str: The cleaned and properly formatted JSON response as a string. 
-               If an error occurs during cleaning or formatting, an empty string is returned.
-
-        This method extracts the JSON content from the raw response by locating the JSON array within the response string. 
-        It then parses the JSON content to ensure it is valid and formats it with indentation for readability. 
-        If the raw response does not contain valid JSON or if any error occurs during parsing, it logs the error and returns an empty string.
+    @staticmethod
+    def print_quiz(generator: Generator[str, None, None]):
+        """Helper function to iterate through and print the results from the question generator.
+        
+        Args:
+            generator (Generator[str, None, None]): Generator producing quiz questions as SSE formatted strings.
         """
         try:
-            cleaned_response = response[response.find("["): response.find("]") + 1]
-            logging.debug(f"Cleaned response: {cleaned_response}")
-
-            formatted_response = json.loads(cleaned_response)
-            return json.dumps(formatted_response, indent=2)
-        except json.JSONDecodeError as je:
-            logging.error(f"JSON decoding error: {je}. Response causing error: {response}")
-            return ""
+            i = 1
+            for question in generator:
+                logger.info(f"Item {i}: {question}")
+                i += 1
         except Exception as e:
-            logging.error(f"General error in processing response: {e}")
-            return ""
+            logger.error(f"Error during quiz generation: {e}")
 
 if __name__ == "__main__":
     quiz_generator = QuizGenerator()
 
     topic = "Crested Gecko"
     difficulty = "Medium"
-    quiz = quiz_generator.generate_quiz(topic, difficulty, "5", stream=True)
-    print(quiz)
+    generator = quiz_generator.generate_quiz(topic, difficulty, "5", stream=True)
+    logger.info(generator)
+    
+    QuizGenerator.print_quiz(generator)
