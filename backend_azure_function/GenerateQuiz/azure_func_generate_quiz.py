@@ -1,13 +1,15 @@
+# Example of openai streaming 
+# https://platform.openai.com/docs/api-reference/streaming
 import logging
-from .generate_quiz import generate_quiz
-import fastapi
-from fastapi import Request
+from .generate_quiz import QuizGenerator
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from fastapi.responses import JSONResponse
 import azure.functions as func
 
 # Copy Azure Docs Example
 # https://github.com/Azure-Samples/fastapi-on-azure-functions/tree/main
-app = fastapi.FastAPI()
+app = FastAPI()
 
 @app.get("/GenerateQuiz")
 async def main(request: Request) -> JSONResponse:
@@ -47,15 +49,14 @@ async def main(request: Request) -> JSONResponse:
         f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
     )
 
-    quiz = generate_quiz(topic, difficulty)
+    # TODO: rename to quiz creator
+    # TODO: Fix - currently doesnt actually stream, but returns all items at once.
+    # Need to look into the azure functions streaming capability
+    # Or think about hosting the fastapi in another method e.g. ACI
+    quiz_generator = QuizGenerator()
+    generator = quiz_generator.generate_quiz(topic, difficulty)
 
-    if quiz == "":  # Will be empty if theres an error
-        error_message = "Error - Quiz generation returned an empty string."
-        logging.error(error_message)
-        return JSONResponse(content={"error": error_message}, status_code=500)
-    
-    logging.info(f"Quiz generation successful.\n{quiz}")
-    return JSONResponse({"quiz": quiz}, status_code=200)
+    return StreamingResponse(generator, media_type="text/event-stream")
 
 # https://dev.to/manukanne/azure-functions-and-fastapi-14b6
 def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
