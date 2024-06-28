@@ -51,7 +51,7 @@ display fetched quiz data on the web page, and manipulate other UI elements base
 
 ## Setup and Usage
 
-1. Open `index.html` in a modern web browser.
+1. Open `index.html` in a modern web browser, or `Live Server` VSCode extension.
 2. Enter a quiz topic in the provided input field.
 3. Click the "Fetch Quiz Data" button.
 4. The app will fetch quiz data related to the given topic and display it on the page.
