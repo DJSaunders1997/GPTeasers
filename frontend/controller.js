@@ -15,7 +15,8 @@ class Controller {
 
     const encodedTopic = encodeURIComponent(topic);
     const encodedDifficulty = encodeURIComponent(topic);
-    const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${encodedTopic}&difficulty=${difficulty}`;
+    // const url = `https://gpteasers-generatequiz.azurewebsites.net/api/GenerateQuiz?topic=${encodedTopic}&difficulty=${difficulty}`;
+    const url = `http://localhost:7071/api/GenerateQuiz?topic=${encodedTopic}&difficulty=${difficulty}`; // Uncomment if running locally
     console.log(`Sending request to: ${url}`);
 
     try {

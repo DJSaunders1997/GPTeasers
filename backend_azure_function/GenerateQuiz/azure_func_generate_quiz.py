@@ -2,14 +2,24 @@
 # https://platform.openai.com/docs/api-reference/streaming
 import logging
 from .generate_quiz import QuizGenerator
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import azure.functions as func
 
 # Copy Azure Docs Example
 # https://github.com/Azure-Samples/fastapi-on-azure-functions/tree/main
 app = FastAPI()
+
+# Set up CORS for locally testing
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.get("/GenerateQuiz")
 async def main(request: Request) -> JSONResponse:
@@ -59,5 +69,5 @@ async def main(request: Request) -> JSONResponse:
     return StreamingResponse(generator, media_type="text/event-stream")
 
 # https://dev.to/manukanne/azure-functions-and-fastapi-14b6
-def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
+def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse: # noqa F811
     return func.AsgiMiddleware(app).handle(req, context)
