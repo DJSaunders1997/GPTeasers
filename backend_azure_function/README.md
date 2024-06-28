@@ -10,7 +10,7 @@ There are 2 Azure Functions defined n the backend_azure_function app:
 
 Used to generate a quiz from a given topic using ChatGPT.
 - **Note**: This function uses FastAPI to address issues related to streaming, as discussed [here](https://github.com/Azure/azure-functions-python-worker/discussions/1349#discussioncomment-9777250).
-
+# THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my fucking laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
 
 ### GenerateImage
 
