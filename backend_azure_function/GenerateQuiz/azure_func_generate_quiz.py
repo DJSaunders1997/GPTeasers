@@ -39,11 +39,10 @@ async def main(request: Request) -> JSONResponse:
                     an appropriate error message.
     """
 
-    logging.info("Python HTTP trigger function processed a request.")
-
     topic = request.query_params.get("topic")
     difficulty = request.query_params.get("difficulty")
 
+    logging.info(f"Python HTTP trigger function processed a request with {topic=} {difficulty=}.")
 
     # If either 'topic' or 'difficulty' is not provided in the request, 
     # the function will return an error message and a 400 status code.

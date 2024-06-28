@@ -36,12 +36,12 @@ To debug locally first install [Azure Functions Core Tools](https://learn.micros
 
 Ensure you are in the azure_functions directory: `cd backend_azure_function`
 
-Run the functions locally with `func start`
+Run the functions locally with `func start --verbose`
 
 Test these using PostMan or these cURl's:
 ### GenerateQuiz
 
-`curl 'http://localhost:7071/api/GenerateQuiz?topic=UK%20History'`
+`curl 'http://localhost:7071/GenerateQuiz?topic=UK%20History&difficulty=easy'`
 
 ### GenerateImage
 
