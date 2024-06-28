@@ -1,6 +1,6 @@
 # Example of openai streaming 
 # https://platform.openai.com/docs/api-reference/streaming
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI, Stream
@@ -90,6 +90,14 @@ def stream_generator(stream:Stream):
 # Test if you just wanna run and see the response generator working
 if __name__ == "__main__":
     print("I'm in main!")
+
+    # Create new stream per request
+    stream = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": role}],
+        stream=True,
+    )
+
     for item in stream_generator(stream):
         print(item, end="")
 
