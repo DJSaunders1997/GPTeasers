@@ -59,5 +59,5 @@ async def main(request: Request) -> JSONResponse:
     return JSONResponse(content={"image_url": image_url}, status_code=200)
 
 # https://dev.to/manukanne/azure-functions-and-fastapi-14b6
-def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
+def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse: # noqa F811
     return func.AsgiMiddleware(app).handle(req, context)
