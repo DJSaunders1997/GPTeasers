@@ -6,8 +6,8 @@ name: Build and deploy Python project to Azure Function App - gpteasers-generate
 
 on:
   push:
-    branches:
-      - azure_func_streaming
+    tags:
+      - 'slot*' # Trigger for tags starting with 'slot'
   workflow_dispatch:
 
 env:
