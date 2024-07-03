@@ -10,7 +10,7 @@ There are 2 Azure Functions defined n the backend_azure_function app:
 
 Used to generate a quiz from a given topic using ChatGPT.
 - **Note**: This function uses FastAPI to address issues related to streaming, as discussed [here](https://github.com/Azure/azure-functions-python-worker/discussions/1349#discussioncomment-9777250).
-# THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my fucking laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
+- THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my fucking laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
 
 ### GenerateImage
 
@@ -24,7 +24,11 @@ Within each of these directories there is a python module to call the OpenAI API
 
 Deployment is managed via GitHub Actions, which automatically builds and deploys the functions to Azure upon specific triggers:
 - **Production Deployment**: Code pushes to the `main` branch trigger deployments to the production slot.
-- **Slot Deployment**: Tags starting with `slot` trigger deployments to a specific testing slot named `slot`. This allows for isolated testing before merging changes into production. See the docs [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-deployment-slots?tabs=azure-portal).
+- **Slot Deployment**: Tags starting with `slot` trigger deployments to a specific testing slot named `slot`. This allows for isolated testing before merging changes into production. See the docs [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-deployment-slots?tabs=azure-portal). To make a tag in github run 
+```
+git tag slotx
+git push --tags
+```
 
 
 ## Environment Variables
