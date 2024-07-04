@@ -1,22 +1,21 @@
 import logging
-from .generate_image import generate_image
+from generate_image import generate_image
 import fastapi
 from fastapi import Request
 from fastapi.responses import JSONResponse
-import azure.functions as func
+from fastapi.middleware.cors import CORSMiddleware
 
 # Copy Azure Docs Example
 # https://github.com/Azure-Samples/fastapi-on-azure-functions/tree/main
 app = fastapi.FastAPI()
-# https://iotespresso.com/azure-function-to-fastapi-app-service/
-# Might not need CORS 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"]
-# )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 # @app.get("/api/GenerateImage")
 @app.get("/GenerateImage")
@@ -58,6 +57,6 @@ async def main(request: Request) -> JSONResponse:
     logging.info(f"Generated image for prompt {prompt}: {image_url}")
     return JSONResponse(content={"image_url": image_url}, status_code=200)
 
-# https://dev.to/manukanne/azure-functions-and-fastapi-14b6
-def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse: # noqa F811
-    return func.AsgiMiddleware(app).handle(req, context)
+# Run with uvicorn fastapi_generate_image:app --reload --host 0.0.0.0 --port 8000 --log-level debug
+# Access with curl "http://localhost:8000/GenerateImage?prompt=A%20Juicy%20Burger"
+# This simple example works!
