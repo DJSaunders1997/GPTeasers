@@ -1,0 +1,21 @@
+# FastAPI Example from Docker docs 
+# https://fastapi.tiangolo.com/deployment/docker/#dockerfile
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /code
+
+# Copy requirements file and install dependencies
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+# Copy application code
+COPY . /code
+
+# Command to run the application using Uvicorn
+CMD ["uvicorn", "fast_test_streaming:app", "--host", "0.0.0.0", "--port", "8000"]
+
+
+# To build this container, run: docker build -t fast_test_streaming:latest .
+# To run this container, use: docker run -p 8000:8000 fast_test_streaming:latest
+# To access the streaming endpoint, use: curl http://localhost:8000/stream
