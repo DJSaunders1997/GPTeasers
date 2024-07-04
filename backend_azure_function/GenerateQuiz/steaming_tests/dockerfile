@@ -16,6 +16,8 @@ COPY . /code
 CMD ["uvicorn", "fast_test_streaming:app", "--host", "0.0.0.0", "--port", "8000"]
 
 
-# To build this container, run: docker build -t fast_test_streaming:latest .
-# To run this container, use: docker run -p 8000:8000 fast_test_streaming:latest
-# To access the streaming endpoint, use: curl http://localhost:8000/stream
+# docker build -t fast_test_streaming:latest .        # Build container
+# docker run -p 8000:8000 fast_test_streaming:latest        # Run container
+# curl http://localhost:8000/stream      # CURL container in another terminal
+# docker tag fast_test_streaming:latest ghcr.io/djsaunders1997/fast_test_streaming:latest       # Tag this container in github registry format 
+# docker push ghcr.io/djsaunders1997/fast_test_streaming:latest       # Push to github container registry
