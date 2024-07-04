@@ -23,7 +23,6 @@ def stream_data():
 async def stream():
     return StreamingResponse(stream_data(), media_type="text/event-stream")
 
-
-# Run with uvicorn fast_test_streaming:app --reload --log-level debug
+# Run with uvicorn fast_test_streaming:app --reload --host 0.0.0.0 --port 8000 --log-level debug
 # Access with curl http://localhost:8000/stream
 # This simple example works!
