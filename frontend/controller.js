@@ -1,10 +1,11 @@
 class Controller {
+  // Public fields
   constructor() {
     this.eventSource = null;
     this.messageCount = 0;
     this.messageCountLimit = 10;
-    this.baseURLQuiz = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io/GenerateQuiz"
-    this.baseURLImage = "https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage"
+    this.baseURLQuiz = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io/GenerateQuiz";
+    this.baseURLImage = "https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage";
     this.quizData = []; // List to store the received quiz data
   }
 
@@ -12,6 +13,7 @@ class Controller {
    * Calls the Quiz API to fetch a quiz based on the provided topic.
    * Uses Server-Sent Events (SSE) to receive data in real-time.
    *
+   * @public
    * @param {string} topic - The topic for which the quiz is generated.
    * @param {string} difficulty - The difficulty level of the quiz.
    * @returns {Promise<void>} - No return value.
@@ -45,14 +47,14 @@ class Controller {
 
         // Close the EventSource connection after receiving 10 messages
         if (this.messageCount >= this.messageCountLimit) {
-          this.stopEventSource();
+          this.#stopEventSource();
         }
       };
 
       // Error handling for the EventSource
       this.eventSource.onerror = (error) => {
         console.error('EventSource encountered an error:', error);
-        this.stopEventSource();
+        this.#stopEventSource();
       };
     } catch (error) {
       console.error("Error occurred during the API call:", error);
@@ -60,21 +62,24 @@ class Controller {
     }
   }
 
-  /**
+    /**
    * Stops the EventSource and cleans up.
    * This is called after receiving 10 messages or when an error occurs.
+   *
+   * @private
    */
-  stopEventSource() {
-    if (this.eventSource) {
-      this.eventSource.close();
-      this.eventSource = null;
-      console.log('EventSource connection closed after receiving 10 messages.');
+    #stopEventSource() {
+      if (this.eventSource) {
+        this.eventSource.close();
+        this.eventSource = null;
+        console.log('EventSource connection closed after receiving 10 messages.');
+      }
     }
-  }
 
   /**
    * Calls the Image Generation API to fetch an image based on the provided prompt.
    *
+   * @public
    * @param {string} prompt - The prompt for which the image is generated.
    * @returns {Promise<Object>} The JSON response from the API containing image information.
    * @throws {Error} When the network response is not ok.
