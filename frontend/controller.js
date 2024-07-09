@@ -1,5 +1,6 @@
-import fetch from 'node-fetch';
-import EventSource from 'eventsource';
+// Uncomment imports if running in terminal outside of html
+// import fetch from 'node-fetch';
+// import EventSource from 'eventsource';
 
 class Controller {
   // Public fields
@@ -121,7 +122,7 @@ class Controller {
   }
 }
 
-// export default Controller;
+export default Controller;
 
 // Example usage
 // var c = new Controller;
