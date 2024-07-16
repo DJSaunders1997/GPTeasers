@@ -8,6 +8,8 @@ import Quiz from "./quiz.js";
 
 class App {
   constructor() {
+
+    const numQuestions = 10;
     // Initialise app elements as JS objects.
     this.quiz = new Quiz();
     this.controller = new Controller(this.quiz);
