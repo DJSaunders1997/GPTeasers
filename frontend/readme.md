@@ -55,3 +55,72 @@ display fetched quiz data on the web page, and manipulate other UI elements base
 2. Enter a quiz topic in the provided input field.
 3. Click the "Fetch Quiz Data" button.
 4. The app will fetch quiz data related to the given topic and display it on the page.
+
+## UML
+
+```mermaid
+classDiagram
+    class Controller {
+        - EventSource eventSource
+        - number messageCount
+        - number messageCountLimit
+        - string baseURLQuiz
+        - string baseURLImage
+        - Array quizData
+        + Promise<Object[]> callQuizAPI(topic: string, difficulty: string)
+        + Promise<Object> callImageAPI(prompt: string)
+        - void #stopEventSource()
+    }
+
+    class UI {
+        - HTMLElement inputContainer
+        - HTMLElement intro
+        - HTMLElement topicInput
+        - HTMLElement quizDifficulty
+        - HTMLElement button
+        - HTMLElement AIImage
+        - LoadingBar loadingBar
+        - HTMLElement quizContainer
+        - HTMLElement quizTitle
+        - HTMLElement questionText
+        - HTMLElement buttonA
+        - HTMLElement buttonB
+        - HTMLElement buttonC
+        + void showLoading()
+        + void hideLoading()
+        + void showQuizContainer(quizTitle: string)
+        + void hideQuizContainer()
+        + void showAIImage(data: string)
+        + void hideAIImage()
+        + string getTopic()
+        + string getDifficulty()
+        + void displayCurrentQuestion(currentQuestion: Object)
+    }
+
+    class Quiz {
+        - Array questions
+        - number currentIndex
+        - number score
+        - number numQuestions
+        + Object getCurrentQuestion()
+        + Object nextQuestion()
+        + boolean hasMoreQuestions()
+        + void checkAnswer(selectedOption: string)
+    }
+
+    class App {
+        - Controller controller
+        - UI ui
+        - Quiz quiz
+        + Promise<void> fetchQuizData()
+        + Promise<void> fetchAIImage()
+        + void nextQuestion()
+        + void checkAnswer(answer: string)
+        + void createButtonListeners()
+    }
+
+    App --> Controller : has a
+    App --> UI : has a
+    App --> Quiz : has a
+    Controller --> Quiz : has a
+```
