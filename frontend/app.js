@@ -9,7 +9,8 @@ import Quiz from "./quiz.js";
 class App {
   constructor() {
     // Initialise app elements as JS objects.
-    this.controller = new Controller();
+    this.quiz = new Quiz();
+    this.controller = new Controller(this.quiz);
     this.ui = new UI();
 
     // Initialise button event listeners.
@@ -17,7 +18,7 @@ class App {
     document
       .querySelector("#fetchQuizButton")
       .addEventListener("click", () => this.fetchQuizData());
-      document
+    document
       .querySelector("#fetchQuizButton")
       .addEventListener("click", () => this.fetchAIImage());
 
@@ -47,43 +48,54 @@ class App {
     // Show loading clues
     this.ui.showLoading();
 
-    // Generate Quiz
-    const data = await this.controller.callQuizAPI(topic, difficulty);
-    if (!data || data.error) {
-      throw new Error("Invalid data received from Quiz API");
+    try {
+      // Generate Quiz
+      // The await keyword is used to wait for the asynchronous callQuizAPI method to complete.
+      // This means the code execution will pause here until callQuizAPI returns a result or throws an error.
+      // It's like telling JavaScript to wait here and don't move to the next line until this promise is resolved.
+      await this.controller.callQuizAPI(topic, difficulty);
+
+      // Hide loading clues
+      this.ui.hideLoading();
+
+      // Show first question
+      this.ui.showQuizContainer(topic);
+      this.createButtonListeners();
+      this.nextQuestion();
+    } catch (error) {
+      console.error("Error fetching quiz data:", error);
+      alert("Failed to fetch quiz data. Please try again.");
+      this.ui.hideLoading();
     }
-    this.quiz = new Quiz(data);
-
-    // Hide loading clues
-    this.ui.hideLoading();
-
-    // Show first question
-    this.ui.showQuizContainer(topic);
-    this.createButtonListeners();
-    this.nextQuestion();
   }
 
   async fetchAIImage() {
     // Use the topic as a prompt to image
     const prompt = document.getElementById("quizTopic").value;
-  
-    // Check if promptText is empty or contains only whitespace
+
+    // Check if prompt is empty or contains only whitespace
     if (!prompt.trim()) {
       alert("Please enter a valid prompt.");
       return; // Exit the function early without further processing
     }
-  
-    // Fetch Image
-    const data = await this.controller.callImageAPI(prompt);
-    if (!data || data.error) {
-      throw new Error("Invalid data received from Image API");
+
+    try {
+      // Fetch Image
+      // The await keyword is used to wait for the asynchronous callImageAPI method to complete.
+      // This means the code execution will pause here until the call returns a result or throws an error.
+      // It's like telling JavaScript to wait here and don't move to the next line until this promise is resolved.
+      const data = await this.controller.callImageAPI(prompt);
+      if (!data || data.error) {
+        throw new Error("Invalid data received from Image API");
+      }
+
+      // Display Image
+      this.ui.showAIImage(data);
+    } catch (error) {
+      console.error("Error fetching AI image:", error);
+      alert("Failed to fetch AI image. Please try again.");
     }
-
-    // Display Image
-    this.ui.showAIImage(data)
-
   }
-  
 
   nextQuestion() {
     // Get question from quiz
@@ -99,8 +111,8 @@ class App {
     this.nextQuestion();
   }
 
-  // Initilise button listeners
-  // Warning quiz doesnt exist when webpage is first created
+  // Initialise button listeners
+  // Warning: quiz doesn't exist when the webpage is first created
   // But it should by the time buttons are visible
   createButtonListeners() {
     document

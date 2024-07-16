@@ -3,14 +3,19 @@
 // import EventSource from 'eventsource';
 
 class Controller {
-  // Public fields
-  constructor() {
+  /**
+   * Creates an instance of Controller.
+   *
+   * @constructor
+   * @param {Quiz} quiz - The quiz object to be initialized.
+   */
+  constructor(quiz) {
     this.eventSource = null;
     this.messageCount = 0;
     this.messageCountLimit = 2;
     this.baseURLQuiz = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io/GenerateQuiz";
     this.baseURLImage = "https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage";
-    this.quizData = []; // List to store the received quiz data
+    this.quiz = quiz; // this will be initialized as a quiz object
   }
 
   /**
@@ -20,7 +25,7 @@ class Controller {
    * @public
    * @param {string} topic - The topic for which the quiz is generated.
    * @param {string} difficulty - The difficulty level of the quiz.
-   * @returns {Promise<Object[]>} The list of quiz data.
+   * @returns {Promise<void>}
    * @throws {Error} When the network response is not ok.
    */
   callQuizAPI(topic, difficulty) {
@@ -51,17 +56,16 @@ class Controller {
           const data = JSON.parse(event.data);
           console.log(`Received message ${this.messageCount}:`, data);
 
-          // Store the received data in the quizData list
-          this.quizData.push(data);
+          // Add the received data as a question to the quiz
+          this.quiz.addQuestion(data);
 
-          // Close the EventSource connection after receiving x messages
+          // Close the EventSource connection after receiving the specified number of messages
           if (this.messageCount >= this.messageCountLimit) {
             this.#stopEventSource();
-            resolve(this.quizData); // Resolve the promise with the quizData
+            resolve(); // Resolve the promise
           }
         };
 
-        // Error handling for the EventSource
         this.eventSource.onerror = (error) => {
           console.error('EventSource encountered an error:', error);
           this.#stopEventSource();
@@ -76,7 +80,7 @@ class Controller {
 
   /**
    * Stops the EventSource and cleans up.
-   * This is called after receiving 10 messages or when an error occurs.
+   * This is called after receiving the specified number of messages or when an error occurs.
    *
    * @private
    */
@@ -84,7 +88,7 @@ class Controller {
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
-      console.log(`EventSource connection closed after error or receiving ${this.messageCountLimit} messages.`);
+      console.log(`EventSource connection closed after receiving ${this.messageCountLimit} messages.`);
     }
   }
 
