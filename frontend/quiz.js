@@ -3,14 +3,16 @@
 class Quiz {
   /**
    * Creates an instance of Quiz.
+   * @param {int} numQuestions - Total number of questions in Quiz
    *
    * @constructor
    */
-  constructor() {
+  constructor(numQuestions) {
     this.questions = [];
     this.currentIndex = 0;
     this.score = 0;
-    this.numQuestions = this.questions.length;
+    this.numQuestions = numQuestions;
+    this.numCurrentQuestions = this.questions.length;
   }
 
   /**
@@ -20,7 +22,7 @@ class Quiz {
    */
   addQuestion(question) {
     this.questions.push(question);
-    this.numQuestions = this.questions.length;
+    this.numCurrentQuestions = this.questions.length;
   }
 
   /**
