@@ -11,7 +11,7 @@ class App {
 
     const numQuestions = 10;
     // Initialise app elements as JS objects.
-    this.quiz = new Quiz();
+    this.quiz = new Quiz(numQuestions);
     this.controller = new Controller(this.quiz);
     this.ui = new UI();
 
@@ -65,15 +65,17 @@ class App {
       // The await keyword is used to wait for the asynchronous callQuizAPI method to complete.
       // This means the code execution will pause here until callQuizAPI returns a result or throws an error.
       // It's like telling JavaScript to wait here and don't move to the next line until this promise is resolved.
-      await this.controller.callQuizAPI(topic, difficulty);
-
-      // Hide loading clues
-      this.ui.hideLoading();
-
-      // Show first question
-      this.ui.showQuizContainer(topic);
-      this.createButtonListeners();
-      this.nextQuestion();
+      // use the onQuestionReceived callback to display each question individually as it is added to the Quiz object.
+      // Arrow function: Shorter syntax for functions and keeps 'this' context from surrounding code
+      // TODO: Find out how this makes the app actually work?
+      // TODO: I only want to wait for the first event to come in, then continue and let it the quiz populate in the background
+      await this.controller.callQuizAPI(topic, difficulty, (question) => {
+        this.nextQuestion() // Question should've been added to quiz, so display it
+        
+        // TODO: Only run these on the first run?
+        this.ui.hideLoading(); // Hide loading clues
+        this.ui.showQuizContainer(topic); // Show quiz container
+      });
     } catch (error) {
       console.error("Error fetching quiz data:", error);
       alert("Failed to fetch quiz data. Please try again.");
