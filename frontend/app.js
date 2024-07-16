@@ -21,6 +21,16 @@ class App {
     document
       .querySelector("#fetchQuizButton")
       .addEventListener("click", () => this.fetchAIImage());
+    // Answer buttons aren't visible when the page first loads
+    document
+      .querySelector("#option-A")
+      .addEventListener("click", () => this.checkAnswer("A"));
+    document
+      .querySelector("#option-B")
+      .addEventListener("click", () => this.checkAnswer("B"));
+    document
+      .querySelector("#option-C")
+      .addEventListener("click", () => this.checkAnswer("C"));
 
     // If Enter key is pressed then simulate button press
     document
@@ -109,23 +119,6 @@ class App {
   checkAnswer(answer) {
     this.quiz.checkAnswer(answer);
     this.nextQuestion();
-  }
-
-  // Initialise button listeners
-  // Warning: quiz doesn't exist when the webpage is first created
-  // But it should by the time buttons are visible
-  createButtonListeners() {
-    document
-      .querySelector("#option-A")
-      .addEventListener("click", () => this.checkAnswer("A"));
-
-    document
-      .querySelector("#option-B")
-      .addEventListener("click", () => this.checkAnswer("B"));
-
-    document
-      .querySelector("#option-C")
-      .addEventListener("click", () => this.checkAnswer("C"));
   }
 }
 
