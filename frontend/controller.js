@@ -25,10 +25,11 @@ class Controller {
    * @public
    * @param {string} topic - The topic for which the quiz is generated.
    * @param {string} difficulty - The difficulty level of the quiz.
+   * @param {Function} onQuestionReceived - Callback function to handle each question as it is received.
    * @returns {Promise<void>}
    * @throws {Error} When the network response is not ok.
    */
-  callQuizAPI(topic, difficulty) {
+  callQuizAPI(topic, difficulty, onQuestionReceived) {
     console.log("Generating quiz for topic:", topic);
     console.log("Generating quiz with difficulty:", difficulty);
 
@@ -59,6 +60,9 @@ class Controller {
 
           // Add the received data as a question to the quiz
           this.quiz.addQuestion(data);
+
+          // Notify the App class about the new question
+          onQuestionReceived(data);
 
           // Close the EventSource connection after receiving the specified number of messages
           if (this.messageCount >= this.numQuestions) {
