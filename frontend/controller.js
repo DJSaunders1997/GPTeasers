@@ -61,7 +61,7 @@ class Controller {
           this.quiz.addQuestion(data);
 
           // Close the EventSource connection after receiving the specified number of messages
-          if (this.messageCount >= this.messageCountLimit) {
+          if (this.messageCount >= this.numQuestions) {
             this.#stopEventSource();
             resolve(); // Resolve the promise
           }
