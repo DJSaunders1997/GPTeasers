@@ -12,10 +12,10 @@ class Controller {
   constructor(quiz) {
     this.eventSource = null;
     this.messageCount = 0;
-    this.messageCountLimit = 2;
     this.baseURLQuiz = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io/GenerateQuiz";
     this.baseURLImage = "https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage";
     this.quiz = quiz; // this will be initialized as a quiz object
+    this.numQuestions = this.quiz.numQuestions;
   }
 
   /**
@@ -34,7 +34,8 @@ class Controller {
 
     const encodedTopic = encodeURIComponent(topic);
     const encodedDifficulty = encodeURIComponent(difficulty);
-    const url = `${this.baseURLQuiz}?topic=${encodedTopic}&difficulty=${encodedDifficulty}`;
+    const numQuestions = encodeURIComponent(this.numQuestions);
+    const url = `${this.baseURLQuiz}?topic=${encodedTopic}&difficulty=${encodedDifficulty}&n_questions=${numQuestions}`;
     console.log(`Connecting to SSE endpoint: ${url}`);
 
     // Promises are used to handle asynchronous operations. They represent a value that may be available now, 
@@ -88,7 +89,7 @@ class Controller {
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
-      console.log(`EventSource connection closed after receiving ${this.messageCountLimit} messages.`);
+      console.log(`EventSource connection closed after receiving ${this.numQuestions} messages.`);
     }
   }
 
