@@ -5,7 +5,6 @@ class Quiz {
    * Creates an instance of Quiz.
    *
    * @constructor
-   * @param {Object[]} [data] - Initial quiz data.
    */
   constructor() {
     this.questions = [];
@@ -30,9 +29,18 @@ class Quiz {
    * @returns {Object|null} The current question object or null if the quiz is over.
    */
   getCurrentQuestion() {
+    console.log(
+      "getCurrentQuestion called. Current index:",
+      this.currentIndex,
+      "Number of Quesitions:",
+      this.numQuestions
+    );
+
     if (this.currentIndex < this.numQuestions) {
+      console.log("Current question:", this.questions[this.currentIndex]);
       return this.questions[this.currentIndex];
     } else {
+      console.log("Quiz over!");
       alert("Quiz over!");
       return null;
     }
@@ -79,7 +87,9 @@ class Quiz {
         "\n" +
         currentQuestion.wikipedia +
         "\nQuestion: " +
-        (this.currentIndex + 1) + " / " + this.numQuestions +
+        (this.currentIndex + 1) +
+        " / " +
+        this.numQuestions +
         "\nScore: " +
         this.score;
 
@@ -95,7 +105,9 @@ class Quiz {
         "\n" +
         currentQuestion.wikipedia +
         "\nQuestion: " +
-        (this.currentIndex + 1) + " / " + this.numQuestions +
+        (this.currentIndex + 1) +
+        " / " +
+        this.numQuestions +
         "\nScore: " +
         this.score;
 
@@ -115,10 +127,10 @@ class Quiz {
   endQuiz() {
     alert(
       "Quiz Finished!" +
-      "\nFinal Score: " +
-      this.score +
-      "/" +
-      this.numQuestions
+        "\nFinal Score: " +
+        this.score +
+        "/" +
+        this.numQuestions
     );
     location.reload(); // This will reload the page
   }
