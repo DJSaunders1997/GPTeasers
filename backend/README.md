@@ -34,6 +34,12 @@ git push --tags
 ## Environment Variables
 
 Certain functions may require environment variables (e.g., `OPENAI_API_KEY`). These can be set in the Azure Portal under the Application Settings for the Function App.
+## TODO:
+- Update these docs to mention fastapi, docker, and ACI.
+- Create a github actions pipeline that will build the image
+- Document how the App picks up the deployment (With nice diagram)
+- Create a solution where I can deploy other tags like staging/dev 
+
 
 ## Debug 
 To debug locally first install [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python).
@@ -45,7 +51,7 @@ Run the functions locally with `func start --verbose`
 Test these using PostMan or these cURl's:
 ### GenerateQuiz
 
-`curl 'http://localhost:7071/GenerateQuiz?topic=UK%20History&difficulty=easy'`
+`curl 'http://localhost:7071/GenerateQuiz?topic=UK%20History&difficulty=easy&n_questions=3'`
 
 ### GenerateImage
 

@@ -40,11 +40,13 @@ async def main(request: Request) -> JSONResponse:
 
     topic = request.query_params.get("topic")
     difficulty = request.query_params.get("difficulty")
+    n_questions = request.query_params.get("n_questions")
 
-    logging.info(f"Python HTTP trigger function processed a request with {topic=} {difficulty=}.")
+    logging.info(f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}.")
 
     # If either 'topic' or 'difficulty' is not provided in the request, 
     # the function will return an error message and a 400 status code.
+    # n_questions is optional
     if not topic or not difficulty:
         error_message = "Please provide a topic and difficulty in the query string or in the request body to generate a quiz."
         logging.error(error_message)
@@ -53,8 +55,12 @@ async def main(request: Request) -> JSONResponse:
             status_code=400,
         )
 
+    # Set default value if not set
+    if not n_questions:
+        n_questions = 10
+    
     logging.info(
-        f"Generating quiz for topic: {topic} with difficulty: {difficulty}"
+        f"Generating quiz for topic: {topic} with difficulty: {difficulty} with number of questions: {n_questions}"
     )
 
     # TODO: rename to quiz creator
@@ -62,7 +68,7 @@ async def main(request: Request) -> JSONResponse:
     # Need to look into the azure functions streaming capability
     # Or think about hosting the fastapi in another method e.g. ACI
     quiz_generator = QuizGenerator()
-    generator = quiz_generator.generate_quiz(topic, difficulty, n_questions=2)
+    generator = quiz_generator.generate_quiz(topic, difficulty, n_questions)
 
     return StreamingResponse(generator, media_type="text/event-stream")
 
