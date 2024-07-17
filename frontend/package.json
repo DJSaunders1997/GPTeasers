@@ -1,8 +1,8 @@
 {
-  "name": "your-project-name",
+  "name": "GPTeasers",
   "version": "1.0.0",
   "description": "",
-  "main": "controller.js",
+  "main": "app.js",
   "type": "module", 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
