@@ -12,8 +12,10 @@ class Controller {
   constructor(quiz) {
     this.eventSource = null;
     this.messageCount = 0;
-    this.baseURLQuiz = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io/GenerateQuiz";
-    this.baseURLImage = "https://gpteasers-generatequiz.azurewebsites.net/api/GenerateImage";
+    // Change baseURL if local debugging
+    this.baseURL = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io"; 
+    this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
+    this.baseURLImage = `${this.baseURL}/GenerateImage`;
     this.quiz = quiz; // this will be initialized as a quiz object
     this.numQuestions = this.quiz.numQuestions;
   }
