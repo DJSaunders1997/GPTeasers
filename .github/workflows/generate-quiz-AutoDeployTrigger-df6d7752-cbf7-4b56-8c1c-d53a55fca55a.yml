@@ -7,7 +7,7 @@ on:
     branches: 
       [ streaming_docker ]
     paths:
-    - 'backend/dockerfile/**'
+    - 'backend/**'
     - '.github/workflows/generate-quiz-AutoDeployTrigger-df6d7752-cbf7-4b56-8c1c-d53a55fca55a.yml'
 
   # Allow manual trigger 
