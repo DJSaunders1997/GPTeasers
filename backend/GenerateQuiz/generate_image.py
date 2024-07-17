@@ -1,11 +1,11 @@
-# refactored_openai_image.py
-
 from openai import OpenAI
 
 import logging
 import os
 
+# Set up logging
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 # Set up OpenAI API key from environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
