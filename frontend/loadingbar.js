@@ -10,9 +10,9 @@ class LoadingBar {
 
   /**
    * Start the loading bar animation.
-   * @param {number} [duration=60000] - Duration in milliseconds for the loading bar to complete.
+   * @param {number} [duration=10000] - Duration in milliseconds for the loading bar to complete.
    */
-  start(duration = 60000) {
+  start(duration = 10000) {
     // Reset the bar
     this.loadingBar.style.width = "0%";
 
