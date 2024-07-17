@@ -39,7 +39,7 @@ jobs:
           registryUsername: ${{ secrets.GENERATEQUIZ_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.GENERATEQUIZ_REGISTRY_PASSWORD }}
           containerAppName: generate-quiz
-          resourceGroup: aci_test
+          resourceGroup: gpteasersgeneratequiz
           imageToBuild: ghcr.io/djsaunders1997/fastapi_generate_quiz:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
