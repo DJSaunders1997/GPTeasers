@@ -8,7 +8,7 @@ on:
       [ streaming_docker ]
     paths:
     - 'backend/**'
-    - '.github/workflows/generate-quiz-AutoDeployTrigger-df6d7752-cbf7-4b56-8c1c-d53a55fca55a.yml'
+    - '.github/workflows/generate-quiz-AutoDeployTrigger-ac144fc3-33a1-42d2-a9e0-ab03d8457c77.yml'
 
   # Allow manual trigger 
   workflow_dispatch:      
@@ -39,8 +39,8 @@ jobs:
           registryUsername: ${{ secrets.GENERATEQUIZ_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.GENERATEQUIZ_REGISTRY_PASSWORD }}
           containerAppName: generate-quiz
-          resourceGroup: gpteasersgeneratequiz
-          imageToBuild: ghcr.io/djsaunders1997/fastapi_generate_quiz:${{ github.sha }}
+          resourceGroup: GPTeasers
+          imageToBuild: ghcr.io/generate-quiz:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
