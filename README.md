@@ -1,5 +1,5 @@
 [![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
-[![Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml)
+[![Build, Upload, and Deploy Container to Azure Container Apps](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/generate-quiz-AutoDeployTrigger-ac144fc3-33a1-42d2-a9e0-ab03d8457c77.yml/badge.svg?branch=main)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/generate-quiz-AutoDeployTrigger-ac144fc3-33a1-42d2-a9e0-ab03d8457c77.yml)
 [![CodeQL](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql)
 # GPTeasers 🧠💡
 
