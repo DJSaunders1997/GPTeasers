@@ -1,4 +1,4 @@
-name: Trigger auto deployment for generate-quiz
+name: Build, Upload, and Deploy Container to Azure Container Apps
 
 # When this action will be executed
 on:
