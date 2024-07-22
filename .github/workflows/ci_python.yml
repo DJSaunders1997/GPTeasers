@@ -3,10 +3,10 @@ name: Python Linting CI 🐍
 on:
   push:
     paths:
-      - "backend_azure_function/**"
+      - "backend/**"
   pull_request:
     paths:
-      - "backend_azure_function/**"
+      - "backend/**"
   workflow_dispatch:
 
 jobs:
@@ -19,13 +19,10 @@ jobs:
       - name: Set up Python 🐍
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
-      - name: Install Python dependencies 📦
-        run: pip install -r backend_azure_function/requirements.txt
-
-      - name: Install ruff 🦜
+      - name: Install ruff 🦀
         run: pip install ruff
 
       - name: Lint Python with ruff 🚀
-        run: ruff backend_azure_function/
+        run: ruff check backend/
