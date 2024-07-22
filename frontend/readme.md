@@ -1,18 +1,21 @@
-# Frontend Drectory
+# Frontend Directory
 
-This app is a single static HTML webpage hosted with github pages.
+This app is a single static HTML webpage hosted with GitHub Pages.
 The .js files control dynamic logic, and calling the backend.
 
 ## Directory Structure
 
 ```
 .
-├── app.js              # Main application logic
-├── controller.js       # Backend API interaction
-├── quiz.js             # Quiz related logic
-├── index.html          # Main HTML page for the
-├── loadingbar.js       # Loading bar animation
-└── ui.js               # User Interface related
+├── scripts
+│   ├── app.js              # Main application logic
+│   ├── controller.js       # Backend API interaction
+│   ├── quiz.js             # Quiz related logic
+│   ├── loadingbar.js       # Loading bar animation
+│   └── ui.js               # User Interface related
+├── static
+│   ├── index.html          # Main HTML page for the GPTeasers Quiz App
+│   └── styles.css          # CSS file for styling
 ```
 
 ## File Descriptions
