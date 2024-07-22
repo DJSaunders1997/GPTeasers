@@ -5,7 +5,7 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ streaming_docker ]
+      [ "main", "streaming_docker" ]
     paths:
     - 'backend/**'
     - '.github/workflows/gpteasers-AutoDeployTrigger-f53ae13c-780c-4431-b28c-18728d5a7dd7.yml'
@@ -35,13 +35,9 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/backend 
-          registryUrl: ghcr.io/djsaunders1997
+          registryUrl: ghcr.io
           registryUsername: ${{ secrets.GPTEASERS_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.GPTEASERS_REGISTRY_PASSWORD }}
           containerAppName: gpteasers
           resourceGroup: ContainerApps
           imageToBuild: ghcr.io/djsaunders1997/gpteasers:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
-
-
