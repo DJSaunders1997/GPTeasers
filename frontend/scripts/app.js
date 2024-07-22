@@ -8,7 +8,6 @@ import Quiz from "./quiz.js";
 
 class App {
   constructor() {
-
     const numQuestions = 10;
     // Initialise app elements as JS objects.
     this.quiz = new Quiz(numQuestions);
@@ -70,12 +69,14 @@ class App {
       // TODO: Find out how this makes the app actually work?
       // TODO: I only want to wait for the first event to come in, then continue and let it the quiz populate in the background
       await this.controller.callQuizAPI(topic, difficulty, (question) => {
-        this.nextQuestion() // Question should've been added to quiz, so display it
-        
+        console.log("Question received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        this.showQuestion(); // Question should've been added to quiz, so display it
+        // This inner code runs each message. I want after only the first message!!!
         // TODO: Only run these on the first run?
         this.ui.hideLoading(); // Hide loading clues
         this.ui.showQuizContainer(topic); // Show quiz container
       });
+      console.log("Just Exited AWAIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     } catch (error) {
       console.error("Error fetching quiz data:", error);
       alert("Failed to fetch quiz data. Please try again.");
@@ -111,7 +112,7 @@ class App {
     }
   }
 
-  nextQuestion() {
+  showQuestion() {
     // Get question from quiz
     const question = this.quiz.getCurrentQuestion();
     // Update UI elements
@@ -122,7 +123,7 @@ class App {
   // and displays the next question
   checkAnswer(answer) {
     this.quiz.checkAnswer(answer);
-    this.nextQuestion();
+    this.showQuestion();
   }
 }
 
