@@ -122,10 +122,14 @@ class Controller {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.text();
+      const data = await response.json(); // Parse the response as JSON
       console.log("Received data:", data);
 
-      return data;
+      if (data.image_url) {
+        return data.image_url; // Return the image URL directly
+      } else {
+        throw new Error("Image URL not found in the response");
+      }
     } catch (error) {
       console.error("Error occurred during the API call:", error);
       throw error;
