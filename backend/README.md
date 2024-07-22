@@ -1,59 +1,69 @@
-# Backend Azure Functions
+# Backend API
 
-This directory contains the Azure Functions that serve as the backend for the GPTeasers project.
+This directory contains the FastAPI app that serves as the backend for the GPTeasers project.
+
+### Note this used to use Azure Functions
+- **Note**: This function uses FastAPI to address issues related to streaming, as discussed [here](https://github.com/Azure/azure-functions-python-worker/discussions/1349#discussioncomment-9777250).
+- THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
 
 ## Structure
 
-There are 2 Azure Functions defined n the backend_azure_function app:
+There is a single FastAPI web app defined that handles both AI aspects of the project:
 
 ### GenerateQuiz
 
 Used to generate a quiz from a given topic using ChatGPT.
 - **Note**: This function uses FastAPI to address issues related to streaming, as discussed [here](https://github.com/Azure/azure-functions-python-worker/discussions/1349#discussioncomment-9777250).
-- THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my fucking laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
+- THIS IS CURRENTLY BLOCKED DUE TO NOT BEING ABLE TO INSTALL VERSION 4.31.0 on my laptop reee https://techcommunity.microsoft.com/t5/azure-compute-blog/azure-functions-support-for-http-streams-in-python-is-now-in/ba-p/4146697
 
 ### GenerateImage
 
 Used to generate an image from a prompt, using Dalle2.
 - **Note**: This function utilizes plain Azure Functions without FastAPI.
 
-Within each of these directories there is a python module to call the OpenAI API using my API key set as an Environment Variable, and both a python module and a function.json that defines the Azure Function behavior.
-
+Within each of these directories, there is a Python module to call the OpenAI API using my API key set as an Environment Variable, and both a Python module and a function.json that defines the Azure Function behavior.
 
 ## Deployment
 
-Deployment is managed via GitHub Actions, which automatically builds and deploys the functions to Azure upon specific triggers:
-- **Production Deployment**: Code pushes to the `main` branch trigger deployments to the production slot.
-- **Slot Deployment**: Tags starting with `slot` trigger deployments to a specific testing slot named `slot`. This allows for isolated testing before merging changes into production. See the docs [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-deployment-slots?tabs=azure-portal). To make a tag in github run 
-```
-git tag slotx
-git push --tags
-```
-
+Deployment is managed via GitHub Actions, which automatically builds and deploys the container to my Azure Container App.
 
 ## Environment Variables
 
 Certain functions may require environment variables (e.g., `OPENAI_API_KEY`). These can be set in the Azure Portal under the Application Settings for the Function App.
-## TODO:
-- Update these docs to mention fastapi, docker, and ACI.
-- Create a github actions pipeline that will build the image
-- Document how the App picks up the deployment (With nice diagram)
-- Create a solution where I can deploy other tags like staging/dev 
-
 
 ## Debug 
-To debug locally first install [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python).
+To debug locally, follow these steps:
 
-Ensure you are in the azure_functions directory: `cd backend_azure_function`
+1. **Build the Docker container**:
+    ```sh
+    docker build -t fastapi_generate_quiz:latest .
+    ```
 
-Run the functions locally with `func start --verbose`
+2. **Run the Docker container**:
+    ```sh
+    docker run -p 8000:8000 -e OPENAI_API_KEY fastapi_generate_quiz:latest
+    ```
 
-Test these using PostMan or these cURl's:
-### GenerateQuiz
+3. **Test the endpoints using Postman or cURL**:
 
-`curl 'http://localhost:7071/GenerateQuiz?topic=UK%20History&difficulty=easy&n_questions=3'`
+    ### GenerateQuiz
+    ```sh
+    curl "http://localhost:8000/GenerateQuiz?topic=UK%20History&difficulty=easy&n_questions=3"
+    ```
 
-### GenerateImage
+    ### GenerateImage
+    ```sh
+    curl "http://localhost:8000/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall"
+    ```
 
+4. **Tag the Docker image for GitHub Container Registry**:
+    ```sh
+    docker tag fastapi_generate_quiz:latest ghcr.io/djsaunders1997/fastapi_generate_quiz:latest
+    ```
 
-`curl 'http://localhost:7071/GenerateImage?prompt=Kangeroo%20Playing%20BasketBall'`
+5. **Push the Docker image to GitHub Container Registry**:
+    ```sh
+    docker push ghcr.io/djsaunders1997/fastapi_generate_quiz:latest
+    ```
+
+    
