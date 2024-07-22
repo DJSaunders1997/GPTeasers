@@ -24,8 +24,9 @@ class UI {
     this.hideQuizContainer();
   }
 
-  // When loading show loading curson, disable quiz generation button, and show loading bar.
+  // When loading show loading clues, disable quiz generation button, and show loading bar.
   showLoading() {
+    console.log("Showing loading clues")
     document.body.style.cursor = "wait";
     this.button.disabled = true;
     this.loadingBar.start();
@@ -33,6 +34,7 @@ class UI {
 
   // Stop loading elements
   hideLoading() {
+    console.log("Hiding loading clues")
     document.body.style.cursor = "default";
     this.button.disabled = false;
     this.loadingBar.stop();
@@ -83,8 +85,7 @@ class UI {
   //         "dalle_prompt": "Image of a domestic cat"
   //     },
   displayCurrentQuestion(currentQuestion) {
-    console.log("Showing questions:");
-    console.log(currentQuestion);
+    console.log("Showing question: ", currentQuestion);
 
     if (currentQuestion) {
       this.questionText.textContent = currentQuestion.question;

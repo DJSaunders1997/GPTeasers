@@ -1,5 +1,5 @@
 [![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
-[![Build and deploy Python project to Azure Function App - GPTeasers-GenerateQuiz](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/intial_gpteasers-generatequiz.yml)
+[![Trigger auto deployment for gpteasers](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/gpteasers-AutoDeployTrigger-f53ae13c-780c-4431-b28c-18728d5a7dd7.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/gpteasers-AutoDeployTrigger-f53ae13c-780c-4431-b28c-18728d5a7dd7.yml)
 [![CodeQL](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql)
 # GPTeasers 🧠💡
 
@@ -11,6 +11,8 @@ https://djsaunders1997.github.io/GPTeasers/
 ## Overview 🌐
 
 GPTeasers is a webapp that generates quiz-style questions based on the topic you provide. Want to challenge yourself with "Roman History" or dive deep into "Quantum Physics"? We've got you covered! 📚✨
+
+![Game of GPTeasers](./web_ui.png)
 
 ## Features 🌟
 
@@ -33,8 +35,8 @@ GPTeasers is a webapp that generates quiz-style questions based on the topic you
 
 1. Web Browser (Client): The user accesses the static site hosted on GitHub Pages.
 2. GitHub Pages (Static Site): The static site serves content to the client. When specific actions are taken on the site (pressing a Generate Quz button), a call is made to the Azure Functions Backend.
-3. Azure Functions: Once triggered, the Azure Functions communicates with the OpenAI API, sending requests and receiving responses.
-4. OpenAI API: Processes the request from the Azure Function and sends back a response.
+3. Azure Container Apps: Once triggered, the FastAPI containers communicates with the OpenAI API, sending requests and receiving responses.
+4. OpenAI API: Processes the request and sends back a response.
 
 ## Contribute 🤲
 
