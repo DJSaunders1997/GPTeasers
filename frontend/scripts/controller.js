@@ -13,7 +13,7 @@ class Controller {
     this.eventSource = null;
     this.messageCount = 0;
     // Change baseURL if local debugging
-    this.baseURL = "https://generate-quiz.nicehill-697d18fb.ukwest.azurecontainerapps.io"; 
+    this.baseURL = "https://gpteasers.jollyocean-6818c6e0.ukwest.azurecontainerapps.io/"; 
     this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
     this.baseURLImage = `${this.baseURL}/GenerateImage`;
     this.quiz = quiz; // this will be initialized as a quiz object
