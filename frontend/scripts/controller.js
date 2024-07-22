@@ -64,7 +64,7 @@ class Controller {
           this.quiz.addQuestion(data);
 
           // Notify the App class about the new question
-          onQuestionReceived(data);
+          onQuestionReceived();
 
           // Close the EventSource connection after receiving the specified number of messages
           if (this.messageCount >= this.numQuestions) {

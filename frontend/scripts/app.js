@@ -60,23 +60,25 @@ class App {
     this.ui.showLoading();
 
     try {
+      // Flag to check if it's the first question
+      let firstQuestionReceived = false;
+
       // Generate Quiz
       // The await keyword is used to wait for the asynchronous callQuizAPI method to complete.
       // This means the code execution will pause here until callQuizAPI returns a result or throws an error.
       // It's like telling JavaScript to wait here and don't move to the next line until this promise is resolved.
       // use the onQuestionReceived callback to display each question individually as it is added to the Quiz object.
       // Arrow function: Shorter syntax for functions and keeps 'this' context from surrounding code
-      // TODO: Find out how this makes the app actually work?
-      // TODO: I only want to wait for the first event to come in, then continue and let it the quiz populate in the background
-      await this.controller.callQuizAPI(topic, difficulty, (question) => {
-        console.log("Question received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        this.showQuestion(); // Question should've been added to quiz, so display it
-        // This inner code runs each message. I want after only the first message!!!
-        // TODO: Only run these on the first run?
-        this.ui.hideLoading(); // Hide loading clues
-        this.ui.showQuizContainer(topic); // Show quiz container
+      // Set's up quiz only when the first question is received
+      await this.controller.callQuizAPI(topic, difficulty, () => {
+        if(!firstQuestionReceived){
+          this.showQuestion(); // Question should've been added to quiz, so display it
+          this.ui.hideLoading(); // Hide loading clues
+          this.ui.showQuizContainer(topic); // Show quiz container
+        }
+        // If the first question has been received, then don't show it again
+        firstQuestionReceived = true;
       });
-      console.log("Just Exited AWAIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     } catch (error) {
       console.error("Error fetching quiz data:", error);
       alert("Failed to fetch quiz data. Please try again.");
