@@ -1,6 +1,7 @@
-# https://github.com/openai/openai-python
+# https://github.com/BerriAI/litellm
 from typing import Generator
-from openai import OpenAI, Stream
+import litellm
+from litellm.litellm_core_utils.streaming_handler import CustomStreamWrapper
 import logging
 import json
 import os
@@ -10,7 +11,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 class QuizGenerator:
-    # TODO: Implement a method of getting the quiz in the old format, even if it takes a while.
     EXAMPLE_RESPONSE = json.dumps({
         "question_id": 1,
         "question": "Who was the first emperor of Rome?",
@@ -26,20 +26,22 @@ class QuizGenerator:
         "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
     })
 
-    def __init__(self):
+    def __init__(self, model: str = "gpt-4-turbo-preview"):
         """
-        Initializes the QuizGenerator by setting up the OpenAI client with the API key from environment variables.
+        Initializes the QuizGenerator by setting up the LiteLLM client with the API key from environment variables.
         Raises an error if the API key is not set.
         """
         api_key = os.getenv("OPENAI_API_KEY")
+        
         if not api_key:
-            raise ValueError(
-                "Environment variable OPENAI_API_KEY is not set. "
-                "Please ensure it's set and try again."
-            )
-        self.client = OpenAI(api_key=api_key)
+            raise ValueError("Environment variable OPENAI_API_KEY is not set.")
 
-    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10", stream: bool = False) -> Generator[str, None, None]:
+        self.api_key = api_key
+
+        # TODO: Validate model selection
+        self.model = model
+
+    def generate_quiz(self, topic: str, difficulty: str, n_questions: str = "10") -> Generator[str, None, None]:
         """
         Generate a quiz based on the provided topic and difficulty using OpenAI API.
         
@@ -47,7 +49,6 @@ class QuizGenerator:
         - topic (str): The subject for the quiz, e.g., 'Roman History'.
         - difficulty (str): The desired difficulty of the quiz e.g., 'Easy', 'Medium'.
         - n_questions (str, optional): Number of questions required. Defaults to '10'.
-        - stream (bool, optional): Whether to stream the response. Defaults to False.
         
         Returns:
         - str: JSON-formatted quiz questions. If an error occurs, an empty string is returned.
@@ -57,9 +58,8 @@ class QuizGenerator:
         """
         role = self._create_role(topic, difficulty, n_questions)
 
-        logging.info(f"Role content for OpenAI API: {role}")
-
-        stream = self._create_openai_stream(role)
+        logging.info(f"Role content for LiteLLM API: {role}")
+        stream = self._create_llm_stream(role)
 
         response_generator = self._create_question_generator(stream)
 
@@ -67,7 +67,7 @@ class QuizGenerator:
 
     def _create_role(self, topic: str, difficulty: str, n_questions: str) -> str:
         """
-        Creates the role string that will be sent to the OpenAI API to generate the quiz.
+        Creates the role string that will be sent to the LiteLLM API to generate the quiz.
         
         Parameters:
         - topic (str): The subject for the quiz.
@@ -90,9 +90,9 @@ class QuizGenerator:
             f"Return each question on a new line. "
         )
 
-    def _create_openai_stream(self, role: str) -> Stream:
+    def _create_llm_stream(self, role: str) -> CustomStreamWrapper:
         """
-        Creates the stream from the OpenAI API based on the given role.
+        Generates quiz questions by calling LiteLLM API and parsing the response.
         
         Parameters:
         - role (str): The role string to be sent to the OpenAI API.
@@ -104,18 +104,22 @@ class QuizGenerator:
         If an error occurs, it logs the error and returns an empty string.
         """
         try:
-            openai_stream = self.client.chat.completions.create(
-                model="gpt-4-turbo-preview",
+            response_stream = litellm.completion(
+                model=self.model,
                 messages=[{"role": "user", "content": role}],
+                api_key=self.api_key,
                 stream=True
             )
         except Exception as e:
-            logging.error(f"General error when creating OpenAI stream: {e}")
-        return openai_stream
-            
-
-    def _create_question_generator(self, openai_stream: Stream) -> Generator[str, None, None]:
-        """Parses streamed data chunks from OpenAI into complete JSON objects and yields them.
+            logging.error(
+                f"Error when creating LiteLLM stream for model '{self.model}' with role '{role}': {e}",
+                exc_info=True  # Include stack trace in the log
+            )
+            response_stream = None  # Ensure response_stream is defined even on error
+        return response_stream
+    
+    def _create_question_generator(self, llm_stream: CustomStreamWrapper) -> Generator[str, None, None]:
+        """Parses streamed data chunks from LiteLLM into complete JSON objects and yields them.
 
         Accumulates data in a buffer and attempts to parse complete JSON objects. If successful,
         the JSON object is yielded as a string and the buffer is cleared for the next object.
@@ -136,7 +140,7 @@ class QuizGenerator:
 
 
         buffer = ""
-        for chunk in openai_stream:
+        for chunk in llm_stream:
             chunk_contents = chunk.choices[0].delta.content
             # Ignore empty chunks.
             if chunk_contents is None:
@@ -152,6 +156,7 @@ class QuizGenerator:
                     yield formatted_sse  # Yield the JSON string
                     buffer = ""  # Clear buffer since JSON was successfully parsed
             except json.JSONDecodeError:
+                logger.info(f"JSON parsing failed, continuing to buffer data.... {buffer=}")
                 continue  # Continue buffering if JSON is incomplete
         
         logger.info("Finished stream!")
@@ -172,11 +177,19 @@ class QuizGenerator:
             logger.error(f"Error during quiz generation: {e}")
 
 if __name__ == "__main__":
-    quiz_generator = QuizGenerator()
+
+    # model = "deepseek-chat" 
+    # model = "gpt-4-turbo-preview"
+    model = "openai/gpt-4o"
+    # model = "anthropic/claude-3-sonnet-20240229"
+    # model = "gemini/gemini-pro"
+    
+
+    quiz_generator = QuizGenerator(model)
 
     topic = "Crested Gecko"
     difficulty = "Medium"
-    generator = quiz_generator.generate_quiz(topic, difficulty, "5", stream=True)
+    generator = quiz_generator.generate_quiz(topic, difficulty, "5")
     logger.info(generator)
     
     QuizGenerator.print_quiz(generator)
