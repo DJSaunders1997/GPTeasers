@@ -2,7 +2,7 @@
 # https://platform.openai.com/docs/api-reference/streaming
 import logging
 from generate_quiz import QuizGenerator
-from generate_image import generate_image
+from generate_image import ImageGenerator
 from fastapi import FastAPI, Request
 from fastapi.responses import (StreamingResponse, JSONResponse)
 from fastapi.middleware.cors import CORSMiddleware
@@ -100,7 +100,8 @@ async def generate_image_endpoint(request: Request) -> JSONResponse:
         return JSONResponse(content={"error": error_message}, status_code=400)
 
     logging.info(f"Received prompt: {prompt}")
-    image_url = generate_image(prompt)
+    image_generator = ImageGenerator()
+    image_url = image_generator.generate_image(prompt)
 
     if image_url is None:
         error_message = "Error - Image generation failed."
