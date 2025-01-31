@@ -38,11 +38,13 @@ GPTeasers is a webapp that generates quiz-style questions based on the topic you
 3. Azure Container Apps: Once triggered, the FastAPI containers communicates with the OpenAI API, sending requests and receiving responses.
 4. OpenAI API: Processes the request and sends back a response.
 
-## Contribute 🤲
+## Running Tests 🧪
 
-Love **GPTeasers**? Want to make it even better? We welcome contributions!
+To ensure the quality and functionality of the code, we use `pytest` for testing. Follow the steps below to run the tests:
 
-1. **Fork** this repo 🍴.
-2. Make your changes 🛠️.
-3. Submit a **pull request** 👥.
+bash```
+cd backend
+pip install -r requirements-dev.txt
+pytest tests/
+```
 
