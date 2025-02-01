@@ -1,16 +1,21 @@
-from openai import OpenAI
-import logging
 import os
+import logging
+from typing import Optional
+from openai import OpenAI
 
-# Set up logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ImageGenerator:
-    def __init__(self):
-        """
-        Initializes the ImageGenerator by setting up the OpenAI client with the API key from environment variables.
-        Raises an error if the API key is not set.
+    @classmethod
+    def get_api_key_from_env(cls) -> str:
+        """Retrieves the OpenAI API key from environment variables.
+
+        Returns:
+            str: The API key from the environment variable OPENAI_API_KEY.
+
+        Raises:
+            ValueError: If the environment variable is not set or empty.
         """
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
@@ -18,22 +23,51 @@ class ImageGenerator:
                 "Environment variable OPENAI_API_KEY is not set. "
                 "Please ensure it's set and try again."
             )
+        return api_key
+
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialises the ImageGenerator.
+
+        If `api_key` is not provided, it is retrieved from the environment
+        using `get_api_key_from_env`.
+
+        Args:
+            api_key (str, optional): The OpenAI API key to use. Defaults to None.
+        """
+        if api_key is None:
+            api_key = self.get_api_key_from_env()
+
         self.client = OpenAI(api_key=api_key)
 
-    def generate_image(self, prompt: str, n: int = 1, size: str = "256x256") -> str:
-        """
-        Generates an image using OpenAI's Image API based on a given prompt.
+    def generate_image(self, prompt: str, n: int = 1, size: str = "256x256") -> Optional[str]:
+        """Generates an image based on the provided prompt.
 
-        Parameters:
-        - prompt (str): The textual description for the image to be generated.
-        - n (int): The number of images to generate. Default is 1.
-        - size (str): The size of the generated image. Default is "256x256".
+        Args:
+            prompt (str): The textual description for the image to be generated.
+            n (int, optional): The number of images to generate. Defaults to 1.
+            size (str, optional): The size of the generated image. Defaults to "256x256".
 
         Returns:
-        - str: URL of generated image in JSON dict with key URL, or None in case of an error.
+            Optional[str]: The URL of the generated image if successful,
+            or `None` if an error occurred.
         """
-        logging.info(f"Generating image with prompt: {prompt=}")
+        logger.info(f"Generating image with prompt: {prompt=}")
+        image_url = self._get_image_url(prompt, n, size)
+        logger.info(f"Generated image URL: {image_url}")
+        return image_url
+    
+    def _get_image_url(self, prompt: str, n: int, size: str) -> Optional[str]:
+        """Makes the API call to generate images using OpenAI and returns the URL.
 
+        Args:
+            prompt (str): The textual description for the image to be generated.
+            n (int): The number of images to generate.
+            size (str): The size of the generated image (e.g., "256x256").
+
+        Returns:
+            Optional[str]: The URL of the first generated image,
+            or `None` if an error occurred.
+        """
         try:
             response = self.client.images.generate(prompt=prompt, n=n, size=size)
             return response.data[0].url
@@ -41,9 +75,9 @@ class ImageGenerator:
             logger.error(f"Error when calling OpenAI API: {e}")
             return None
 
+
 if __name__ == "__main__":
-    image_generator = ImageGenerator()
-    image_description = "Crested Gecko showcasing its distinct crests and coloration. Pixel Art"
-    image_url = image_generator.generate_image(image_description)
-    if image_url:
-        print(f"Generated Image URL: {image_url}")
+    # Example usage:
+    image_generator = ImageGenerator() # Uses environment variable if no API key is provided
+    prompt_text = "Crested Gecko showcasing its distinct crests and colouration. Pixel Art"
+    image_url = image_generator.generate_image(prompt_text)
