@@ -4,7 +4,10 @@ from typing import Optional
 from openai import OpenAI
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 class ImageGenerator:
     @classmethod
@@ -39,7 +42,9 @@ class ImageGenerator:
 
         self.client = OpenAI(api_key=api_key)
 
-    def generate_image(self, prompt: str, n: int = 1, size: str = "256x256") -> Optional[str]:
+    def generate_image(
+        self, prompt: str, n: int = 1, size: str = "256x256"
+    ) -> Optional[str]:
         """Generates an image based on the provided prompt.
 
         Args:
@@ -55,7 +60,7 @@ class ImageGenerator:
         image_url = self._get_image_url(prompt, n, size)
         logger.info(f"Generated image URL: {image_url}")
         return image_url
-    
+
     def _get_image_url(self, prompt: str, n: int, size: str) -> Optional[str]:
         """Makes the API call to generate images using OpenAI and returns the URL.
 
@@ -78,6 +83,10 @@ class ImageGenerator:
 
 if __name__ == "__main__":
     # Example usage:
-    image_generator = ImageGenerator() # Uses environment variable if no API key is provided
-    prompt_text = "Crested Gecko showcasing its distinct crests and colouration. Pixel Art"
+    image_generator = (
+        ImageGenerator()
+    )  # Uses environment variable if no API key is provided
+    prompt_text = (
+        "Crested Gecko showcasing its distinct crests and colouration. Pixel Art"
+    )
     image_url = image_generator.generate_image(prompt_text)

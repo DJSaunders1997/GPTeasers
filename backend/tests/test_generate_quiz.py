@@ -15,6 +15,7 @@ This file demonstrates how to use fixtures, monkeypatching, and method patching 
 code under test and simulate various conditions.
 """
 
+
 # Fixture to create an instance of QuizGenerator with a dummy API key.
 @pytest.fixture
 def quiz_generator(monkeypatch):
@@ -48,7 +49,9 @@ class TestQuizGeneratorUnit:
         We remove the environment variable and expect the constructor to raise an error.
         """
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-        with pytest.raises(ValueError, match="Environment variable OPENAI_API_KEY is not set"):
+        with pytest.raises(
+            ValueError, match="Environment variable OPENAI_API_KEY is not set"
+        ):
             QuizGenerator()
 
     def test_create_role(self, quiz_generator):
@@ -85,7 +88,7 @@ class TestQuizGeneratorUnit:
         patcher.assert_called_once_with(
             model="gpt-4-turbo-preview",
             messages=[{"role": "user", "content": dummy_role}],
-            stream=True
+            stream=True,
         )
         assert result == dummy_stream
 
@@ -180,12 +183,14 @@ class TestQuizGeneratorUnit:
 
         We patch logger.info to verify that the print_quiz method logs each quiz item correctly.
         """
-        dummy_generator = (s for s in ["data: {\"quiz\": \"q1\"}\n\n", "data: {\"quiz\": \"q2\"}\n\n"])
+        dummy_generator = (
+            s for s in ['data: {"quiz": "q1"}\n\n', 'data: {"quiz": "q2"}\n\n']
+        )
         logger_info = mocker.patch("backend.generate_quiz.logger.info")
         QuizGenerator.print_quiz(dummy_generator)
         # Verify that logger.info was called with the expected messages.
-        logger_info.assert_any_call("Item 1: data: {\"quiz\": \"q1\"}\n\n")
-        logger_info.assert_any_call("Item 2: data: {\"quiz\": \"q2\"}\n\n")
+        logger_info.assert_any_call('Item 1: data: {"quiz": "q1"}\n\n')
+        logger_info.assert_any_call('Item 2: data: {"quiz": "q2"}\n\n')
 
 
 class TestQuizGeneratorIntegration:
