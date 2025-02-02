@@ -8,25 +8,28 @@ import os
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+
 class QuizGenerator:
-    EXAMPLE_RESPONSE = json.dumps({
-        "question_id": 1,
-        "question": "Who was the first emperor of Rome?",
-        "A": "Julius Caesar",
-        "B": "Augustus",
-        "C": "Constantine",
-        "answer": "B",
-        "explanation": (
-            "Augustus, originally Octavian, "
-            "was the first to hold the title of Roman Emperor. "
-            "Julius Caesar, while pivotal, never held the emperor title."
-        ),
-        "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
-    })
+    EXAMPLE_RESPONSE = json.dumps(
+        {
+            "question_id": 1,
+            "question": "Who was the first emperor of Rome?",
+            "A": "Julius Caesar",
+            "B": "Augustus",
+            "C": "Constantine",
+            "answer": "B",
+            "explanation": (
+                "Augustus, originally Octavian, "
+                "was the first to hold the title of Roman Emperor. "
+                "Julius Caesar, while pivotal, never held the emperor title."
+            ),
+            "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
+        }
+    )
 
     @classmethod
     def get_api_key_from_env(cls) -> str:
@@ -60,18 +63,20 @@ class QuizGenerator:
 
         self.client = OpenAI(api_key=api_key)
 
-    def generate_quiz(self, topic: str, difficulty: str, n_questions: int = 10) -> Generator[str, None, None]:
+    def generate_quiz(
+        self, topic: str, difficulty: str, n_questions: int = 10
+    ) -> Generator[str, None, None]:
         """
         Generate a quiz based on the provided topic and difficulty using OpenAI API.
-        
+
         Parameters:
         - topic (str): The subject for the quiz, e.g., 'Roman History'.
         - difficulty (str): The desired difficulty of the quiz e.g., 'Easy', 'Medium'.
         - n_questions (int, optional): Number of questions required. Defaults to 10.
-        
+
         Returns:
         - str: JSON-formatted quiz questions. If an error occurs, an empty string is returned.
-        
+
         This method coordinates the creation of the role for the OpenAI API,
         the generation of the response, and the cleaning of the response.
         """
@@ -85,15 +90,15 @@ class QuizGenerator:
     def _create_role(self, topic: str, difficulty: str, n_questions: int) -> str:
         """
         Creates the role string that will be sent to the OpenAI API to generate the quiz.
-        
+
         Parameters:
         - topic (str): The subject for the quiz.
         - difficulty (str): The desired difficulty of the quiz.
         - n_questions (int): Number of questions required.
-        
+
         Returns:
         - str: The role string to be sent to the OpenAI API.
-        
+
         This method structures the prompt for the OpenAI API to ensure consistent and correct responses.
         """
         return (
@@ -114,17 +119,19 @@ class QuizGenerator:
 
         Parameters:
         - role (str): The role string to be sent to the OpenAI API.
-        
+
         Returns:
         - str: The raw response from the OpenAI API.
         """
         return self.client.chat.completions.create(
             model="gpt-4-turbo-preview",
             messages=[{"role": "user", "content": role}],
-            stream=True
+            stream=True,
         )
 
-    def _create_question_generator(self, openai_stream: Stream) -> Generator[str, None, None]:
+    def _create_question_generator(
+        self, openai_stream: Stream
+    ) -> Generator[str, None, None]:
         """Parses streamed data chunks from OpenAI into complete JSON objects and yields them in SSE format.
 
         Accumulates data in a buffer and attempts to parse complete JSON objects. If successful,
@@ -133,7 +140,7 @@ class QuizGenerator:
 
         Similar-ish SSE Fast API blog: https://medium.com/@nandagopal05/server-sent-events-with-python-fastapi-f1960e0c8e4b
         Helpful SO that says about the SSE format of data: {your-json}: https://stackoverflow.com/a/49486869/11902832
-        
+
         Args:
             openai_stream (Stream): Stream from OpenAI's api
 
@@ -160,7 +167,7 @@ class QuizGenerator:
             # If the JSON is complete, yield it and clear the buffer.
             yield self._format_sse(result)
             buffer = ""  # Clear buffer on successful parse.
-        
+
         logger.info("Finished stream!")
 
     @staticmethod
@@ -175,10 +182,10 @@ class QuizGenerator:
         """
         Helper method to validate and parse the provided string as JSON.
         Returns the parsed dict if s is valid JSON, otherwise returns None if the JSON is incomplete.
-        
+
         Parameters:
         - s (str): The string to check.
-        
+
         Returns:
         - dict: The parsed JSON object, or None if the JSON is incomplete.
         """
@@ -191,7 +198,7 @@ class QuizGenerator:
     @staticmethod
     def print_quiz(generator: Generator[str, None, None]):
         """Helper function to iterate through and print the results from the question generator.
-        
+
         Args:
             generator (Generator[str, None, None]): Generator producing quiz questions as SSE formatted strings.
         """
@@ -200,6 +207,7 @@ class QuizGenerator:
                 logger.info(f"Item {idx}: {question}")
         except Exception as e:
             logger.error(f"Error during quiz generation: {e}")
+
 
 if __name__ == "__main__":
     # Set logger level to DEBUG if running this file to test
