@@ -1,4 +1,5 @@
 services:
+# Backend service for the FastAPI quiz generation API
   fastapi_generate_quiz:
     build:
       context: ./backend
@@ -8,13 +9,10 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
+# Frontend service for local testing of the static site
   frontend:
     build:
       context: ./frontend
-      # Use the appropriate Dockerfile if you have multiple options.
       dockerfile: Dockerfile
     ports:
-      # If using the Nginx option, map port 80 to your host.
-      - "8080:80"
-      # If using http-server, map port 8080 to your host.
-      # - "8080:8080"
+      - "8080:80" # Nginx
