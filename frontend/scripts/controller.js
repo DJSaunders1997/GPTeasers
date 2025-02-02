@@ -12,8 +12,15 @@ class Controller {
   constructor(quiz) {
     this.eventSource = null;
     this.messageCount = 0;
-    // Change baseURL if local debugging
-    this.baseURL = "https://gpteasers.jollyocean-6818c6e0.ukwest.azurecontainerapps.io/"; 
+    // Determine if we are running locally based on the hostname.
+    console.log(`Running on: ${window.location.hostname}`);
+    if (window.location.hostname === "localhost" || window.location.hostname === "0.0.0.0") {
+      console.log("Running locally, pointing to local FastAPI backend.");
+      this.baseURL = "http://localhost:8000";
+    } else {
+      console.log("Running remotely, pointing to Azure Container Instance backend.");
+      this.baseURL = "https://gpteasers.jollyocean-6818c6e0.ukwest.azurecontainerapps.io";
+    }
     this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
     this.baseURLImage = `${this.baseURL}/GenerateImage`;
     this.quiz = quiz; // this will be initialized as a quiz object
