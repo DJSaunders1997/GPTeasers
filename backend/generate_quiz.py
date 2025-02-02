@@ -1,8 +1,10 @@
 from typing import Generator, Optional
-from openai import OpenAI, Stream
 import logging
 import json
 import os
+
+# Import the completion function from litellm (as shown in the docs example)
+from litellm import completion
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -23,17 +25,16 @@ class QuizGenerator:
             "C": "Constantine",
             "answer": "B",
             "explanation": (
-                "Augustus, originally Octavian, "
-                "was the first to hold the title of Roman Emperor. "
+                "Augustus, originally Octavian, was the first to hold the title of Roman Emperor. "
                 "Julius Caesar, while pivotal, never held the emperor title."
             ),
-            "wikipedia": r"https://en.wikipedia.org/wiki/Augustus",
+            "wikipedia": "https://en.wikipedia.org/wiki/Augustus",
         }
     )
 
     @classmethod
     def get_api_key_from_env(cls) -> str:
-        """Retrieves the OpenAI API key from environment variables.
+        """Retrieves the API key from environment variables.
 
         Returns:
             str: The API key from the environment variable OPENAI_API_KEY.
@@ -49,90 +50,95 @@ class QuizGenerator:
             )
         return api_key
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        provider: str = "openai",
+        model: str = "gpt-3.5-turbo",
+    ):
         """
-        Initializes the QuizGenerator by setting up the OpenAI client with the API key.
-        If `api_key` is not provided, it is retrieved from the environment
-        using `get_api_key_from_env`.
+        Initializes the QuizGenerator.
+        If `api_key` is not provided, it is retrieved from the environment.
+        The provider parameter is kept for future flexibility, though the litellm
+        completion function reads the API key from the environment.
 
         Args:
-            api_key (str, optional): The OpenAI API key to use. Defaults to None.
+            api_key (str, optional): The API key to use. Defaults to None.
+            provider (str, optional): The provider name (e.g. "openai"). Defaults to "openai".
+            model (str, optional): The model name to use. Defaults to "gpt-3.5-turbo".
         """
         if api_key is None:
             api_key = self.get_api_key_from_env()
+        # (Optional) Set the API key in the environment if not already set.
+        os.environ["OPENAI_API_KEY"] = api_key
 
-        self.client = OpenAI(api_key=api_key)
+        self.provider = provider
+        self.model = model
 
     def generate_quiz(
         self, topic: str, difficulty: str, n_questions: int = 10
     ) -> Generator[str, None, None]:
         """
-        Generate a quiz based on the provided topic and difficulty using OpenAI API.
+        Generate a quiz based on the provided topic and difficulty using litellm.
 
         Parameters:
-        - topic (str): The subject for the quiz, e.g., 'Roman History'.
-        - difficulty (str): The desired difficulty of the quiz e.g., 'Easy', 'Medium'.
-        - n_questions (int, optional): Number of questions required. Defaults to 10.
+            topic (str): The subject for the quiz (e.g., 'Roman History').
+            difficulty (str): The desired difficulty (e.g., 'Easy', 'Medium').
+            n_questions (int, optional): Number of questions required. Defaults to 10.
 
         Returns:
-        - str: JSON-formatted quiz questions. If an error occurs, an empty string is returned.
-
-        This method coordinates the creation of the role for the OpenAI API,
-        the generation of the response, and the cleaning of the response.
+            Generator[str, None, None]: A generator yielding JSON-formatted quiz questions as SSE strings.
         """
-        role = self._create_role(topic, difficulty, n_questions)
-        logger.info(f"Role content for OpenAI API: {role}")
-        openai_stream = self._create_openai_stream(role)
-        response_generator = self._create_question_generator(openai_stream)
-
+        prompt = self._create_role(topic, difficulty, n_questions)
+        logger.info(f"Prompt for LLM: {prompt}")
+        llm_stream = self._create_llm_stream(prompt)
+        response_generator = self._create_question_generator(llm_stream)
         return response_generator
 
     def _create_role(self, topic: str, difficulty: str, n_questions: int) -> str:
         """
-        Creates the role string that will be sent to the OpenAI API to generate the quiz.
+        Creates the prompt to be sent to the LLM.
 
         Parameters:
-        - topic (str): The subject for the quiz.
-        - difficulty (str): The desired difficulty of the quiz.
-        - n_questions (int): Number of questions required.
+            topic (str): The quiz subject.
+            difficulty (str): The quiz difficulty.
+            n_questions (int): Number of questions to generate.
 
         Returns:
-        - str: The role string to be sent to the OpenAI API.
-
-        This method structures the prompt for the OpenAI API to ensure consistent and correct responses.
+            str: The prompt string.
         """
         return (
-            f"You are an AI to generate quiz questions. "
-            f"You will be given a topic e.g. Roman History with a difficulty of Normal. "
-            f"Give {str(n_questions)} responses in a json format such as: {self.EXAMPLE_RESPONSE}. "
-            f"Your task is to generate similar responses for {topic} "
-            f"with the difficulty of {difficulty}. "
+            f"You are an AI that generates quiz questions. "
+            f"You will be given a topic (e.g., Roman History) with a difficulty level. "
+            f"Provide {n_questions} responses in JSON format similar to this example: {self.EXAMPLE_RESPONSE}. "
+            f"Generate similar responses for the topic '{topic}' with a difficulty of '{difficulty}'. "
             f"ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS! "
             f"DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON! "
-            f"Return each question on a new line. "
+            f"Return each question on a new line."
         )
 
-    def _create_openai_stream(self, role: str) -> Stream:
+    def _create_llm_stream(self, prompt: str):
         """
-        Creates the stream from the OpenAI API based on the given role.
-        Exceptions are not caught here so that errors are visible in tests.
+        Creates a streaming response from litellm based on the given prompt.
 
         Parameters:
-        - role (str): The role string to be sent to the OpenAI API.
+            prompt (str): The prompt string.
 
         Returns:
-        - str: The raw response from the OpenAI API.
+            Generator: A generator yielding streamed response chunks from the LLM.
         """
-        return self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
-            messages=[{"role": "user", "content": role}],
+        # The completion function supports a stream flag.
+        return completion(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
             stream=True,
         )
 
     def _create_question_generator(
-        self, openai_stream: Stream
+        self, llm_stream
     ) -> Generator[str, None, None]:
-        """Parses streamed data chunks from OpenAI into complete JSON objects and yields them in SSE format.
+        """
+        Parses streamed data chunks from the LLM into complete JSON objects and yields them as SSE strings.
 
         Accumulates data in a buffer and attempts to parse complete JSON objects. If successful,
         the JSON object is yielded as a string and the buffer is cleared for the next object.
@@ -145,18 +151,22 @@ class QuizGenerator:
             openai_stream (Stream): Stream from OpenAI's api
 
         Yields:
-            str: Complete JSON object of a quiz question in string representation.
+            str: A JSON object formatted as an SSE string.
         """
         buffer = ""
-        for chunk in openai_stream:
-            chunk_contents = chunk.choices[0].delta.content
-
-            # Ignore empty chunks.
-            if chunk_contents is None:
-                logger.debug("Chunk was empty!")
+        for chunk in llm_stream:
+            try:
+                # Adjust extraction if your provider returns a different structure.
+                chunk_contents = chunk.choices[0].delta.content
+            except (AttributeError, IndexError, KeyError):
+                logger.debug("Chunk format unexpected or chunk is empty!")
                 continue
 
-            buffer += chunk_contents  # Append new data to buffer
+            if chunk_contents is None:
+                logger.debug("Received an empty chunk; skipping...")
+                continue
+
+            buffer += chunk_contents  # Append new data to the buffer
             result = self.validate_and_parse_json(buffer)
 
             # If the JSON is incomplete, wait for more data.
@@ -166,9 +176,9 @@ class QuizGenerator:
 
             # If the JSON is complete, yield it and clear the buffer.
             yield self._format_sse(result)
-            buffer = ""  # Clear buffer on successful parse.
+            buffer = ""  # Clear buffer for next JSON object
 
-        logger.info("Finished stream!")
+        logger.info("Finished processing the stream!")
 
     @staticmethod
     def _format_sse(json_obj: dict) -> str:
@@ -180,14 +190,13 @@ class QuizGenerator:
     @staticmethod
     def validate_and_parse_json(s: str) -> Optional[dict]:
         """
-        Helper method to validate and parse the provided string as JSON.
-        Returns the parsed dict if s is valid JSON, otherwise returns None if the JSON is incomplete.
+        Validates and parses a string as JSON.
 
         Parameters:
-        - s (str): The string to check.
+            s (str): The string to parse.
 
         Returns:
-        - dict: The parsed JSON object, or None if the JSON is incomplete.
+            Optional[dict]: The parsed JSON if successful, otherwise None.
         """
         try:
             return json.loads(s)
@@ -197,10 +206,11 @@ class QuizGenerator:
 
     @staticmethod
     def print_quiz(generator: Generator[str, None, None]):
-        """Helper function to iterate through and print the results from the question generator.
+        """
+        Iterates through the generator and prints each quiz question.
 
-        Args:
-            generator (Generator[str, None, None]): Generator producing quiz questions as SSE formatted strings.
+        Parameters:
+            generator (Generator[str, None, None]): Generator producing quiz questions as SSE strings.
         """
         try:
             for idx, question in enumerate(generator, start=1):
@@ -210,12 +220,13 @@ class QuizGenerator:
 
 
 if __name__ == "__main__":
-    # Set logger level to DEBUG if running this file to test
+    # For detailed output during testing, set the logger level to DEBUG.
     logger.setLevel(logging.DEBUG)
 
-    quiz_generator = QuizGenerator()
+    # Instantiate QuizGenerator. You can change the provider and model if needed.
+    quiz_generator = QuizGenerator(provider="openai", model="gpt-3.5-turbo")
     topic = "Crested Gecko"
     difficulty = "Medium"
-    generator = quiz_generator.generate_quiz(topic, difficulty, 2)
-    logger.info(generator)
+    generator = quiz_generator.generate_quiz(topic, difficulty, n_questions=2)
+    logger.info("Starting quiz generation...")
     QuizGenerator.print_quiz(generator)
