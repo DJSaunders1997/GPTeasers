@@ -1,5 +1,4 @@
 -r requirements.txt
 ruff
-mypy
 pytest
 pytest-mock
