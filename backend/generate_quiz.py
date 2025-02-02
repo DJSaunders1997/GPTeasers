@@ -1,4 +1,4 @@
-from typing import Generator, Optional, Iterable
+from typing import Generator, Optional
 from openai import OpenAI, Stream
 import logging
 import json
