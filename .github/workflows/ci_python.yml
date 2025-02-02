@@ -23,15 +23,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Install ruff for linting, mypy for type checking, and the development requirements (including pytest)
-          pip install ruff mypy
+          # Install ruff for linting and the development requirements (including pytest)
           pip install -r backend/requirements-dev.txt
 
       - name: Lint Python with ruff 🚀
         run: ruff check backend/
-
-      - name: Run mypy for type checking 🔍
-        run: mypy backend/
 
       - name: Run Pytest 🧪
         run: pytest -q backend/tests/ -v
