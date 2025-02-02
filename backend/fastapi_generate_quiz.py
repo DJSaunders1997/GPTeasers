@@ -1,10 +1,10 @@
-# Example of openai streaming 
+# Example of openai streaming
 # https://platform.openai.com/docs/api-reference/streaming
 import logging
 from generate_quiz import QuizGenerator
-from generate_image import generate_image
+from generate_image import ImageGenerator
 from fastapi import FastAPI, Request
-from fastapi.responses import (StreamingResponse, JSONResponse)
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Copy Azure Docs Example
@@ -20,9 +20,10 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+
 @app.get("/GenerateQuiz")
 async def generate_quiz_endpoint(request: Request) -> JSONResponse:
-    """ 
+    """
     FastAPI App to generate an image based on a provided prompt.
 
     The function expects a 'prompt' parameter in the HTTP request query
@@ -42,9 +43,11 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
     difficulty = request.query_params.get("difficulty")
     n_questions = request.query_params.get("n_questions")
 
-    logging.info(f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}.")
+    logging.info(
+        f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}."
+    )
 
-    # If either 'topic' or 'difficulty' is not provided in the request, 
+    # If either 'topic' or 'difficulty' is not provided in the request,
     # the function will return an error message and a 400 status code.
     # n_questions is optional
     if not topic or not difficulty:
@@ -58,7 +61,7 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
     # Set default value if not set
     if not n_questions:
         n_questions = 10
-    
+
     logging.info(
         f"Generating quiz for topic: {topic} with difficulty: {difficulty} with number of questions: {n_questions}"
     )
@@ -72,9 +75,10 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
 
     return StreamingResponse(generator, media_type="text/event-stream")
 
+
 @app.get("/GenerateImage")
 async def generate_image_endpoint(request: Request) -> JSONResponse:
-    """ 
+    """
     FastAPI App to generate an image based on a provided prompt.
 
     The function expects a 'prompt' parameter in the HTTP request query
@@ -100,7 +104,8 @@ async def generate_image_endpoint(request: Request) -> JSONResponse:
         return JSONResponse(content={"error": error_message}, status_code=400)
 
     logging.info(f"Received prompt: {prompt}")
-    image_url = generate_image(prompt)
+    image_generator = ImageGenerator()
+    image_url = image_generator.generate_image(prompt)
 
     if image_url is None:
         error_message = "Error - Image generation failed."
@@ -110,6 +115,7 @@ async def generate_image_endpoint(request: Request) -> JSONResponse:
     # Return the image URL in the HTTP response
     logging.info(f"Generated image for prompt {prompt}: {image_url}")
     return JSONResponse(content={"image_url": image_url}, status_code=200)
+
 
 # Run with uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000 --log-level debug
 # Access with curl "http://localhost:8000/GenerateQuiz?topic=UK%20History&difficulty=easy&n_questions=3"

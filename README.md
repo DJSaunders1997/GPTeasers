@@ -38,11 +38,41 @@ GPTeasers is a webapp that generates quiz-style questions based on the topic you
 3. Azure Container Apps: Once triggered, the FastAPI containers communicates with the OpenAI API, sending requests and receiving responses.
 4. OpenAI API: Processes the request and sends back a response.
 
-## Contribute 🤲
+## Docker Compose Setup for Local Testing
 
-Love **GPTeasers**? Want to make it even better? We welcome contributions!
+This project uses Docker Compose to run both the FastAPI backend and the frontend services locally.
 
-1. **Fork** this repo 🍴.
-2. Make your changes 🛠️.
-3. Submit a **pull request** 👥.
+### Services
 
+- **fastapi_generate_quiz**:  
+  The FastAPI backend that serves the GPTeasers API. This container is responsible for handling requests from the frontend and interacting with the OpenAI API to generate quizzes.
+
+- **frontend**:  
+  A static frontend application. Although the site is hosted on GitHub Pages, this container allows you to test it locally.
+
+### Running Locally
+
+1. **Set Environment Variables**  
+   Ensure that the `OPENAI_API_KEY` is set in your environment or in a `.env` file at the project root:
+   ```sh
+   export OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   or create a `.env` file with:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+2. **Build and Run the Containers**  
+   From the project root, run:
+   ```sh
+   docker-compose up --build
+   ```
+   This command builds both the backend and frontend images and starts the containers.
+
+3. **Access the Services**  
+   - **Backend API (FastAPI)**:  
+     Access via [http://localhost:8000](http://localhost:8000)
+   - **Frontend**:  
+     Access via [http://localhost:8080](http://localhost:8080)
+
+By following these steps, you can easily test both your backend API and your static frontend locally using Docker Compose.
