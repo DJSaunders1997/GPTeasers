@@ -1,4 +1,4 @@
-name: Python Linting CI 🐍
+name: Python Linting, Type Checking, and Testing CI 🐍
 
 on:
   push:
@@ -21,8 +21,13 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install ruff 🦀
-        run: pip install ruff
+      - name: Install dependencies
+        run: |
+          # Install ruff for linting and the development requirements (including pytest)
+          pip install -r backend/requirements-dev.txt
 
       - name: Lint Python with ruff 🚀
         run: ruff check backend/
+
+      - name: Run Pytest 🧪
+        run: pytest -q backend/tests/ -v

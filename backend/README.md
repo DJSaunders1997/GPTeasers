@@ -66,4 +66,41 @@ To debug locally, follow these steps:
     docker push ghcr.io/djsaunders1997/fastapi_generate_quiz:latest
     ```
 
-    
+## Running Tests
+
+Our test suite is divided into **unit tests** and **integration tests**.
+
+- **Unit Tests:**  
+  These tests use mocks to simulate API responses. They run quickly and do not require real API calls.
+
+- **Integration Tests:**  
+  These tests make real API calls (e.g., to the OpenAI API) and require a valid API key. They are intended to be run manually or in a staging environment.
+
+### Default Behavior
+
+By default, integration tests are **excluded** from the test run. This is achieved by configuring `pytest` in our `pytest.ini` file (located in the `backend` directory):
+
+```ini
+[pytest]
+markers =
+    integration: mark test as an integration test.
+addopts = -m "not integration"
+```
+
+This configuration tells `pytest` to skip any test marked with `@pytest.mark.integration` when you run:
+
+```bash
+pytest -v
+```
+
+### Running Integration Tests
+
+To run the integration tests, override the default marker filter by using the `-m` option:
+
+```bash
+pytest -m integration
+```
+
+> **Note:** Integration tests make real API calls and require the `OPENAI_API_KEY` environment variable to be set. Make sure you have this environment variable configured before running these tests.
+
+---
