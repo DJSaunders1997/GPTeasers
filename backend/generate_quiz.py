@@ -2,6 +2,7 @@ from typing import Generator, Optional
 import logging
 import json
 import os
+from response_stream_parser import ResponseStreamParser
 
 # Import the completion function from litellm (as shown in the docs example)
 from litellm import completion
@@ -32,23 +33,25 @@ class QuizGenerator:
         }
     )
 
-    example_question_2 = json.dumps({
-        "question_id": 2,
-        "question": (
-            "Which Roman Emperor is known for issuing the Edict on Maximum Prices to curb inflation, "
-            "and is regarded as a pivotal figure in the transition from the Principate to the Dominate?"
-        ),
-        "A": "Nero",
-        "B": "Diocletian",
-        "C": "Marcus Aurelius",
-        "answer": "B",
-        "explanation": (
-            "Diocletian, who reigned from 284 to 305 AD, issued the Edict on Maximum Prices in 301 AD in an effort "
-            "to control rampant inflation and economic instability. His reforms marked a significant shift in the "
-            "structure of Roman imperial governance."
-        ),
-        "wikipedia": "https://en.wikipedia.org/wiki/Diocletian",
-    })
+    example_question_2 = json.dumps(
+        {
+            "question_id": 2,
+            "question": (
+                "Which Roman Emperor is known for issuing the Edict on Maximum Prices to curb inflation, "
+                "and is regarded as a pivotal figure in the transition from the Principate to the Dominate?"
+            ),
+            "A": "Nero",
+            "B": "Diocletian",
+            "C": "Marcus Aurelius",
+            "answer": "B",
+            "explanation": (
+                "Diocletian, who reigned from 284 to 305 AD, issued the Edict on Maximum Prices in 301 AD in an effort "
+                "to control rampant inflation and economic instability. His reforms marked a significant shift in the "
+                "structure of Roman imperial governance."
+            ),
+            "wikipedia": "https://en.wikipedia.org/wiki/Diocletian",
+        }
+    )
 
     EXAMPLE_RESPONSE = example_question_1 + "\n" + example_question_2
 
@@ -92,6 +95,9 @@ class QuizGenerator:
 
         self.model = model
 
+        # Use the separate parser class to handle the stream
+        self.parser = ResponseStreamParser()
+
     def generate_quiz(
         self, topic: str, difficulty: str, n_questions: int = 10
     ) -> Generator[str, None, None]:
@@ -109,8 +115,9 @@ class QuizGenerator:
         prompt = self._create_role(topic, difficulty, n_questions)
         logger.info(f"Prompt for LLM: {prompt}")
         llm_stream = self._create_llm_stream(prompt)
-        response_generator = self._create_question_generator(llm_stream)
-        return response_generator
+        # Use the separate parser class to handle the stream
+        parser = ResponseStreamParser()
+        return parser.parse_stream(llm_stream)
 
     def _create_role(self, topic: str, difficulty: str, n_questions: int) -> str:
         """
@@ -151,80 +158,6 @@ class QuizGenerator:
             stream=True,
         )
 
-    def _create_question_generator(self, llm_stream) -> Generator[str, None, None]:
-        """
-        Parses streamed data chunks from the LLM into complete JSON objects and yields them as SSE strings.
-
-        Accumulates data in a buffer and attempts to parse complete JSON objects. If successful,
-        the JSON object is yielded as a string and the buffer is cleared for the next object.
-        Ignores empty chunks and continues buffering if the JSON is incomplete.
-
-        Similar-ish SSE Fast API blog: https://medium.com/@nandagopal05/server-sent-events-with-python-fastapi-f1960e0c8e4b
-        Helpful SO that says about the SSE format of data: {your-json}: https://stackoverflow.com/a/49486869/11902832
-
-        Args:
-            openai_stream (Stream): Stream from OpenAI's api
-
-        Yields:
-            str: A JSON object formatted as an SSE string.
-        """
-        buffer = ""
-        for chunk in llm_stream:
-            try:
-                # Adjust extraction if your provider returns a different structure.
-                chunk_contents = chunk.choices[0].delta.content
-            except (AttributeError, IndexError, KeyError):
-                logger.debug("Chunk format unexpected or chunk is empty!")
-                continue
-
-            if chunk_contents is None:
-                logger.debug("Received an empty chunk; skipping...")
-                continue
-
-            buffer += chunk_contents  # Append new data to the buffer
-
-            # If there is at least one newline, try splitting and parsing each complete line.
-            if "\n" in buffer:
-                lines = buffer.split("\n")
-                # Process all complete lines except possibly the last (which might be incomplete)
-                for line in lines[:-1]:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        json_obj = json.loads(line)
-                        yield self._format_sse(json_obj)
-                    except json.JSONDecodeError as e:
-                        logger.debug(f"Error parsing line '{line}': {e}")
-                # Keep the last (possibly incomplete) line in the buffer.
-                buffer = lines[-1]
-
-        logger.info("Finished processing the stream!")
-
-    @staticmethod
-    def _format_sse(json_obj: dict) -> str:
-        """
-        Formats a JSON object as a Server-Sent Event (SSE) string.
-        """
-        return f"data: {json.dumps(json_obj)}\n\n"
-
-    @staticmethod
-    def validate_and_parse_json(s: str) -> Optional[dict]:
-        """
-        Validates and parses a string as JSON.
-
-        Parameters:
-            s (str): The string to parse.
-
-        Returns:
-            Optional[dict]: The parsed JSON if successful, otherwise None.
-        """
-        try:
-            return json.loads(s)
-        except json.JSONDecodeError as e:
-            logger.debug(f"Incomplete JSON '{s}': {e.msg} at pos {e.pos}")
-            return None
-
     @staticmethod
     def print_quiz(generator: Generator[str, None, None]):
         """
@@ -247,8 +180,6 @@ if __name__ == "__main__":
     # For detailed output during testing, set the logger level to DEBUG.
     logger.setLevel(logging.DEBUG)
 
-
-    # Instantiate QuizGenerator. You can change the provider and model if needed.
     suppported_models = [
         "gpt-3.5-turbo",
         "gpt-4-turbo",
