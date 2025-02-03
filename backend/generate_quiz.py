@@ -17,6 +17,17 @@ logging.basicConfig(
 
 
 class QuizGenerator:
+    # Define the list of supported models.
+    SUPPORTED_MODELS = [
+        "gpt-3.5-turbo",
+        "gpt-4-turbo",
+        "o1-mini",
+        "o3-mini",
+        "gemini/gemini-pro",
+        "gemini/gemini-1.5-pro-latest",
+        "azure_ai/DeepSeek-R1",
+    ]
+
     example_question_1 = json.dumps(
         {
             "question_id": 1,
@@ -77,6 +88,23 @@ class QuizGenerator:
                     "Please ensure it's set and try again."
                 )
 
+    @staticmethod
+    def check_model_is_supported(model: str) -> str:
+        """
+        Validate the requested model. If it is not supported, default to "gpt-4-turbo".
+
+        Args:
+            model (str): The model name to validate.
+            
+        Returns:
+            str: A supported model name.
+        """
+        if model not in QuizGenerator.SUPPORTED_MODELS:
+            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'.")
+            return "gpt-4-turbo"
+        return model
+        
+
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -85,17 +113,19 @@ class QuizGenerator:
         """
         Initializes the QuizGenerator.
         If `api_key` is not provided, it is retrieved from the environment.
+        Also validates that the requested model is one of the supported models.
+        If the model is not supported, defaults to "gpt-4-turbo".
 
         Args:
             api_key (str, optional): The API key to use. Defaults to None.
             model (str, optional): The model name to use. Defaults to "gpt-3.5-turbo".
         """
-
         self.check_api_key_from_env()
 
-        self.model = model
+                # Validate and set the model.
+        self.model = QuizGenerator.check_model_is_supported(model)
 
-        # Use the separate parser class to handle the stream
+        # Use the separate parser class to handle the stream.
         self.parser = ResponseStreamParser()
 
     def generate_quiz(
