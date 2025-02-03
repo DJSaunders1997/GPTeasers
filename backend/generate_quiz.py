@@ -16,7 +16,7 @@ logging.basicConfig(
 
 
 class QuizGenerator:
-    EXAMPLE_RESPONSE = json.dumps(
+    example_question_1 = json.dumps(
         {
             "question_id": 1,
             "question": "Who was the first emperor of Rome?",
@@ -32,47 +32,64 @@ class QuizGenerator:
         }
     )
 
-    @classmethod
-    def get_api_key_from_env(cls) -> str:
-        """Retrieves the API key from environment variables.
+    example_question_2 = json.dumps({
+        "question_id": 2,
+        "question": (
+            "Which Roman Emperor is known for issuing the Edict on Maximum Prices to curb inflation, "
+            "and is regarded as a pivotal figure in the transition from the Principate to the Dominate?"
+        ),
+        "A": "Nero",
+        "B": "Diocletian",
+        "C": "Marcus Aurelius",
+        "answer": "B",
+        "explanation": (
+            "Diocletian, who reigned from 284 to 305 AD, issued the Edict on Maximum Prices in 301 AD in an effort "
+            "to control rampant inflation and economic instability. His reforms marked a significant shift in the "
+            "structure of Roman imperial governance."
+        ),
+        "wikipedia": "https://en.wikipedia.org/wiki/Diocletian",
+    })
 
-        Returns:
-            str: The API key from the environment variable OPENAI_API_KEY.
+    EXAMPLE_RESPONSE = example_question_1 + "\n" + example_question_2
+
+    @classmethod
+    def check_api_key_from_env(cls) -> None:
+        """Retrieves the API keys from environment variables.
 
         Raises:
             ValueError: If the environment variable is not set or empty.
         """
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError(
-                "Environment variable OPENAI_API_KEY is not set. "
-                "Please ensure it's set and try again."
-            )
-        return api_key
+
+        for key in [
+            "OPENAI_API_KEY",
+            "GEMINI_API_KEY",
+            "DEEPSEEK_API_KEY",
+            "AZURE_AI_API_KEY",
+            "AZURE_AI_API_BASE",
+        ]:
+            api_key = os.getenv(key)
+            if not api_key:
+                raise ValueError(
+                    f"Environment variable {key} is not set."
+                    "Please ensure it's set and try again."
+                )
 
     def __init__(
         self,
         api_key: Optional[str] = None,
-        provider: str = "openai",
         model: str = "gpt-3.5-turbo",
     ):
         """
         Initializes the QuizGenerator.
         If `api_key` is not provided, it is retrieved from the environment.
-        The provider parameter is kept for future flexibility, though the litellm
-        completion function reads the API key from the environment.
 
         Args:
             api_key (str, optional): The API key to use. Defaults to None.
-            provider (str, optional): The provider name (e.g. "openai"). Defaults to "openai".
             model (str, optional): The model name to use. Defaults to "gpt-3.5-turbo".
         """
-        if api_key is None:
-            api_key = self.get_api_key_from_env()
-        # (Optional) Set the API key in the environment if not already set.
-        os.environ["OPENAI_API_KEY"] = api_key
 
-        self.provider = provider
+        self.check_api_key_from_env()
+
         self.model = model
 
     def generate_quiz(
@@ -110,7 +127,7 @@ class QuizGenerator:
         return (
             f"You are an AI that generates quiz questions. "
             f"You will be given a topic (e.g., Roman History) with a difficulty level. "
-            f"Provide {n_questions} responses in JSON format similar to this example: {self.EXAMPLE_RESPONSE}. "
+            f"Provide {n_questions} responses in JSON format similar to this example: \n{self.EXAMPLE_RESPONSE}. "
             f"Generate similar responses for the topic '{topic}' with a difficulty of '{difficulty}'. "
             f"ENSURE THESE ARE CORRECT. DO NOT INCLUDE INCORRECT ANSWERS! "
             f"DO NOT PREFIX THE RESPONSE WITH ANYTHING EXCEPT THE RAW JSON! "
@@ -134,9 +151,7 @@ class QuizGenerator:
             stream=True,
         )
 
-    def _create_question_generator(
-        self, llm_stream
-    ) -> Generator[str, None, None]:
+    def _create_question_generator(self, llm_stream) -> Generator[str, None, None]:
         """
         Parses streamed data chunks from the LLM into complete JSON objects and yields them as SSE strings.
 
@@ -212,9 +227,12 @@ class QuizGenerator:
         Parameters:
             generator (Generator[str, None, None]): Generator producing quiz questions as SSE strings.
         """
+        questions = []
         try:
             for idx, question in enumerate(generator, start=1):
                 logger.info(f"Item {idx}: {question}")
+                questions.append(question)
+            return questions
         except Exception as e:
             logger.error(f"Error during quiz generation: {e}")
 
@@ -223,10 +241,23 @@ if __name__ == "__main__":
     # For detailed output during testing, set the logger level to DEBUG.
     logger.setLevel(logging.DEBUG)
 
+
     # Instantiate QuizGenerator. You can change the provider and model if needed.
-    quiz_generator = QuizGenerator(provider="openai", model="gpt-3.5-turbo")
+    suppported_models = [
+        "gpt-3.5-turbo",
+        "gpt-4-turbo",
+        "o1-mini",
+        "o3-mini",
+        "gemini/gemini-pro",
+        "gemini/gemini-1.5-pro-latest",
+        "azure_ai/DeepSeek-R1",
+    ]
+
+    quiz_generator = QuizGenerator(model="o1-mini")
+
     topic = "Crested Gecko"
     difficulty = "Medium"
     generator = quiz_generator.generate_quiz(topic, difficulty, n_questions=2)
     logger.info("Starting quiz generation...")
-    QuizGenerator.print_quiz(generator)
+    quiz = QuizGenerator.print_quiz(generator)
+    logger.info(quiz)
