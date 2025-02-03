@@ -6,6 +6,7 @@ class UI {
     this.intro = document.getElementById("intro");
     this.topicInput = document.getElementById("quizTopic");
     this.quizDifficulty = document.getElementById("quizDifficulty");
+    this.quizModel = document.getElementById("quizModel")
     this.button = document.querySelector("button");
 
     //Image elements
@@ -69,6 +70,10 @@ class UI {
 
   getDifficulty(){
     return this.quizDifficulty.value;
+  }
+
+  getModel() {
+    return this.quizModel.value;
   }
 
   // Display question in ui elements
