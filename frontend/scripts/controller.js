@@ -24,7 +24,7 @@ class Controller {
     this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
     this.baseURLImage = `${this.baseURL}/GenerateImage`;
     this.quiz = quiz; // this will be initialized as a quiz object
-    this.numQuestions = this.quiz.numQuestions;
+    this.numQuestions = this.quiz.numQuestions;    
   }
 
   /**
@@ -38,14 +38,16 @@ class Controller {
    * @returns {Promise<void>}
    * @throws {Error} When the network response is not ok.
    */
-  callQuizAPI(topic, difficulty, onQuestionReceived) {
+  callQuizAPI(topic, difficulty, model, onQuestionReceived) {
     console.log("Generating quiz for topic:", topic);
     console.log("Generating quiz with difficulty:", difficulty);
+    console.log("Generating quiz with model:", model);
 
     const encodedTopic = encodeURIComponent(topic);
     const encodedDifficulty = encodeURIComponent(difficulty);
+    const encodedModel = encodeURIComponent(model);
     const numQuestions = encodeURIComponent(this.numQuestions);
-    const url = `${this.baseURLQuiz}?topic=${encodedTopic}&difficulty=${encodedDifficulty}&n_questions=${numQuestions}`;
+    const url = `${this.baseURLQuiz}?topic=${encodedTopic}&difficulty=${encodedDifficulty}&n_questions=${numQuestions}&model=${encodedModel}`;
     console.log(`Connecting to SSE endpoint: ${url}`);
 
     // Promises are used to handle asynchronous operations. They represent a value that may be available now, 
