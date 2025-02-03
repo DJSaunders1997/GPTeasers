@@ -24,32 +24,29 @@ app.add_middleware(
 @app.get("/GenerateQuiz")
 async def generate_quiz_endpoint(request: Request) -> JSONResponse:
     """
-    FastAPI App to generate an image based on a provided prompt.
-
-    The function expects a 'prompt' parameter in the HTTP request query
-    or body. If a valid prompt is received, the function uses the
-    generate_image() function to create an image URL corresponding to
-    the prompt and returns it in the HTTP response.
-
-    Parameters:
-    - request (Request): The FastAPI request object containing the client request.
-
+    FastAPI endpoint to generate a quiz based on topic, difficulty, and model.
+    
+    Query Parameters:
+      - topic: The subject for the quiz (e.g., "UK History").
+      - difficulty: The desired difficulty (e.g., "easy", "medium").
+      - n_questions: (Optional) Number of questions to generate (defaults to 10).
+      - model: (Optional) The model to use. If not provided, the default from QuizGenerator is used.
+    
     Returns:
-    - JSONResponse: The HTTP response object containing the generated quiz or
-                    an appropriate error message.
+      - StreamingResponse: Streams quiz questions in SSE format.
+      - JSONResponse: Error message if required parameters are missing.
     """
-
+    # Retrieve query parameters
     topic = request.query_params.get("topic")
     difficulty = request.query_params.get("difficulty")
     n_questions = request.query_params.get("n_questions")
+    model = request.query_params.get("model")
 
     logging.info(
-        f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}."
+        f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}, model={model}."
     )
 
-    # If either 'topic' or 'difficulty' is not provided in the request,
-    # the function will return an error message and a 400 status code.
-    # n_questions is optional
+    # If either 'topic' or 'difficulty' is missing, return an error.
     if not topic or not difficulty:
         error_message = "Please provide a topic and difficulty in the query string or in the request body to generate a quiz."
         logging.error(error_message)
@@ -58,52 +55,53 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
             status_code=400,
         )
 
-    # Set default value if not set
+    # Set default number of questions if not provided.
     if not n_questions:
         n_questions = 10
+    else:
+        # Convert n_questions to an integer if provided as string.
+        try:
+            n_questions = int(n_questions)
+        except ValueError:
+            error_message = "n_questions must be an integer."
+            logging.error(error_message)
+            return JSONResponse(
+                content={"error": error_message},
+                status_code=400,
+            )
 
     logging.info(
-        f"Generating quiz for topic: {topic} with difficulty: {difficulty} with number of questions: {n_questions}"
+        f"Generating quiz with: {topic=}, {difficulty=}, {n_questions=}, {model=}."
     )
 
-    # TODO: rename to quiz creator
-    # TODO: Fix - currently doesnt actually stream, but returns all items at once.
-    # Need to look into the azure functions streaming capability
-    # Or think about hosting the fastapi in another method e.g. ACI
-    quiz_generator = QuizGenerator()
+    # Create a QuizGenerator instance.
+    # TODO: rename to quiz creator ?
+    quiz_generator = QuizGenerator(model=model)
     generator = quiz_generator.generate_quiz(topic, difficulty, n_questions)
 
+    # Return the quiz as a streaming response in SSE format.
     return StreamingResponse(generator, media_type="text/event-stream")
 
 
 @app.get("/GenerateImage")
 async def generate_image_endpoint(request: Request) -> JSONResponse:
     """
-    FastAPI App to generate an image based on a provided prompt.
-
-    The function expects a 'prompt' parameter in the HTTP request query
-    or body. If a valid prompt is received, the function uses the
-    generate_image() function to create an image URL corresponding to
-    the prompt and returns it in the HTTP response.
-
-    Parameters:
-    - request (Request): The FastAPI request object containing the client request.
-
+    FastAPI endpoint to generate an image based on a provided prompt.
+    
+    Query Parameters:
+      - prompt: The prompt for image generation.
+    
     Returns:
-    - JSONResponse: The HTTP response object containing the image URL or
-                    an appropriate error message.
+      - JSONResponse: Contains the generated image URL or an error message.
     """
-
-    logging.info("Python HTTP trigger function processed a request.")
-
+    logging.info("Processing image generation request.")
     prompt = request.query_params.get("prompt")
-
     if not prompt:
         error_message = "No prompt query param provided for image generation."
         logging.warning(error_message)
         return JSONResponse(content={"error": error_message}, status_code=400)
 
-    logging.info(f"Received prompt: {prompt}")
+    logging.info(f"Received image prompt: {prompt}")
     image_generator = ImageGenerator()
     image_url = image_generator.generate_image(prompt)
 
@@ -112,8 +110,7 @@ async def generate_image_endpoint(request: Request) -> JSONResponse:
         logging.error(error_message)
         return JSONResponse(content={"error": error_message}, status_code=500)
 
-    # Return the image URL in the HTTP response
-    logging.info(f"Generated image for prompt {prompt}: {image_url}")
+    logging.info(f"Generated image for prompt '{prompt}': {image_url}")
     return JSONResponse(content={"image_url": image_url}, status_code=200)
 
 
