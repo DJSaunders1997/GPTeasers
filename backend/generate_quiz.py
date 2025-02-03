@@ -182,16 +182,22 @@ class QuizGenerator:
                 continue
 
             buffer += chunk_contents  # Append new data to the buffer
-            result = self.validate_and_parse_json(buffer)
 
-            # If the JSON is incomplete, wait for more data.
-            if result is None:
-                logger.debug("JSON is incomplete, waiting for more data...")
-                continue
-
-            # If the JSON is complete, yield it and clear the buffer.
-            yield self._format_sse(result)
-            buffer = ""  # Clear buffer for next JSON object
+            # If there is at least one newline, try splitting and parsing each complete line.
+            if "\n" in buffer:
+                lines = buffer.split("\n")
+                # Process all complete lines except possibly the last (which might be incomplete)
+                for line in lines[:-1]:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        json_obj = json.loads(line)
+                        yield self._format_sse(json_obj)
+                    except json.JSONDecodeError as e:
+                        logger.debug(f"Error parsing line '{line}': {e}")
+                # Keep the last (possibly incomplete) line in the buffer.
+                buffer = lines[-1]
 
         logger.info("Finished processing the stream!")
 
