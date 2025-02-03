@@ -54,10 +54,23 @@ display fetched quiz data on the web page, and manipulate other UI elements base
 
 ## Setup and Usage
 
-1. Open `index.html` in a modern web browser, or `Live Server` VSCode extension.
+1. Open `index.html` in a modern web browser, or use the `Live Server` VSCode extension.
 2. Enter a quiz topic in the provided input field.
 3. Click the "Fetch Quiz Data" button.
 4. The app will fetch quiz data related to the given topic and display it on the page.
+
+## Dockerfile for Local Testing
+
+This Dockerfile is used to containerize the frontend static site for local testing.
+It copies all static files into a container running a lightweight web server so that you can test the site locally.
+
+- **Nginx Option:**  
+  The Dockerfile uses the official Nginx image to serve the static files on port 80.
+
+- **http-server Option:**  
+  Alternatively, the Dockerfile can use a Node.js image with http-server to serve the files on a specified port.
+
+Refer to the Docker Compose file at the project root to build and run the container.
 
 ## UML
 
