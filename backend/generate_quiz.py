@@ -24,6 +24,7 @@ class QuizGenerator:
         "o1-mini",
         "o3-mini",
         "gemini/gemini-pro",
+        "gemini/gemini-2.0-flash",
         "gemini/gemini-1.5-pro-latest",
         "azure_ai/DeepSeek-R1",
     ]
