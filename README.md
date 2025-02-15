@@ -3,40 +3,39 @@
 [![CodeQL](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql)
 # GPTeasers 🧠💡
 
-Welcome to **GPTeasers** - where we tickle your brain with quizzes from the depths of GPT's knowledge! 🎓🤖
+Welcome to GPTeasers – a quiz app that challenges your brain with dynamically generated questions. Whether you’re into Roman History or Quantum Physics, GPTeasers has you covered. We even let you choose from multiple AI providers, so you can experience different styles of quiz generation.
 
 https://djsaunders1997.github.io/GPTeasers/
 
+## Overview
 
-## Overview 🌐
+GPTeasers is a straightforward web app that creates quiz-style questions based on topics you select. Simply enter a subject you’re curious about, and our system will generate a quiz just for you using advanced AI. With support for multiple AI providers.
 
-GPTeasers is a webapp that generates quiz-style questions based on the topic you provide. Want to challenge yourself with "Roman History" or dive deep into "Quantum Physics"? We've got you covered! 📚✨
+![GPTeasers frontpage with options for quiz topic, difficulty, and AI provider](.images/GPTeasers_frontpage.png)
 
-![Game of GPTeasers](./web_ui.png)
+![GPTeasers quiz page showing questions, answers, and generated image](.images/GPTeasers_quiz.png)
 
-## Features 🌟
+## Features
 
-- **Dynamic Quizzes** 📝: Enter a topic and get a quiz in seconds!
-- **Instant Feedback** 💬: Know right away if you're a genius or if it's time to hit the books.
-- **Mobile Friendly** 📱: Quiz yourself anytime, anywhere.
-- **Hosted on GitHub Pages** 🚀: Fast, reliable, and free!
+- **Dynamic Quizzes**: Input any topic and receive a quiz in seconds using genAI.
+- **Multiple AI Providers**: Select from a range of AI services to get different quiz styles.
+- **Hosted on GitHub Pages**: Fast, reliable, and free.
 
-## How to Use 🛠️
+## How to Use
 
-1. **Visit the App** 🌍: Go to the [GPTeasers site](https://djsaunders1997.github.io/GPTeasers/).
-2. **Enter a Topic** 🔍: Type in your desired topic in the search box.
-3. **Start the Quiz** 🎉: Answer the questions and see how you fare!
-4. **Share & Challenge Friends** 🤝: Think you did well? Share your results and challenge a friend!
-
+1. **Visit the App**: Go to the [GPTeasers site](https://djsaunders1997.github.io/GPTeasers/).
+2. **Enter a Topic**: Type in your desired topic.
+3. **Start the Quiz**: Answer the questions and see your results.
+4. **Share & Challenge Friends**: Think you aced it? Share your score and challenge your friends!
 
 # Architecture
 
-![Architecture Diagram](./Architecture.drawio.png)
+![Architecture Diagram](./images/Architecture.drawio.png)
 
-1. Web Browser (Client): The user accesses the static site hosted on GitHub Pages.
-2. GitHub Pages (Static Site): The static site serves content to the client. When specific actions are taken on the site (pressing a Generate Quz button), a call is made to the Azure Functions Backend.
-3. Azure Container Apps: Once triggered, the FastAPI containers communicates with the OpenAI API, sending requests and receiving responses.
-4. OpenAI API: Processes the request and sends back a response.
+1. **Web Browser (Client)**: The user interact with a static site hosted on GitHub Pages.
+2. **GitHub Pages (Static Site)**: Delivers the site’s content. When you hit “Generate Quiz”, the site communicates with our backend.
+3. **Azure Container Apps**: The FastAPI backend processes your quiz request and works with different AI providers.
+4. **AI Providers**: Multiple AI services process your input and generate unique quiz questions.
 
 ## Docker Compose Setup for Local Testing
 
@@ -45,19 +44,19 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
 ### Services
 
 - **fastapi_generate_quiz**:  
-  The FastAPI backend that serves the GPTeasers API. This container is responsible for handling requests from the frontend and interacting with the OpenAI API to generate quizzes.
+  The FastAPI backend handles quiz generation by interacting with various AI providers.
 
 - **frontend**:  
-  A static frontend application. Although the site is hosted on GitHub Pages, this container allows you to test it locally.
+  A static version of the front end for local testing (even though the production site is on GitHub Pages).
 
 ### Running Locally
 
 1. **Set Environment Variables**  
-   Ensure that the `OPENAI_API_KEY` is set in your environment or in a `.env` file at the project root:
+   Make sure your `OPENAI_API_KEY` is set in your environment or in a `.env` file at the project root:
    ```sh
    export OPENAI_API_KEY=your_openai_api_key_here
    ```
-   or create a `.env` file with:
+   Or create a `.env` file with:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
    ```
@@ -67,12 +66,11 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
    ```sh
    docker-compose up --build
    ```
-   This command builds both the backend and frontend images and starts the containers.
+   This command builds and starts both the backend and frontend containers.
 
 3. **Access the Services**  
-   - **Backend API (FastAPI)**:  
-     Access via [http://localhost:8000](http://localhost:8000)
-   - **Frontend**:  
-     Access via [http://localhost:8080](http://localhost:8080)
+   - **Backend API (FastAPI)**: [http://localhost:8000](http://localhost:8000)
+   - **Frontend**: [http://localhost:8080](http://localhost:8080)
 
-By following these steps, you can easily test both your backend API and your static frontend locally using Docker Compose.
+With these steps, you can easily test both the backend API and the static frontend locally using Docker Compose.
+
