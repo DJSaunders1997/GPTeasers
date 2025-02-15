@@ -55,7 +55,7 @@ class TestResponseStreamParser:
             '{"question": "What is ..."}',
         ]
         expected_remainder = "incomplete"
-        
+
         complete_lines, remainder = response_parser._split_buffer()
 
         print("Complete Lines:", complete_lines)
