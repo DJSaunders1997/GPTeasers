@@ -1,38 +1,201 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    line-height: 1.6;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
     text-align: center;
-}
-
-button,
-input[type="text"] {
+  }
+  
+  /* 
+    Flexbox layout to eliminate scrolling.
+    The entire viewport is divided into header, main, and footer sections.
+    Overflow is hidden to prevent scrolling.
+  */
+  html, body {
+    height: 100%;         /* Allow the body to take up the full viewport height */
+    margin: 0;            /* Remove default margins */
+    /* overflow: hidden;  Prevent scrolling on the entire page */
+  }
+  
+  body {
+    display: flex;        /* Enable flexbox layout */
+    flex-direction: column; /* Stack header, main, footer vertically */
+  }
+  
+  /* Header and footer take only as much space as they need */
+  header, footer {
+    flex: 0 0 auto;
+  }
+  
+  /* The main section fills the remaining space */
+  main {
+    flex: 1 1 auto;
+    /* overflow: hidden; Hide any overflow if the content exceeds the available space */
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    padding: 10px 20px;
+    color: #fff;
+  }
+  
+  .navbar-brand h1 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #fff;
+  }
+  
+  .navbar-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
+  
+  .navbar-links li {
+    margin-left: 20px;
+  }
+  
+  .navbar-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1em;
+    transition: color 0.3s;
+  }
+  
+  .navbar-links a:hover {
+    color: #3498db;
+  }
+  
+  h1 {
+    color: #2c3e50;
+    margin-top: 20px;
+    font-size: 2.5em;
+  }
+  
+  #inputContainer {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  select,
+  input[type="text"],
+  button {
+    width: 100%;
     padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  select:focus,
+  input[type="text"]:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+  
+  button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  p {
     margin: 10px 0;
-}
-
-#quizTopic {
-    width: 300px;
-}
-
-#quizDifficulty {
-    height: 40px;
-}
-
-#quizModel {
-    height: 40px;
-}
-
-#quiz-container {
-    display: none;
-}
-
-/* Center Image and set size */
-#AIImage {
-    display: none;
-    margin-left: auto;
-    margin-right: auto;
-    width: 300px;
+    color: #555;
+  }
+  
+  #AIImage {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
     height: auto;
-}
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  #loadingBarContainer {
+    margin: 20px auto;
+    width: 80%;
+    background-color: #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  #loadingBar {
+    height: 30px;
+    background-color: #3498db;
+    transition: width 0.3s;
+  }
+  
+  #quiz-container {
+    display: none;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: #fff;
+  }
+  
+  footer a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 
+    Static scaling for #quizSection to ensure the content fits without cutting off on larger screens.
+    On small screens, the scale remains at 1.
+  */
+  #quizSection {
+    transform: scale(1);
+    transform-origin: top center;
+  }
+  
+  @media (min-width: 1024px) {
+    #quizSection {
+      transform: scale(0.9);
+    }
+  }
+  
+  @media (min-width: 1440px) {
+    #quizSection {
+      transform: scale(0.8);
+    }
+  }
+  

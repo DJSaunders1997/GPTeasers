@@ -1,92 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPTeasers Quiz App</title>
-    <link rel="icon" href="static/flavicon.png" type="image/png" sizes="32x32">
-    <link rel="stylesheet" href="static/styles.css"> <!-- Link to the new CSS file -->
+    <link
+      rel="icon"
+      href="static/flavicon.png"
+      type="image/png"
+      sizes="32x32"
+    />
+    <link rel="stylesheet" href="static/styles.css" />
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0G6F46NPWS"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-0G6F46NPWS"
+    ></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-0G6F46NPWS');
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-0G6F46NPWS");
     </script>
-</head>
+  </head>
 
-<body>
-    <h1>GPTeasers 🧠💡</h1>
-    <p id="intro">Enter a topic with a difficulty, get an AI generated Quiz, and enjoy AI generated art!</p>
-    <div id="inputContainer">
-        <select id="quizDifficulty">
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <h1>GPTeasers 🧠💡</h1>
+        </div>
+        <ul class="navbar-links">
+          <li>
+            View the code on
+            <a href="https://github.com/DJSaunders1997/GPTeasers"
+              >Github Repo</a
+            >
+          </li>
+          <li><a href="mailto:DJSaunders1997@gmail.com">Contact</a></li>
+        </ul>
+      </nav>
+      <h1>GPTeasers 🧠💡</h1>
+      <p id="intro">
+        Enter a topic with a difficulty, get an AI generated Quiz, and enjoy AI
+        generated art!
+      </p>
+    </header>
+
+    <main>
+      <section id="inputContainer">
+        <div class="input-group">
+          <label for="quizDifficulty">Select Difficulty:</label>
+          <p>Choose the level of challenge for your quiz.</p>
+          <select id="quizDifficulty">
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
             <option value="extremely-hard">Extremely Hard</option>
             <option value="impossible">Impossible</option>
-        </select>
-        <input type="text" id="quizTopic" placeholder="Enter a quiz topic e.g. Roman History">
-        <select id="quizModel">
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="quizTopic">Enter Topic:</label>
+          <p>Specify the subject matter for your quiz.</p>
+          <input
+            type="text"
+            id="quizTopic"
+            placeholder="Enter a quiz topic e.g. Roman History"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="quizModel">Select Model Provider:</label>
+          <p>Select the AI model to generate your quiz.</p>
+          <select id="quizModel">
             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
             <option value="gpt-4-turbo">gpt-4-turbo</option>
             <option value="o1-mini">o1-mini</option>
             <option value="o3-mini">o3-mini</option>
+            <option value="gemini/gemini-2.0-flash">
+              gemini/gemini-2.0-flash
+            </option>
             <option value="gemini/gemini-pro">gemini/gemini-pro</option>
-            <option value="gemini/gemini-2.0-flash">gemini/gemini-2.0-flash</option>
-            <option value="gemini/gemini-1.5-pro-latest">gemini/gemini-1.5-pro-latest</option>
+            <option value="gemini/gemini-1.5-pro-latest">
+              gemini/gemini-1.5-pro-latest
+            </option>
             <option value="azure_ai/DeepSeek-R1">azure_ai/DeepSeek-R1</option>
-        </select>
-        <button id="fetchQuizButton">Fetch Quiz Data</button>
-    </div>
-
-    <img id="AIImage" alt="Generated Image">
-
-    <p id="loadingMessage" style="display: none;">Loading ⏳ this can take 10s ...</p>
-    <div id="loadingBarContainer" style="width: 100%; background-color: #f3f3f3; display: none;">
-        <p id="loadingMessage">Loading ⏳ </p>
-        <div id="loadingBar" style="width: 0%; height: 30px; background-color: #3498db;"></div>
-    </div>
-
-    <div id="quiz-container">
-        <h1 id="quizTitle">Title</h1>
-        <h2 id="question-text">Question</h2>
-
-        <button id="option-A">A</button>
-        <button id="option-B">B</button>
-        <button id="option-C">C</button>
-    </div>
-
-    <div id="questionsContainer">
-        <!-- Questions will be dynamically added here -->
-    </div>
-
-    <!-- This is a template for each question. It will be hidden by default and cloned for each question. -->
-    <template id="questionTemplate">
-        <div class="question">
-            <h2></h2> <!-- Question text will be inserted here -->
-            <label><input type="radio" name="answer" value="A"> <span class="optionA"></span></label>
-            <label><input type="radio" name="answer" value="B"> <span class="optionB"></span></label>
-            <label><input type="radio" name="answer" value="C"> <span class="optionC"></span></label>
-            <button onclick="checkAnswer(this)">Submit</button>
-            <p class="explanation" style="display:block;"></p>
+          </select>
         </div>
-    </template>
 
-    <footer>
-        Website by David Saunders.
-        <br>
-        View the code on
-        <a href="https://github.com/DJSaunders1997/GPTeasers">Github</a>
-        <br>
-    </footer>
+        <button id="fetchQuizButton">Fetch Quiz Data</button>
+      </section>
+
+      <section id="quizSection">
+        <img id="AIImage" alt="Generated Image" style="display: none" />
+        <p id="loadingMessage" style="display: none">
+          Loading ⏳ this can take 10s ...
+        </p>
+        <div
+          id="loadingBarContainer"
+          style="width: 100%; background-color: #f3f3f3; display: none"
+        >
+          <p id="loadingMessage">Loading ⏳</p>
+          <div
+            id="loadingBar"
+            style="width: 0%; height: 30px; background-color: #3498db"
+          ></div>
+        </div>
+
+        <div id="quiz-container">
+          <h1 id="quizTitle">Title</h1>
+          <h2 id="question-text">Question</h2>
+
+          <button id="option-A">A</button>
+          <button id="option-B">B</button>
+          <button id="option-C">C</button>
+        </div>
+
+        <div id="questionsContainer">
+          <!-- Questions will be dynamically added here -->
+        </div>
+
+        <!-- This is a template for each question. It will be hidden by default and cloned for each question. -->
+        <template id="questionTemplate">
+          <div class="question">
+            <h2></h2>
+            <!-- Question text will be inserted here -->
+            <label
+              ><input type="radio" name="answer" value="A" />
+              <span class="optionA"></span
+            ></label>
+            <label
+              ><input type="radio" name="answer" value="B" />
+              <span class="optionB"></span
+            ></label>
+            <label
+              ><input type="radio" name="answer" value="C" />
+              <span class="optionC"></span
+            ></label>
+            <button onclick="checkAnswer(this)">Submit</button>
+            <p class="explanation" style="display: block"></p>
+          </div>
+        </template>
+      </section>
+    </main>
+
+    <footer>Website by David Saunders.</footer>
 
     <script type="module" src="scripts/app.js"></script>
-
-</body>
-
+  </body>
 </html>
