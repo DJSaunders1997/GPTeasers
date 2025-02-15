@@ -29,8 +29,12 @@ class TestQuizGenerator:
 
     def test_check_model_is_supported(self):
         """Test that unsupported models default to 'gpt-4-turbo'."""
-        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
-        assert QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
+        assert (
+            QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
+        )
+        assert (
+            QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
+        )
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
@@ -40,7 +44,9 @@ class TestQuizGenerator:
         We remove the environment variable and expect the constructor to raise an error.
         """
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-        with pytest.raises(ValueError, match="Environment variable OPENAI_API_KEY is not set"):
+        with pytest.raises(
+            ValueError, match="Environment variable OPENAI_API_KEY is not set"
+        ):
             QuizGenerator()
 
     def test_create_role(self, quiz_generator):
@@ -62,24 +68,27 @@ class TestQuizGenerator:
     @patch("backend.generate_quiz.completion")
     def test_generate_quiz(self, mock_completion, quiz_generator):
         """Test generate_quiz to ensure it streams responses properly."""
-        mock_stream = iter(["{\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n"])
+        mock_stream = iter(['{"question": "What is 2+2?", "answer": "4"}\n'])
         mock_completion.return_value = mock_stream
 
         parser_mock = MagicMock()
-        parser_mock.parse_stream.return_value = iter(["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"])
+        parser_mock.parse_stream.return_value = iter(
+            ['data: {"question": "What is 2+2?", "answer": "4"}\n\n']
+        )
 
         with patch.object(quiz_generator, "parser", parser_mock):
             generator = quiz_generator.generate_quiz("Math", "Easy", n_questions=1)
             result = list(generator)
 
-        assert result == ["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"]
+        assert result == ['data: {"question": "What is 2+2?", "answer": "4"}\n\n']
 
     def test_print_quiz(self, quiz_generator, caplog):
         """Test that print_quiz correctly logs the generated questions."""
         caplog.set_level(logging.INFO)
-        test_generator = iter(["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"])
+        test_generator = iter(['data: {"question": "What is 2+2?", "answer": "4"}\n\n'])
         result = quiz_generator.print_quiz(test_generator)
-        assert "data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n" in result
+        assert 'data: {"question": "What is 2+2?", "answer": "4"}\n\n' in result
+
 
 class TestQuizGeneratorIntegration:
     """
