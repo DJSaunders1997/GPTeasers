@@ -132,18 +132,24 @@ class ResponseStreamParser:
 
         Example:
             If self.buffer is:
-                '{"question": "Who was ..."}\n{"question": "What is ..."}incomplete'
+                '{"question": "Who was ..."}\n"question": "What is ..."}\nincomplete'
             Then:
                 complete_lines = ['{"question": "Who was ..."}', '{"question": "What is ..."}']
                 remainder = "incomplete"
 
         Returns:
-            A tuple (complete_lines, remainder).
+            A tuple (list of complete JSON lines, remainder string).
         """
         if "\n" not in self.buffer:
-            return [], self.buffer
+            return [], self.buffer  # No full lines, everything is remainder
+
         lines = self.buffer.split("\n")
-        # All lines except the last one are complete.
+
+        # The remainder is empty if the buffer ends with a newline.
+        if self.buffer.endswith("\n"):
+            return lines[:-1], ""
+
+        # Otherwise, the last line is incomplete.
         return lines[:-1], lines[-1]
 
     def _process_line(self, line: str) -> Optional[str]:
