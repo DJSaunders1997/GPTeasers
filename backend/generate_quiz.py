@@ -148,8 +148,7 @@ class QuizGenerator:
         logger.info(f"Prompt for LLM: {prompt}")
         llm_stream = self._create_llm_stream(prompt)
         # Use the separate parser class to handle the stream
-        parser = ResponseStreamParser()
-        return parser.parse_stream(llm_stream)
+        return self.parser.parse_stream(llm_stream)
 
     def _create_role(self, topic: str, difficulty: str, n_questions: int) -> str:
         """
