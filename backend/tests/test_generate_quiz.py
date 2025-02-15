@@ -16,11 +16,16 @@ code under test and simulate various conditions.
 """
 
 
-# Fixture to create an instance of QuizGenerator with a dummy API key.
 @pytest.fixture
 def quiz_generator(monkeypatch):
-    # Set a dummy API key in the environment so that the class can initialize without error.
+    """Fixture to create an instance of QuizGenerator with dummy API keys.
+    So that the class can initialize without error."""
     monkeypatch.setenv("OPENAI_API_KEY", "dummy_key")
+    monkeypatch.setenv("GEMINI_API_KEY", "dummy_key")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "dummy_key")
+    monkeypatch.setenv("AZURE_AI_API_KEY", "dummy_key")
+    monkeypatch.setenv("AZURE_AI_API_BASE", "https://dummy.azure.com")
+
     return QuizGenerator()
 
 
