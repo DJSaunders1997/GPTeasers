@@ -49,6 +49,7 @@ class App {
     // Get the topic and difficulty from the input field
     const topic = this.ui.getTopic();
     const difficulty = this.ui.getDifficulty();
+    const model = this.ui.getModel();
 
     // Check if topic is empty or contains only whitespace
     if (!topic.trim()) {
@@ -70,7 +71,7 @@ class App {
       // use the onQuestionReceived callback to display each question individually as it is added to the Quiz object.
       // Arrow function: Shorter syntax for functions and keeps 'this' context from surrounding code
       // Set's up quiz only when the first question is received
-      await this.controller.callQuizAPI(topic, difficulty, () => {
+      await this.controller.callQuizAPI(topic, difficulty, model, () => {
         if(!firstQuestionReceived){
           this.showQuestion(); // Question should've been added to quiz, so display it
           this.ui.hideLoading(); // Hide loading clues

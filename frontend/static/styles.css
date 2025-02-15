@@ -20,6 +20,10 @@ input[type="text"] {
     height: 40px;
 }
 
+#quizModel {
+    height: 40px;
+}
+
 #quiz-container {
     display: none;
 }
