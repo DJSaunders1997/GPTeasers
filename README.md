@@ -12,7 +12,9 @@ https://djsaunders1997.github.io/GPTeasers/
 
 GPTeasers is a webapp that generates quiz-style questions based on the topic you provide. Want to challenge yourself with "Roman History" or dive deep into "Quantum Physics"? We've got you covered! 📚✨
 
-![Game of GPTeasers](./web_ui.png)
+![GPTeasers frontpage with options for quiz topic, difficulty, and AI provider](.images/GPTeasers_frontpage.png)
+
+![GPTeasers quiz page showing questions, answers, and generatred image](.images/GPTeasers_quiz.png)
 
 ## Features 🌟
 
@@ -31,7 +33,7 @@ GPTeasers is a webapp that generates quiz-style questions based on the topic you
 
 # Architecture
 
-![Architecture Diagram](./Architecture.drawio.png)
+![Architecture Diagram](./images/Architecture.drawio.png)
 
 1. Web Browser (Client): The user accesses the static site hosted on GitHub Pages.
 2. GitHub Pages (Static Site): The static site serves content to the client. When specific actions are taken on the site (pressing a Generate Quz button), a call is made to the Azure Functions Backend.
