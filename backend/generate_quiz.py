@@ -96,15 +96,16 @@ class QuizGenerator:
 
         Args:
             model (str): The model name to validate.
-            
+
         Returns:
             str: A supported model name.
         """
         if model not in QuizGenerator.SUPPORTED_MODELS:
-            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'.")
+            logger.warning(
+                f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'."
+            )
             return "gpt-4-turbo"
         return model
-        
 
     def __init__(
         self,
@@ -123,7 +124,7 @@ class QuizGenerator:
         """
         self.check_api_key_from_env()
 
-                # Validate and set the model.
+        # Validate and set the model.
         self.model = QuizGenerator.check_model_is_supported(model)
 
         # Use the separate parser class to handle the stream.

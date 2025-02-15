@@ -25,13 +25,13 @@ app.add_middleware(
 async def generate_quiz_endpoint(request: Request) -> JSONResponse:
     """
     FastAPI endpoint to generate a quiz based on topic, difficulty, and model.
-    
+
     Query Parameters:
       - topic: The subject for the quiz (e.g., "UK History").
       - difficulty: The desired difficulty (e.g., "easy", "medium").
       - n_questions: (Optional) Number of questions to generate (defaults to 10).
       - model: (Optional) The model to use. If not provided, the default from QuizGenerator is used.
-    
+
     Returns:
       - StreamingResponse: Streams quiz questions in SSE format.
       - JSONResponse: Error message if required parameters are missing.
@@ -87,10 +87,10 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
 async def generate_image_endpoint(request: Request) -> JSONResponse:
     """
     FastAPI endpoint to generate an image based on a provided prompt.
-    
+
     Query Parameters:
       - prompt: The prompt for image generation.
-    
+
     Returns:
       - JSONResponse: Contains the generated image URL or an error message.
     """
