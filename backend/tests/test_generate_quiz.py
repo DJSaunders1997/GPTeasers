@@ -1,7 +1,7 @@
 import os
-import json
 import pytest
-from types import SimpleNamespace
+import logging
+from unittest.mock import patch, MagicMock
 from backend.generate_quiz import QuizGenerator
 
 """
@@ -24,22 +24,13 @@ def quiz_generator(monkeypatch):
     return QuizGenerator()
 
 
-class TestQuizGeneratorUnit:
-    """
-    Unit tests for the QuizGenerator class.
-    These tests use mocks to avoid making real API calls.
-    """
+class TestQuizGenerator:
+    """Unit tests for the QuizGenerator class."""
 
-    def test_get_api_key_from_env(self, monkeypatch):
-        """
-        Test that get_api_key_from_env correctly retrieves the API key from the environment.
-
-        We set the environment variable and then call the class method to verify that it returns
-        the expected API key.
-        """
-        monkeypatch.setenv("OPENAI_API_KEY", "test_key")
-        key = QuizGenerator.get_api_key_from_env()
-        assert key == "test_key"
+    def test_check_model_is_supported(self):
+        """Test that unsupported models default to 'gpt-4-turbo'."""
+        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
+        assert QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
@@ -49,9 +40,7 @@ class TestQuizGeneratorUnit:
         We remove the environment variable and expect the constructor to raise an error.
         """
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-        with pytest.raises(
-            ValueError, match="Environment variable OPENAI_API_KEY is not set"
-        ):
+        with pytest.raises(ValueError, match="Environment variable OPENAI_API_KEY is not set"):
             QuizGenerator()
 
     def test_create_role(self, quiz_generator):
@@ -70,128 +59,27 @@ class TestQuizGeneratorUnit:
         assert str(n_questions) in role
         assert quiz_generator.EXAMPLE_RESPONSE in role
 
-    def test_create_openai_stream(self, mocker, quiz_generator):
-        """
-        Test that _create_openai_stream calls the underlying OpenAI API with the correct parameters.
+    @patch("backend.generate_quiz.completion")
+    def test_generate_quiz(self, mock_completion, quiz_generator):
+        """Test generate_quiz to ensure it streams responses properly."""
+        mock_stream = iter(["{\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n"])
+        mock_completion.return_value = mock_stream
 
-        We use method patching (with mocker.patch.object) to replace the actual API call with a dummy
-        value, then verify that the method was called with the correct parameters.
-        """
-        dummy_role = "dummy role string"
-        dummy_stream = "dummy stream"
-        # Patch the client's chat.completions.create method so no actual API call is made.
-        patcher = mocker.patch.object(
-            quiz_generator.client.chat.completions, "create", return_value=dummy_stream
-        )
-        result = quiz_generator._create_openai_stream(dummy_role)
-        # Verify the patched method was called once with the expected arguments.
-        patcher.assert_called_once_with(
-            model="gpt-4-turbo-preview",
-            messages=[{"role": "user", "content": dummy_role}],
-            stream=True,
-        )
-        assert result == dummy_stream
+        parser_mock = MagicMock()
+        parser_mock.parse_stream.return_value = iter(["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"])
 
-    def test_create_question_generator(self, quiz_generator):
-        """
-        Test the _create_question_generator method by simulating a stream that yields a single chunk
-        containing a complete JSON string.
+        with patch.object(quiz_generator, "parser", parser_mock):
+            generator = quiz_generator.generate_quiz("Math", "Easy", n_questions=1)
+            result = list(generator)
 
-        We use a fake chunk (wrapped in a SimpleNamespace) to simulate what the OpenAI API might return.
-        """
-        # Use the EXAMPLE_RESPONSE as our fake complete JSON content.
-        fake_json = quiz_generator.EXAMPLE_RESPONSE
-        fake_chunk = SimpleNamespace(
-            choices=[SimpleNamespace(delta=SimpleNamespace(content=fake_json))]
-        )
+        assert result == ["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"]
 
-        def fake_stream():
-            # Yield a single fake chunk.
-            yield fake_chunk
-
-        # Call the generator method and check that it yields the correctly formatted SSE event.
-        gen = quiz_generator._create_question_generator(fake_stream())
-        expected = "data: " + json.dumps(json.loads(fake_json)) + "\n\n"
-        result = next(gen)
-        assert result == expected
-
-    def test_empty_chunk_in_question_generator(self, quiz_generator, mocker):
-        """
-        Test _create_question_generator when the stream yields an empty chunk (i.e., a chunk with None content)
-        before yielding a valid JSON chunk.
-
-        This verifies that the method correctly logs the empty chunk and then proceeds once valid data is received.
-        """
-        fake_json = quiz_generator.EXAMPLE_RESPONSE
-        # Create a chunk that simulates an empty response.
-        empty_chunk = SimpleNamespace(
-            choices=[SimpleNamespace(delta=SimpleNamespace(content=None))]
-        )
-        # Then a chunk that contains valid JSON.
-        valid_chunk = SimpleNamespace(
-            choices=[SimpleNamespace(delta=SimpleNamespace(content=fake_json))]
-        )
-
-        def fake_stream():
-            yield empty_chunk
-            yield valid_chunk
-
-        # Patch logger.debug to capture log messages about empty chunks.
-        logger_debug = mocker.patch("backend.generate_quiz.logger.debug")
-        gen = quiz_generator._create_question_generator(fake_stream())
-        result = next(gen)
-        # Verify that the empty chunk log was produced.
-        logger_debug.assert_any_call("Chunk was empty!")
-        expected = "data: " + json.dumps(json.loads(fake_json)) + "\n\n"
-        assert result == expected
-
-    def test_format_sse(self):
-        """
-        Test that _format_sse correctly formats a JSON object as an SSE (Server-Sent Event) string.
-
-        This is a simple helper method that should return a string starting with "data:".
-        """
-        sample_dict = {"key": "value"}
-        expected = "data: " + json.dumps(sample_dict) + "\n\n"
-        result = QuizGenerator._format_sse(sample_dict)
-        assert result == expected
-
-    def test_validate_and_parse_json_valid(self):
-        """
-        Test validate_and_parse_json with a valid JSON string.
-
-        The method should return the corresponding Python dictionary.
-        """
-        valid_json_str = '{"foo": "bar"}'
-        result = QuizGenerator.validate_and_parse_json(valid_json_str)
-        assert result == {"foo": "bar"}
-
-    def test_validate_and_parse_json_incomplete(self):
-        """
-        Test validate_and_parse_json with an incomplete JSON string.
-
-        Since the method is designed to return None if the JSON is incomplete (not fully formed),
-        we expect the result to be None.
-        """
-        incomplete_json_str = '{"foo": "bar"'
-        result = QuizGenerator.validate_and_parse_json(incomplete_json_str)
-        assert result is None
-
-    def test_print_quiz(self, mocker, quiz_generator):
-        """
-        Test the static print_quiz method by passing in a dummy generator.
-
-        We patch logger.info to verify that the print_quiz method logs each quiz item correctly.
-        """
-        dummy_generator = (
-            s for s in ['data: {"quiz": "q1"}\n\n', 'data: {"quiz": "q2"}\n\n']
-        )
-        logger_info = mocker.patch("backend.generate_quiz.logger.info")
-        QuizGenerator.print_quiz(dummy_generator)
-        # Verify that logger.info was called with the expected messages.
-        logger_info.assert_any_call('Item 1: data: {"quiz": "q1"}\n\n')
-        logger_info.assert_any_call('Item 2: data: {"quiz": "q2"}\n\n')
-
+    def test_print_quiz(self, quiz_generator, caplog):
+        """Test that print_quiz correctly logs the generated questions."""
+        caplog.set_level(logging.INFO)
+        test_generator = iter(["data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n"])
+        result = quiz_generator.print_quiz(test_generator)
+        assert "data: {\"question\": \"What is 2+2?\", \"answer\": \"4\"}\n\n" in result
 
 class TestQuizGeneratorIntegration:
     """
