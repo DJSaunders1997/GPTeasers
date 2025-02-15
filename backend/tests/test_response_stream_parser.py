@@ -47,14 +47,27 @@ class TestResponseStreamParser:
         Test splitting the buffer into complete lines and a remainder.
         """
         response_parser.buffer = (
-            '{"question": "Who was ..."}\n{"question": "What is ..."}incomplete'
+            '{"question": "Who was ..."}\n{"question": "What is ..."}\nincomplete'
         )
-        complete_lines, remainder = response_parser._split_buffer()
-        assert complete_lines == [
+
+        expected_complete_lines = [
             '{"question": "Who was ..."}',
             '{"question": "What is ..."}',
         ]
-        assert remainder == "incomplete"
+        expected_remainder = "incomplete"
+        
+        complete_lines, remainder = response_parser._split_buffer()
+
+        print("Complete Lines:", complete_lines)
+        print("Remainder:", remainder)
+
+        assert complete_lines == expected_complete_lines, (
+            f"Expected complete lines '{expected_complete_lines}', but got {complete_lines}"
+        )
+
+        assert remainder == expected_remainder, (
+            f"Expected remainder '{expected_remainder}', but got {remainder}"
+        )
 
     def test_process_line_valid_json(self, response_parser):
         """
