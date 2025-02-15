@@ -11,9 +11,11 @@ https://djsaunders1997.github.io/GPTeasers/
 
 GPTeasers is a straightforward web app that creates quiz-style questions based on topics you select. Simply enter a subject you’re curious about, and our system will generate a quiz just for you using advanced AI. With support for multiple AI providers.
 
-![GPTeasers frontpage with options for quiz topic, difficulty, and AI provider](.images/GPTeasers_frontpage.png)
+### Front Page
+![GPTeasers frontpage with options for quiz topic, difficulty, and AI provider](images/GPTeasers_frontpage.png)
 
-![GPTeasers quiz page showing questions, answers, and generated image](.images/GPTeasers_quiz.png)
+### Quiz Page
+![GPTeasers quiz page showing questions, answers, and generated image](images/GPTeasers_quiz.png)
 
 ## Features
 
