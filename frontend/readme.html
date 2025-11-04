@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+  readme.html - README Display Page
+  
+  Purpose: This page dynamically fetches and displays the root README.md file
+  from the GitHub repository. It serves as a web-friendly view of the project
+  documentation that integrates with the main GPTeasers website.
+  
+  Features:
+  - Fetches README.md directly from GitHub's raw content URL
+  - Converts Markdown to HTML using the marked.js library
+  - Automatically converts relative image paths to absolute GitHub URLs
+  - Provides consistent navbar navigation with the main site
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>GPTeasers README</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+
+    <link rel="stylesheet" href="static/styles.css" />
+
+    <style type="text/css">
+      body {
+          margin: 0px;
+          padding: 0px;
+          text-align: center;
+      }
+      #display_content {
+          margin-left: auto;
+          margin-right: auto;
+          text-align: left;
+          width: 720px;
+      }
+    </style>
+
+    <script> 
+      $(function(){
+          // Load `README.md` from GitHub and show
+          $.get("https://raw.githubusercontent.com/DJSaunders1997/GPTeasers/main/README.md", function(data) {
+              // Convert relative image paths to absolute GitHub URLs
+              var githubBase = "https://raw.githubusercontent.com/DJSaunders1997/GPTeasers/main/";
+              // Replace relative paths like "images/..." or "./images/..." with absolute URLs
+              data = data.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function(match, alt, path) {
+                  // If path is relative (starts with "images/" or "./images/"), convert to absolute
+                  if (path.startsWith("images/") || path.startsWith("./images/")) {
+                      var cleanPath = path.replace(/^\.\//, ""); // Remove leading "./"
+                      return "![" + alt + "](" + githubBase + cleanPath + ")";
+                  }
+                  // If path is already absolute (starts with http), leave it unchanged
+                  return match;
+              });
+              var html_str = marked(data);
+              $("#display_content").html(html_str);
+          }).fail(function() {
+              $("#display_content").html("<p>Error loading README.md</p>");
+          });
+      });
+    </script> 
+  </head> 
+  <body> 
+    <header>
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <h1>GPTeasers 🧠💡</h1>
+        </div>
+        <ul class="navbar-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="readme.html">README</a></li>
+          <li><a href="https://github.com/DJSaunders1997/GPTeasers">Github Repo</a></li>
+          <li><a href="mailto:DJSaunders1997@gmail.com">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section id="readmeContent">
+        <div id="display_content"></div>
+      </section>
+    </main>
+    <footer>Website by David Saunders.</footer>
+  </body> 
+</html>
