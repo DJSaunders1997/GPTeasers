@@ -2,18 +2,23 @@
 # https://fastapi.tiangolo.com/deployment/docker/#dockerfile
 FROM python:3.10-slim
 
+# Install UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
 # Set working directory
 WORKDIR /code
 
-# Copy requirements file and install dependencies
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Copy project files
+COPY ./pyproject.toml /code/pyproject.toml
+
+# Install dependencies without installing the project itself
+RUN uv sync --no-dev --no-install-project
 
 # Copy application code
 COPY . /code
 
 # Command to run the application using Uvicorn
-CMD ["uvicorn", "fastapi_generate_quiz:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "fastapi_generate_quiz:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # docker build -t fastapi_generate_quiz:latest .        # Build container
 # docker run -p 8000:8000 -e OPENAI_API_KEY fastapi_generate_quiz:latest        # Run container
