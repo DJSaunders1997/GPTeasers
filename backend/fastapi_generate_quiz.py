@@ -3,9 +3,10 @@
 import logging
 from generate_quiz import QuizGenerator
 from generate_image import ImageGenerator
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 
 # Copy Azure Docs Example
 # https://github.com/Azure-Samples/fastapi-on-azure-functions/tree/main
@@ -22,7 +23,12 @@ app.add_middleware(
 
 
 @app.get("/GenerateQuiz")
-async def generate_quiz_endpoint(request: Request) -> JSONResponse:
+async def generate_quiz_endpoint(
+    topic: str = Query(..., description="The subject for the quiz (e.g., 'UK History')"),
+    difficulty: str = Query(..., description="The desired difficulty (e.g., 'easy', 'medium', 'hard')"),
+    n_questions: int = Query(10, description="Number of questions to generate (defaults to 10)"),
+    model: Optional[str] = Query(None, description="The model to use. If not provided, the default from QuizGenerator is used")
+) -> StreamingResponse:
     """
     FastAPI endpoint to generate a quiz based on topic, difficulty, and model.
 
@@ -34,41 +40,10 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
 
     Returns:
       - StreamingResponse: Streams quiz questions in SSE format.
-      - JSONResponse: Error message if required parameters are missing.
     """
-    # Retrieve query parameters
-    topic = request.query_params.get("topic")
-    difficulty = request.query_params.get("difficulty")
-    n_questions = request.query_params.get("n_questions")
-    model = request.query_params.get("model")
-
     logging.info(
         f"Python HTTP trigger function processed a request with {topic=} {difficulty=}, {n_questions=}, model={model}."
     )
-
-    # If either 'topic' or 'difficulty' is missing, return an error.
-    if not topic or not difficulty:
-        error_message = "Please provide a topic and difficulty in the query string or in the request body to generate a quiz."
-        logging.error(error_message)
-        return JSONResponse(
-            content={"error": error_message},
-            status_code=400,
-        )
-
-    # Set default number of questions if not provided.
-    if not n_questions:
-        n_questions = 10
-    else:
-        # Convert n_questions to an integer if provided as string.
-        try:
-            n_questions = int(n_questions)
-        except ValueError:
-            error_message = "n_questions must be an integer."
-            logging.error(error_message)
-            return JSONResponse(
-                content={"error": error_message},
-                status_code=400,
-            )
 
     logging.info(
         f"Generating quiz with: {topic=}, {difficulty=}, {n_questions=}, {model=}."
@@ -76,7 +51,10 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
 
     # Create a QuizGenerator instance.
     # TODO: rename to quiz creator ?
-    quiz_generator = QuizGenerator(model=model)
+    if model is not None:
+        quiz_generator = QuizGenerator(model=model)
+    else:
+        quiz_generator = QuizGenerator()
     generator = quiz_generator.generate_quiz(topic, difficulty, n_questions)
 
     # Return the quiz as a streaming response in SSE format.
@@ -84,7 +62,9 @@ async def generate_quiz_endpoint(request: Request) -> JSONResponse:
 
 
 @app.get("/GenerateImage")
-async def generate_image_endpoint(request: Request) -> JSONResponse:
+async def generate_image_endpoint(
+    prompt: str = Query(..., description="The prompt for image generation")
+) -> JSONResponse:
     """
     FastAPI endpoint to generate an image based on a provided prompt.
 
@@ -95,12 +75,7 @@ async def generate_image_endpoint(request: Request) -> JSONResponse:
       - JSONResponse: Contains the generated image URL or an error message.
     """
     logging.info("Processing image generation request.")
-    prompt = request.query_params.get("prompt")
-    if not prompt:
-        error_message = "No prompt query param provided for image generation."
-        logging.warning(error_message)
-        return JSONResponse(content={"error": error_message}, status_code=400)
-
+    
     logging.info(f"Received image prompt: {prompt}")
     image_generator = ImageGenerator()
     image_url = image_generator.generate_image(prompt)
