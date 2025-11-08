@@ -3,9 +3,7 @@ import logging
 import json
 import os
 from response_stream_parser import ResponseStreamParser
-
-# Import the completion function from litellm (as shown in the docs example)
-from litellm import completion
+import litellm
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -23,7 +21,6 @@ class QuizGenerator:
         "gpt-4-turbo",
         "o1-mini",
         "o3-mini",
-        "gemini/gemini-pro",
         "gemini/gemini-2.0-flash",
         "gemini/gemini-1.5-pro-latest",
         "azure_ai/DeepSeek-R1",
@@ -183,7 +180,7 @@ class QuizGenerator:
             Generator: A generator yielding streamed response chunks from the LLM.
         """
         # The completion function supports a stream flag.
-        return completion(
+        return litellm.completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             stream=True,
@@ -221,7 +218,7 @@ if __name__ == "__main__":
         "azure_ai/DeepSeek-R1",
     ]
 
-    quiz_generator = QuizGenerator(model="o1-mini")
+    quiz_generator = QuizGenerator(model="gemini/gemini-2.0-flash")
 
     topic = "Crested Gecko"
     difficulty = "Medium"
