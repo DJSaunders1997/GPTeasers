@@ -61,13 +61,13 @@ class TestResponseStreamParser:
         print("Complete Lines:", complete_lines)
         print("Remainder:", remainder)
 
-        assert complete_lines == expected_complete_lines, (
-            f"Expected complete lines '{expected_complete_lines}', but got {complete_lines}"
-        )
+        assert (
+            complete_lines == expected_complete_lines
+        ), f"Expected complete lines '{expected_complete_lines}', but got {complete_lines}"
 
-        assert remainder == expected_remainder, (
-            f"Expected remainder '{expected_remainder}', but got {remainder}"
-        )
+        assert (
+            remainder == expected_remainder
+        ), f"Expected remainder '{expected_remainder}', but got {remainder}"
 
     def test_process_line_valid_json(self, response_parser):
         """

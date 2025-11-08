@@ -14,6 +14,9 @@ class App {
     this.controller = new Controller(this.quiz);
     this.ui = new UI();
 
+    // Load supported models dynamically
+    this.loadSupportedModels();
+
     // Initialise button event listeners.
     // The arrow function implicitly binds the method to the current instance of this class.
     document
@@ -127,6 +130,30 @@ class App {
   checkAnswer(answer) {
     this.quiz.checkAnswer(answer);
     this.showQuestion();
+  }
+
+  /**
+   * Loads the supported models from the backend API and populates the dropdown.
+   * Called during app initialization to ensure the dropdown is dynamically populated.
+   */
+  async loadSupportedModels() {
+    try {
+      console.log("Loading supported models from backend...");
+      const models = await this.controller.fetchSupportedModels();
+      
+      if (models && models.length > 0) {
+        // Use gemini/gemini-2.0-flash as default since it's currently working
+        const defaultModel = "gemini/gemini-2.0-flash";
+        this.ui.populateModelDropdown(models, defaultModel);
+        console.log("Successfully populated model dropdown");
+      } else {
+        console.warn("No supported models received from backend");
+      }
+    } catch (error) {
+      console.error("Failed to load supported models:", error);
+      // Don't alert the user as this is a background operation
+      // The dropdown will keep its existing hardcoded options if this fails
+    }
   }
 }
 

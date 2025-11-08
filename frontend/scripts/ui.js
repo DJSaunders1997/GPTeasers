@@ -76,6 +76,39 @@ class UI {
     return this.quizModel.value;
   }
 
+  /**
+   * Populates the model dropdown with the provided list of models.
+   * Clears existing options and creates new ones.
+   *
+   * @param {Array} models - Array of model names from the backend
+   * @param {string} defaultModel - Optional default model to select
+   */
+  populateModelDropdown(models, defaultModel = null) {
+    console.log("Populating model dropdown with:", models);
+    
+    // Clear existing options
+    this.quizModel.innerHTML = '';
+    
+    // Create and add new options
+    models.forEach(model => {
+      const option = document.createElement('option');
+      option.value = model;
+      option.textContent = model;
+      
+      // Set as selected if it's the default model
+      if (defaultModel && model === defaultModel) {
+        option.selected = true;
+      }
+      
+      this.quizModel.appendChild(option);
+    });
+    
+    // If no default was provided or found, select the first option
+    if (!defaultModel && models.length > 0) {
+      this.quizModel.selectedIndex = 0;
+    }
+  }
+
   // Display question in ui elements
   // Example currentQuestion format:
   //     {
