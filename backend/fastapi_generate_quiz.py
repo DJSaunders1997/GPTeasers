@@ -2,12 +2,18 @@
 # AI-powered quiz generation and image creation service
 # https://platform.openai.com/docs/api-reference/streaming
 import logging
-from generate_quiz import QuizGenerator
-from generate_image import ImageGenerator
-from fastapi import FastAPI, Query
-from fastapi.responses import StreamingResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, StreamingResponse
+
+from generate_image import ImageGenerator
+from generate_quiz import QuizGenerator
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
