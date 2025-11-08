@@ -560,6 +560,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "litellm" },
     { name = "openai" },
+    { name = "python-dotenv" },
     { name = "uvicorn" },
 ]
 
@@ -584,6 +585,7 @@ requires-dist = [
     { name = "openai" },
     { name = "pytest", marker = "extra == 'dev'" },
     { name = "pytest-mock", marker = "extra == 'dev'" },
+    { name = "python-dotenv" },
     { name = "ruff", marker = "extra == 'dev'" },
     { name = "uvicorn" },
 ]

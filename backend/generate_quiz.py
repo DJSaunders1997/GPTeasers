@@ -1,9 +1,15 @@
-from typing import Generator, Optional
-import logging
 import json
+import logging
 import os
-from response_stream_parser import ResponseStreamParser
+from typing import Generator, Optional
+
 import litellm
+from dotenv import load_dotenv
+
+from response_stream_parser import ResponseStreamParser
+
+# Load environment variables
+load_dotenv()
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -66,25 +72,23 @@ class QuizGenerator:
 
     @classmethod
     def check_api_key_from_env(cls) -> None:
-        """Retrieves the API keys from environment variables.
+        """Check if at least one API key is available.
 
         Raises:
-            ValueError: If the environment variable is not set or empty.
+            ValueError: If no API keys are found.
         """
-
-        for key in [
-            "OPENAI_API_KEY",
-            "GEMINI_API_KEY",
-            "DEEPSEEK_API_KEY",
-            "AZURE_AI_API_KEY",
-            "AZURE_AI_API_BASE",
-        ]:
-            api_key = os.getenv(key)
-            if not api_key:
-                raise ValueError(
-                    f"Environment variable {key} is not set."
-                    "Please ensure it's set and try again."
-                )
+        api_keys = [
+            os.getenv("OPENAI_API_KEY"),
+            os.getenv("GEMINI_API_KEY"),
+            os.getenv("DEEPSEEK_API_KEY"),
+            os.getenv("AZURE_AI_API_KEY"),
+        ]
+        
+        if not any(api_keys):
+            raise ValueError(
+                "No API keys found. Please set at least one of: "
+                "OPENAI_API_KEY, GEMINI_API_KEY, DEEPSEEK_API_KEY, or AZURE_AI_API_KEY"
+            )
 
     @staticmethod
     def check_model_is_supported(model: str) -> str:
@@ -218,7 +222,7 @@ if __name__ == "__main__":
         "azure_ai/DeepSeek-R1",
     ]
 
-    quiz_generator = QuizGenerator(model="gemini/gemini-2.0-flash")
+    quiz_generator = QuizGenerator(model="o1-mini")
 
     topic = "Crested Gecko"
     difficulty = "Medium"

@@ -43,14 +43,16 @@ class TestQuizGenerator:
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
-        Test that initializing QuizGenerator without an API key (i.e. if the environment variable
-        is not set) raises a ValueError.
-
-        We remove the environment variable and expect the constructor to raise an error.
+        Test that initializing QuizGenerator without any API keys raises a ValueError.
         """
+        # Remove all API keys
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("AZURE_AI_API_KEY", raising=False)
+        
         with pytest.raises(
-            ValueError, match="Environment variable OPENAI_API_KEY is not set"
+            ValueError, match="No API keys found"
         ):
             QuizGenerator()
 
@@ -70,7 +72,7 @@ class TestQuizGenerator:
         assert str(n_questions) in role
         assert quiz_generator.EXAMPLE_RESPONSE in role
 
-    @patch("backend.generate_quiz.completion")
+    @patch("backend.generate_quiz.litellm.completion")
     def test_generate_quiz(self, mock_completion, quiz_generator):
         """Test generate_quiz to ensure it streams responses properly."""
         mock_stream = iter(['{"question": "What is 2+2?", "answer": "4"}\n'])
