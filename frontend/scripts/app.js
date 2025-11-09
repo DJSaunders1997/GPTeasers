@@ -142,8 +142,8 @@ class App {
       const models = await this.controller.fetchSupportedModels();
       
       if (models && models.length > 0) {
-        // Use gemini/gemini-2.0-flash as default since it's currently working
-        const defaultModel = "gemini/gemini-2.0-flash";
+        // Use gpt-3.5-turbo as default 
+        const defaultModel = "gpt-3.5-turbo";
         this.ui.populateModelDropdown(models, defaultModel);
         console.log("Successfully populated model dropdown");
       } else {
