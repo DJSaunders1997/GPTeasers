@@ -25,17 +25,8 @@ class QuizGenerator:
     SUPPORTED_MODELS = [
         "gpt-3.5-turbo",
         "gpt-4-turbo",
-        "o1-mini",
         "o3-mini",
-        "azure_ai/gpt-35-turbo",  # Azure AI GPT-3.5-turbo
-        "azure_ai/gpt-4-turbo",  # Azure AI GPT-4-turbo
-        "azure_ai/gpt-4o",       # Azure AI GPT-4o
-        "azure_ai/gpt-4o-mini",  # Azure AI GPT-4o-mini
-        "azure_ai/o1-mini",      # Azure AI O1-mini
-        "azure_ai/o1-preview",   # Azure AI O1-preview
-        "azure_ai/o3-mini",      # Azure AI O3-mini
         "gemini/gemini-2.0-flash",
-        "gemini/gemini-1.5-pro-latest",
         "azure_ai/DeepSeek-R1",
     ]
 
@@ -221,7 +212,8 @@ if __name__ == "__main__":
 
     print(f"Supported models: {QuizGenerator.SUPPORTED_MODELS}")
 
-    quiz_generator = QuizGenerator(model="o1-mini")
+    # quiz_generator = QuizGenerator(model="o1-mini")
+    quiz_generator = QuizGenerator(model="gpt-3.5-turbo")
 
     topic = "Crested Gecko"
     difficulty = "Medium"
