@@ -104,23 +104,28 @@ class TestQuizGeneratorIntegration:
     """
 
     @pytest.mark.integration
-    def test_generate_quiz_real_api(self):
-        """
-        Integration test that calls the real OpenAI API.
-
-        This test will only run if the OPENAI_API_KEY is set in the environment. It verifies that the
-        generate_quiz method returns at least one SSE-formatted result.
-        """
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            pytest.skip("Skipping integration test: OPENAI_API_KEY not set.")
-        quiz_gen = QuizGenerator()
-        topic = "Math"
-        difficulty = "Hard"
-        gen = quiz_gen.generate_quiz(topic, difficulty, 2)
-        # Collect the output from the generator.
+    @pytest.mark.parametrize("model", QuizGenerator.SUPPORTED_MODELS)
+    def test_model(self, model):
+        """Test each supported model individually."""
+        # Check if required API keys are available
+        provider = model.split("/")[0]
+        
+        if provider == "openai" and not os.getenv("OPENAI_API_KEY"):
+            pytest.skip("OPENAI_API_KEY not set")
+        elif provider == "gemini" and not os.getenv("GEMINI_API_KEY"):
+            pytest.skip("GEMINI_API_KEY not set")
+        elif provider == "deepseek" and not os.getenv("DEEPSEEK_API_KEY"):
+            pytest.skip("DEEPSEEK_API_KEY not set")
+        elif provider == "azure_ai" and (
+            not os.getenv("AZURE_AI_API_KEY") or not os.getenv("AZURE_AI_API_BASE")
+        ):
+            pytest.skip("Azure AI credentials not set")
+        
+        # Test the model
+        quiz_gen = QuizGenerator(model=model)
+        gen = quiz_gen.generate_quiz("Math", "Easy", 1)
         results = list(gen)
-        # Verify that at least one SSE event is produced.
+        
         assert len(results) > 0
         for r in results:
             assert r.startswith("data: ")

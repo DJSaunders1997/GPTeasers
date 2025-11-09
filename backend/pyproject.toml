@@ -35,7 +35,6 @@ select = ["E", "F", "W", "I"]
 markers = [
     "integration: mark test as an integration test."
 ]
-addopts = "-m 'not integration'"
 testpaths = ["tests"]
 
 [dependency-groups]
