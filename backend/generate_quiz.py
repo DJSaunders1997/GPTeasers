@@ -27,6 +27,13 @@ class QuizGenerator:
         "gpt-4-turbo",
         "o1-mini",
         "o3-mini",
+        "azure_ai/gpt-35-turbo",  # Azure AI GPT-3.5-turbo
+        "azure_ai/gpt-4-turbo",  # Azure AI GPT-4-turbo
+        "azure_ai/gpt-4o",       # Azure AI GPT-4o
+        "azure_ai/gpt-4o-mini",  # Azure AI GPT-4o-mini
+        "azure_ai/o1-mini",      # Azure AI O1-mini
+        "azure_ai/o1-preview",   # Azure AI O1-preview
+        "azure_ai/o3-mini",      # Azure AI O3-mini
         "gemini/gemini-2.0-flash",
         "gemini/gemini-1.5-pro-latest",
         "azure_ai/DeepSeek-R1",
@@ -212,15 +219,7 @@ if __name__ == "__main__":
     # For detailed output during testing, set the logger level to DEBUG.
     logger.setLevel(logging.DEBUG)
 
-    suppported_models = [
-        "gpt-3.5-turbo",
-        "gpt-4-turbo",
-        "o1-mini",
-        "o3-mini",
-        "gemini/gemini-pro",
-        "gemini/gemini-1.5-pro-latest",
-        "azure_ai/DeepSeek-R1",
-    ]
+    print(f"Supported models: {QuizGenerator.SUPPORTED_MODELS}")
 
     quiz_generator = QuizGenerator(model="o1-mini")
 
