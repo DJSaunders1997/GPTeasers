@@ -1,6 +1,8 @@
 import os
-import pytest
 from types import SimpleNamespace
+
+import pytest
+
 from backend.generate_image import ImageGenerator
 
 """

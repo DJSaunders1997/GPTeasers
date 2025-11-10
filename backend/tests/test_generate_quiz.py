@@ -1,7 +1,9 @@
-import os
-import pytest
 import logging
-from unittest.mock import patch, MagicMock
+import os
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from backend.generate_quiz import QuizGenerator
 
 """
@@ -50,10 +52,8 @@ class TestQuizGenerator:
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
         monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
         monkeypatch.delenv("AZURE_AI_API_KEY", raising=False)
-        
-        with pytest.raises(
-            ValueError, match="No API keys found"
-        ):
+
+        with pytest.raises(ValueError, match="No API keys found"):
             QuizGenerator()
 
     def test_create_role(self, quiz_generator):
@@ -109,7 +109,7 @@ class TestQuizGeneratorIntegration:
         """Test each supported model individually."""
         # Check if required API keys are available
         provider = model.split("/")[0]
-        
+
         if provider == "openai" and not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OPENAI_API_KEY not set")
         elif provider == "gemini" and not os.getenv("GEMINI_API_KEY"):
@@ -120,12 +120,12 @@ class TestQuizGeneratorIntegration:
             not os.getenv("AZURE_AI_API_KEY") or not os.getenv("AZURE_AI_API_BASE")
         ):
             pytest.skip("Azure AI credentials not set")
-        
+
         # Test the model
         quiz_gen = QuizGenerator(model=model)
         gen = quiz_gen.generate_quiz("Math", "Easy", 1)
         results = list(gen)
-        
+
         assert len(results) > 0
         for r in results:
             assert r.startswith("data: ")
