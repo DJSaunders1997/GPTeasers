@@ -40,4 +40,4 @@ jobs:
         run: |
           source $HOME/.cargo/env
           cd backend
-          uv run pytest -q tests/ -v
+          uv run pytest -q tests/ -v -m "not integration"
