@@ -36,12 +36,8 @@ class TestQuizGenerator:
 
     def test_check_model_is_supported(self):
         """Test that unsupported models default to 'gpt-4-turbo'."""
-        assert (
-            QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
-        )
-        assert (
-            QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
-        )
+        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
+        assert QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
@@ -79,9 +75,7 @@ class TestQuizGenerator:
         mock_completion.return_value = mock_stream
 
         parser_mock = MagicMock()
-        parser_mock.parse_stream.return_value = iter(
-            ['data: {"question": "What is 2+2?", "answer": "4"}\n\n']
-        )
+        parser_mock.parse_stream.return_value = iter(['data: {"question": "What is 2+2?", "answer": "4"}\n\n'])
 
         with patch.object(quiz_generator, "parser", parser_mock):
             generator = quiz_generator.generate_quiz("Math", "Easy", n_questions=1)
@@ -116,9 +110,7 @@ class TestQuizGeneratorIntegration:
             pytest.skip("GEMINI_API_KEY not set")
         elif provider == "deepseek" and not os.getenv("DEEPSEEK_API_KEY"):
             pytest.skip("DEEPSEEK_API_KEY not set")
-        elif provider == "azure_ai" and (
-            not os.getenv("AZURE_AI_API_KEY") or not os.getenv("AZURE_AI_API_BASE")
-        ):
+        elif provider == "azure_ai" and (not os.getenv("AZURE_AI_API_KEY") or not os.getenv("AZURE_AI_API_BASE")):
             pytest.skip("Azure AI credentials not set")
 
         # Test the model

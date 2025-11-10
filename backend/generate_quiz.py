@@ -100,9 +100,7 @@ class QuizGenerator:
             str: A supported model name.
         """
         if model not in QuizGenerator.SUPPORTED_MODELS:
-            logger.warning(
-                f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'."
-            )
+            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'.")
             return "gpt-4-turbo"
         return model
 
@@ -129,9 +127,7 @@ class QuizGenerator:
         # Use the separate parser class to handle the stream.
         self.parser = ResponseStreamParser()
 
-    def generate_quiz(
-        self, topic: str, difficulty: str, n_questions: int = 10
-    ) -> Generator[str, None, None]:
+    def generate_quiz(self, topic: str, difficulty: str, n_questions: int = 10) -> Generator[str, None, None]:
         """
         Generate a quiz based on the provided topic and difficulty using litellm.
 
