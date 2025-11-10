@@ -81,7 +81,7 @@ class QuizGenerator:
             os.getenv("DEEPSEEK_API_KEY"),
             os.getenv("AZURE_AI_API_KEY"),
         ]
-        
+
         if not any(api_keys):
             raise ValueError(
                 "No API keys found. Please set at least one of: "

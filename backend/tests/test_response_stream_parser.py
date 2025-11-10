@@ -1,5 +1,7 @@
-import pytest
 from types import SimpleNamespace
+
+import pytest
+
 from backend.response_stream_parser import ResponseStreamParser
 
 """
