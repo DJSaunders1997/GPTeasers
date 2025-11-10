@@ -1,5 +1,7 @@
-import pytest
 from types import SimpleNamespace
+
+import pytest
+
 from backend.response_stream_parser import ResponseStreamParser
 
 """
@@ -28,9 +30,7 @@ class TestResponseStreamParser:
         """
         Test extracting content from a valid chunk.
         """
-        chunk = SimpleNamespace(
-            choices=[SimpleNamespace(delta=SimpleNamespace(content="test content"))]
-        )
+        chunk = SimpleNamespace(choices=[SimpleNamespace(delta=SimpleNamespace(content="test content"))])
         content = response_parser._extract_chunk_content(chunk)
         assert content == "test content"
 
@@ -46,9 +46,7 @@ class TestResponseStreamParser:
         """
         Test splitting the buffer into complete lines and a remainder.
         """
-        response_parser.buffer = (
-            '{"question": "Who was ..."}\n{"question": "What is ..."}\nincomplete'
-        )
+        response_parser.buffer = '{"question": "Who was ..."}\n{"question": "What is ..."}\nincomplete'
 
         expected_complete_lines = [
             '{"question": "Who was ..."}',
@@ -65,9 +63,7 @@ class TestResponseStreamParser:
             f"Expected complete lines '{expected_complete_lines}', but got {complete_lines}"
         )
 
-        assert remainder == expected_remainder, (
-            f"Expected remainder '{expected_remainder}', but got {remainder}"
-        )
+        assert remainder == expected_remainder, f"Expected remainder '{expected_remainder}', but got {remainder}"
 
     def test_process_line_valid_json(self, response_parser):
         """
@@ -91,20 +87,8 @@ class TestResponseStreamParser:
         """
         fake_stream = iter(
             [
-                SimpleNamespace(
-                    choices=[
-                        SimpleNamespace(
-                            delta=SimpleNamespace(content='{"question": "First"}\n')
-                        )
-                    ]
-                ),
-                SimpleNamespace(
-                    choices=[
-                        SimpleNamespace(
-                            delta=SimpleNamespace(content='{"question": "Second"}\n')
-                        )
-                    ]
-                ),
+                SimpleNamespace(choices=[SimpleNamespace(delta=SimpleNamespace(content='{"question": "First"}\n'))]),
+                SimpleNamespace(choices=[SimpleNamespace(delta=SimpleNamespace(content='{"question": "Second"}\n'))]),
             ]
         )
         results = list(response_parser.parse_stream(fake_stream))

@@ -1,6 +1,8 @@
 import os
-import pytest
 from types import SimpleNamespace
+
+import pytest
+
 from backend.generate_image import ImageGenerator
 
 """
@@ -29,14 +31,10 @@ class TestImageGeneratorUnit:
         """Test generate_image with a successful API response."""
         # Create a mock response simulating the structure returned by OpenAI.
         mock_response = mocker.Mock()
-        mock_response.data = [
-            SimpleNamespace(url="https://example.com/generated_image.png")
-        ]
+        mock_response.data = [SimpleNamespace(url="https://example.com/generated_image.png")]
 
         # Patch the generate method of the images client.
-        mocker.patch.object(
-            image_generator.client.images, "generate", return_value=mock_response
-        )
+        mocker.patch.object(image_generator.client.images, "generate", return_value=mock_response)
 
         url = image_generator.generate_image("A test prompt")
         assert url == "https://example.com/generated_image.png"
@@ -44,17 +42,11 @@ class TestImageGeneratorUnit:
     def test_generate_image_custom_size(self, mocker, image_generator):
         """Test generate_image with a custom image size."""
         mock_response = mocker.Mock()
-        mock_response.data = [
-            SimpleNamespace(url="https://example.com/custom_size_image.png")
-        ]
+        mock_response.data = [SimpleNamespace(url="https://example.com/custom_size_image.png")]
 
-        mocker.patch.object(
-            image_generator.client.images, "generate", return_value=mock_response
-        )
+        mocker.patch.object(image_generator.client.images, "generate", return_value=mock_response)
 
-        url = image_generator.generate_image(
-            "A dragon flying over mountains", size="512x512"
-        )
+        url = image_generator.generate_image("A dragon flying over mountains", size="512x512")
         assert url == "https://example.com/custom_size_image.png"
 
     def test_generate_image_api_failure(self, mocker, image_generator):
@@ -83,9 +75,7 @@ class TestImageGeneratorUnit:
         # Clear environment variables to simulate missing API key.
         mocker.patch.dict(os.environ, {}, clear=True)
 
-        with pytest.raises(
-            ValueError, match="Environment variable OPENAI_API_KEY is not set"
-        ):
+        with pytest.raises(ValueError, match="Environment variable OPENAI_API_KEY is not set"):
             ImageGenerator()
 
     def test_logging_when_api_fails(self, mocker, image_generator):

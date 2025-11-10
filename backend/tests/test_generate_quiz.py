@@ -1,7 +1,9 @@
-import os
-import pytest
 import logging
-from unittest.mock import patch, MagicMock
+import os
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from backend.generate_quiz import QuizGenerator
 
 """
@@ -34,24 +36,20 @@ class TestQuizGenerator:
 
     def test_check_model_is_supported(self):
         """Test that unsupported models default to 'gpt-4-turbo'."""
-        assert (
-            QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
-        )
-        assert (
-            QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
-        )
+        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
+        assert QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
-        Test that initializing QuizGenerator without an API key (i.e. if the environment variable
-        is not set) raises a ValueError.
-
-        We remove the environment variable and expect the constructor to raise an error.
+        Test that initializing QuizGenerator without any API keys raises a ValueError.
         """
+        # Remove all API keys
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-        with pytest.raises(
-            ValueError, match="Environment variable OPENAI_API_KEY is not set"
-        ):
+        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("AZURE_AI_API_KEY", raising=False)
+
+        with pytest.raises(ValueError, match="No API keys found"):
             QuizGenerator()
 
     def test_create_role(self, quiz_generator):
@@ -70,16 +68,14 @@ class TestQuizGenerator:
         assert str(n_questions) in role
         assert quiz_generator.EXAMPLE_RESPONSE in role
 
-    @patch("backend.generate_quiz.completion")
+    @patch("backend.generate_quiz.litellm.completion")
     def test_generate_quiz(self, mock_completion, quiz_generator):
         """Test generate_quiz to ensure it streams responses properly."""
         mock_stream = iter(['{"question": "What is 2+2?", "answer": "4"}\n'])
         mock_completion.return_value = mock_stream
 
         parser_mock = MagicMock()
-        parser_mock.parse_stream.return_value = iter(
-            ['data: {"question": "What is 2+2?", "answer": "4"}\n\n']
-        )
+        parser_mock.parse_stream.return_value = iter(['data: {"question": "What is 2+2?", "answer": "4"}\n\n'])
 
         with patch.object(quiz_generator, "parser", parser_mock):
             generator = quiz_generator.generate_quiz("Math", "Easy", n_questions=1)
@@ -102,23 +98,26 @@ class TestQuizGeneratorIntegration:
     """
 
     @pytest.mark.integration
-    def test_generate_quiz_real_api(self):
-        """
-        Integration test that calls the real OpenAI API.
+    @pytest.mark.parametrize("model", QuizGenerator.SUPPORTED_MODELS)
+    def test_model(self, model):
+        """Test each supported model individually."""
+        # Check if required API keys are available
+        provider = model.split("/")[0]
 
-        This test will only run if the OPENAI_API_KEY is set in the environment. It verifies that the
-        generate_quiz method returns at least one SSE-formatted result.
-        """
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            pytest.skip("Skipping integration test: OPENAI_API_KEY not set.")
-        quiz_gen = QuizGenerator()
-        topic = "Math"
-        difficulty = "Hard"
-        gen = quiz_gen.generate_quiz(topic, difficulty, 2)
-        # Collect the output from the generator.
+        if provider == "openai" and not os.getenv("OPENAI_API_KEY"):
+            pytest.skip("OPENAI_API_KEY not set")
+        elif provider == "gemini" and not os.getenv("GEMINI_API_KEY"):
+            pytest.skip("GEMINI_API_KEY not set")
+        elif provider == "deepseek" and not os.getenv("DEEPSEEK_API_KEY"):
+            pytest.skip("DEEPSEEK_API_KEY not set")
+        elif provider == "azure_ai" and (not os.getenv("AZURE_AI_API_KEY") or not os.getenv("AZURE_AI_API_BASE")):
+            pytest.skip("Azure AI credentials not set")
+
+        # Test the model
+        quiz_gen = QuizGenerator(model=model)
+        gen = quiz_gen.generate_quiz("Math", "Easy", 1)
         results = list(gen)
-        # Verify that at least one SSE event is produced.
+
         assert len(results) > 0
         for r in results:
             assert r.startswith("data: ")
