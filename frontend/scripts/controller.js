@@ -23,6 +23,7 @@ class Controller {
     }
     this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
     this.baseURLImage = `${this.baseURL}/GenerateImage`;
+    this.baseURLModels = `${this.baseURL}/SupportedModels`;
     this.quiz = quiz; // this will be initialized as a quiz object
     this.numQuestions = this.quiz.numQuestions;    
   }
@@ -141,6 +142,32 @@ class Controller {
       }
     } catch (error) {
       console.error("Error occurred during the API call:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetches the list of supported AI models from the backend.
+   *
+   * @public
+   * @returns {Promise<Array>} Array of supported model names.
+   * @throws {Error} When the network response is not ok.
+   */
+  async fetchSupportedModels() {
+    console.log("Fetching supported models from backend...");
+
+    try {
+      const response = await fetch(this.baseURLModels);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Received supported models:", data.models);
+        return data.models;
+      } else {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error occurred while fetching supported models:", error);
       throw error;
     }
   }

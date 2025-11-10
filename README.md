@@ -54,25 +54,37 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
 ### Running Locally
 
 1. **Set Environment Variables**  
-   Make sure your `OPENAI_API_KEY` is set in your environment or in a `.env` file at the project root:
+   Make sure your API keys are set in your environment or in a `.env` file at the project root:
    ```sh
    export OPENAI_API_KEY=your_openai_api_key_here
+   export GEMINI_API_KEY=your_gemini_api_key_here
+   # ... other API keys
    ```
    Or create a `.env` file with:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   # ... other API keys
    ```
 
-2. **Build and Run the Containers**  
+2. **Build and Run with Docker Compose**  
    From the project root, run:
    ```sh
    docker-compose up --build
    ```
    This command builds and starts both the backend and frontend containers.
 
+3. **Alternative: Run Backend Locally with UV**  
+   For faster development iteration:
+   ```sh
+   cd backend
+   uv sync --dev
+   uv run uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000
+   ```
+
 3. **Access the Services**  
    - **Backend API (FastAPI)**: [http://localhost:8000](http://localhost:8000)
    - **Frontend**: [http://localhost:8080](http://localhost:8080)
 
-With these steps, you can easily test both the backend API and the static frontend locally using Docker Compose.
+With these steps, you can easily test both the backend API and the static frontend locally using Docker Compose or UV for faster backend development.
 
