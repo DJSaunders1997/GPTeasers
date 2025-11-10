@@ -64,8 +64,12 @@ DEEPSEEK_API_KEY=...
 # Full stack with Docker Compose
 docker-compose up --build
 
-# Backend only (for API development)
-cd backend && uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000
+# Backend only (for API development) - UV method
+cd backend && uv sync --dev --no-install-project && uv run --script dev
+
+# Testing
+uv run pytest -v  # Unit tests only (no API calls)
+uv run pytest -m integration  # Integration tests with real API calls
 
 # Access points:
 # - Frontend: http://localhost:8080
@@ -79,10 +83,11 @@ cd backend && uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8
 
 ## Code Quality Standards
 
-- **Linting**: Uses `ruff` for Python code formatting and linting
+- **Package Management**: Uses UV for fast dependency management and virtual environments
+- **Linting**: Uses `ruff` for Python code formatting and linting (`uv run ruff check .`)
 - **Type Checking**: Expected for new Python code
 - **Testing**: Always add unit tests; integration tests for API changes
-- **Dependencies**: Keep `requirements.txt` minimal; dev dependencies in `requirements-dev.txt`
+- **Dependencies**: Managed via `pyproject.toml`; dev dependencies in `[project.optional-dependencies]`
 
 ## Common Development Tasks
 

@@ -75,18 +75,8 @@
           <label for="quizModel">Select Model Provider:</label>
           <p>Select the AI model to generate your quiz.</p>
           <select id="quizModel">
-            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-            <option value="gpt-4-turbo">gpt-4-turbo</option>
-            <option value="o1-mini">o1-mini</option>
-            <option value="o3-mini">o3-mini</option>
-            <option value="gemini/gemini-2.0-flash">
-              gemini/gemini-2.0-flash
-            </option>
-            <option value="gemini/gemini-pro">gemini/gemini-pro</option>
-            <option value="gemini/gemini-1.5-pro-latest">
-              gemini/gemini-1.5-pro-latest
-            </option>
-            <option value="azure_ai/DeepSeek-R1">azure_ai/DeepSeek-R1</option>
+            <!-- Options dynamically populated from backend via fetchSupportedModels() -->
+            <option value="">Loading models...</option>
           </select>
         </div>
 

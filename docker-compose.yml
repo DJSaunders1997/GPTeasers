@@ -21,3 +21,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80" # Nginx
+
+# TESTING:
+# 1. Set API keys: export OPENAI_API_KEY="your-key" (etc.)
+# 2. Start: docker compose up --build (-d if you want to run in background)
+# 3. Access: Frontend http://localhost:8080, Backend http://localhost:8000
+# 4. Test: curl http://localhost:8000/SupportedModels
