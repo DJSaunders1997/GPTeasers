@@ -1,11 +1,15 @@
-from typing import Generator, Optional
-import logging
 import json
+import logging
 import os
+from typing import Generator, Optional
+
+import litellm
+from dotenv import load_dotenv
+
 from response_stream_parser import ResponseStreamParser
 
-# Import the completion function from litellm (as shown in the docs example)
-from litellm import completion
+# Load environment variables
+load_dotenv()
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -21,11 +25,8 @@ class QuizGenerator:
     SUPPORTED_MODELS = [
         "gpt-3.5-turbo",
         "gpt-4-turbo",
-        "o1-mini",
         "o3-mini",
-        "gemini/gemini-pro",
         "gemini/gemini-2.0-flash",
-        "gemini/gemini-1.5-pro-latest",
         "azure_ai/DeepSeek-R1",
     ]
 
@@ -69,25 +70,23 @@ class QuizGenerator:
 
     @classmethod
     def check_api_key_from_env(cls) -> None:
-        """Retrieves the API keys from environment variables.
+        """Check if at least one API key is available.
 
         Raises:
-            ValueError: If the environment variable is not set or empty.
+            ValueError: If no API keys are found.
         """
+        api_keys = [
+            os.getenv("OPENAI_API_KEY"),
+            os.getenv("GEMINI_API_KEY"),
+            os.getenv("DEEPSEEK_API_KEY"),
+            os.getenv("AZURE_AI_API_KEY"),
+        ]
 
-        for key in [
-            "OPENAI_API_KEY",
-            "GEMINI_API_KEY",
-            "DEEPSEEK_API_KEY",
-            "AZURE_AI_API_KEY",
-            "AZURE_AI_API_BASE",
-        ]:
-            api_key = os.getenv(key)
-            if not api_key:
-                raise ValueError(
-                    f"Environment variable {key} is not set."
-                    "Please ensure it's set and try again."
-                )
+        if not any(api_keys):
+            raise ValueError(
+                "No API keys found. Please set at least one of: "
+                "OPENAI_API_KEY, GEMINI_API_KEY, DEEPSEEK_API_KEY, or AZURE_AI_API_KEY"
+            )
 
     @staticmethod
     def check_model_is_supported(model: str) -> str:
@@ -101,9 +100,7 @@ class QuizGenerator:
             str: A supported model name.
         """
         if model not in QuizGenerator.SUPPORTED_MODELS:
-            logger.warning(
-                f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'."
-            )
+            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'.")
             return "gpt-4-turbo"
         return model
 
@@ -130,9 +127,7 @@ class QuizGenerator:
         # Use the separate parser class to handle the stream.
         self.parser = ResponseStreamParser()
 
-    def generate_quiz(
-        self, topic: str, difficulty: str, n_questions: int = 10
-    ) -> Generator[str, None, None]:
+    def generate_quiz(self, topic: str, difficulty: str, n_questions: int = 10) -> Generator[str, None, None]:
         """
         Generate a quiz based on the provided topic and difficulty using litellm.
 
@@ -183,7 +178,7 @@ class QuizGenerator:
             Generator: A generator yielding streamed response chunks from the LLM.
         """
         # The completion function supports a stream flag.
-        return completion(
+        return litellm.completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             stream=True,
@@ -211,17 +206,10 @@ if __name__ == "__main__":
     # For detailed output during testing, set the logger level to DEBUG.
     logger.setLevel(logging.DEBUG)
 
-    suppported_models = [
-        "gpt-3.5-turbo",
-        "gpt-4-turbo",
-        "o1-mini",
-        "o3-mini",
-        "gemini/gemini-pro",
-        "gemini/gemini-1.5-pro-latest",
-        "azure_ai/DeepSeek-R1",
-    ]
+    print(f"Supported models: {QuizGenerator.SUPPORTED_MODELS}")
 
-    quiz_generator = QuizGenerator(model="o1-mini")
+    # quiz_generator = QuizGenerator(model="o1-mini")
+    quiz_generator = QuizGenerator(model="gpt-3.5-turbo")
 
     topic = "Crested Gecko"
     difficulty = "Medium"
