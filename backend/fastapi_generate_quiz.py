@@ -75,15 +75,9 @@ app.add_middleware(
 
 @app.get("/GenerateQuiz")
 async def generate_quiz_endpoint(
-    topic: str = Query(
-        ..., description="The subject for the quiz (e.g., 'UK History')"
-    ),
-    difficulty: str = Query(
-        ..., description="The desired difficulty (e.g., 'easy', 'medium', 'hard')"
-    ),
-    n_questions: int = Query(
-        10, description="Number of questions to generate (defaults to 10)"
-    ),
+    topic: str = Query(..., description="The subject for the quiz (e.g., 'UK History')"),
+    difficulty: str = Query(..., description="The desired difficulty (e.g., 'easy', 'medium', 'hard')"),
+    n_questions: int = Query(10, description="Number of questions to generate (defaults to 10)"),
     model: Optional[str] = Query(
         None,
         description="The model to use. If not provided, the default from QuizGenerator is used",
@@ -101,14 +95,9 @@ async def generate_quiz_endpoint(
     Returns:
       - StreamingResponse: Streams quiz questions in SSE format.
     """
-    logger.info(
-        f"Quiz request: topic={topic}, difficulty={difficulty}, "
-        f"n_questions={n_questions}, model={model}"
-    )
+    logger.info(f"Quiz request: topic={topic}, difficulty={difficulty}, n_questions={n_questions}, model={model}")
 
-    logging.info(
-        f"Generating quiz with: {topic=}, {difficulty=}, {n_questions=}, {model=}."
-    )
+    logging.info(f"Generating quiz with: {topic=}, {difficulty=}, {n_questions=}, {model=}.")
 
     # Create a QuizGenerator instance.
     # TODO: rename to quiz creator ?

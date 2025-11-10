@@ -25,7 +25,7 @@ dev = [
 dev = "uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000"
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py310"
 
 [tool.ruff.lint]
