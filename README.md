@@ -32,10 +32,75 @@ GPTeasers is a straightforward web app that creates quiz-style questions based o
 
 # Architecture
 
+## Original Architecture Diagram
 ![Architecture Diagram](./images/Architecture.drawio.png)
 
+## Interactive System Overview
+
+```mermaid
+graph TB
+    %% User Layer
+    User[👤 User]
+    Browser[🌐 Web Browser]
+    
+    %% Frontend Layer
+    GHP[📄 GitHub Pages<br/>Static Frontend<br/>HTML/CSS/JS]
+    
+    %% Backend Layer
+    ACA[☁️ Azure Container Apps<br/>FastAPI Backend]
+    
+    %% AI Providers
+    subgraph AI_Providers[🤖 AI Providers]
+        OpenAI[OpenAI<br/>GPT Models]
+        Gemini[Google Gemini]
+        AzureAI[Azure AI]
+        DeepSeek[DeepSeek]
+    end
+    
+    %% Image Generation
+    DALLE[🎨 DALL-E<br/>Image Generation]
+    
+    %% Data Flow
+    User --> Browser
+    Browser --> GHP
+    GHP -.->|SSE Connection| ACA
+    ACA --> AI_Providers
+    ACA --> DALLE
+    
+    %% Styling
+    classDef frontend fill:#e1f5fe
+    classDef backend fill:#f3e5f5
+    classDef ai fill:#e8f5e8
+    
+    class GHP frontend
+    class ACA backend
+    class AI_Providers,OpenAI,Gemini,AzureAI,DeepSeek,DALLE ai
+```
+
+## Component Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend (GitHub Pages)
+    participant B as Backend (Azure Container Apps)
+    participant AI as AI Provider
+    
+    U->>F: 1. Enter quiz topic & settings
+    F->>B: 2. POST /GenerateQuiz (SSE)
+    
+    Note over F,B: Server-Sent Events Connection
+    
+    B->>AI: 3. Generate quiz questions
+    AI-->>B: 4. Stream question chunks
+    B-->>F: 5. Stream formatted questions
+    F-->>U: 6. Display questions in real-time
+```
+
+### Architecture Components
+
 1. **Web Browser (Client)**: The user interact with a static site hosted on GitHub Pages.
-2. **GitHub Pages (Static Site)**: Delivers the site’s content. When you hit “Generate Quiz”, the site communicates with our backend.
+2. **GitHub Pages (Static Site)**: Delivers the site's content. When you hit "Generate Quiz", the site communicates with our backend.
 3. **Azure Container Apps**: The FastAPI backend processes your quiz request and works with different AI providers.
 4. **AI Providers**: Multiple AI services process your input and generate unique quiz questions.
 
@@ -58,12 +123,18 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
    ```sh
    export OPENAI_API_KEY=your_openai_api_key_here
    export GEMINI_API_KEY=your_gemini_api_key_here
+   export AZURE_AI_API_KEY=your_azure_ai_api_key_here
+   export AZURE_AI_API_BASE=your_azure_ai_api_base_here
+   export DEEPSEEK_API_KEY=your_deepseek_api_key_here
    # ... other API keys
    ```
    Or create a `.env` file with:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
    GEMINI_API_KEY=your_gemini_api_key_here
+   AZURE_AI_API_KEY=your_azure_ai_api_key_here
+   AZURE_AI_API_BASE=your_azure_ai_api_base_here
+   DEEPSEEK_API_KEY=your_deepseek_api_key_here
    # ... other API keys
    ```
 
@@ -82,7 +153,7 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
    uv run uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000
    ```
 
-3. **Access the Services**  
+4. **Access the Services**  
    - **Backend API (FastAPI)**: [http://localhost:8000](http://localhost:8000)
    - **Frontend**: [http://localhost:8080](http://localhost:8080)
 
