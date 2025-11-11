@@ -1,6 +1,7 @@
 [![Deploy static content to Pages](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/static.yml)
 [![Trigger auto deployment for gpteasers](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/gpteasers-AutoDeployTrigger-f53ae13c-780c-4431-b28c-18728d5a7dd7.yml/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/gpteasers-AutoDeployTrigger-f53ae13c-780c-4431-b28c-18728d5a7dd7.yml)
 [![CodeQL](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DJSaunders1997/GPTeasers/actions/workflows/github-code-scanning/codeql)
+
 # GPTeasers 🧠💡
 
 Welcome to GPTeasers – a quiz app that challenges your brain with dynamically generated questions. Whether you’re into Roman History or Quantum Physics, GPTeasers has you covered. We even let you choose from multiple AI providers, so you can experience different styles of quiz generation.
@@ -16,12 +17,14 @@ GPTeasers is a straightforward web app that creates quiz-style questions based o
 <td width="50%">
 
 ### Front Page
+
 ![GPTeasers frontpage with options for quiz topic, difficulty, and AI provider](images/GPTeasers_frontpage.png)
 
 </td>
 <td width="50%">
 
 ### Quiz Page
+
 ![GPTeasers quiz page showing questions, answers, and generated image](images/GPTeasers_quiz.png)
 
 </td>
@@ -41,9 +44,42 @@ GPTeasers is a straightforward web app that creates quiz-style questions based o
 3. **Start the Quiz**: Answer the questions and see your results.
 4. **Share & Challenge Friends**: Think you aced it? Share your score and challenge your friends!
 
+### AI Providers
+
+<div>
+    <table>
+        <tr align="center">
+            <td width="25%">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" width="60" height="60"
+                    alt="OpenAI"><br>
+                <b>OpenAI</b><br>
+                <small>GPT Models</small>
+            </td>
+            <td width="25%">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" width="60"
+                    height="60" alt="Gemini"><br>
+                <b>Gemini</b><br>
+                <small>Google AI</small>
+            </td>
+            <td width="25%">
+                <img src="https://swimburger.net/media/ppnn3pcl/azure.png" width="60" height="60" alt="Azure AI"><br>
+                <b>Azure AI</b><br>
+                <small>Enterprise AI</small>
+            </td>
+            <td width="25%">
+                <img src="https://images.seeklogo.com/logo-png/61/1/deepseek-ai-icon-logo-png_seeklogo-611473.png"
+                    width="60" height="60" alt="DeepSeek"><br>
+                <b>DeepSeek</b><br>
+                <small>R1 Models</small>
+            </td>
+        </tr>
+    </table>
+</div>
+
 # Architecture
 
 ## Original Architecture Diagram
+
 ![Architecture Diagram](./images/Architecture.drawio.png)
 
 ## Interactive System Overview
@@ -53,39 +89,47 @@ graph TB
     %% User Layer
     User[👤 User]
     Browser[🌐 Web Browser]
-    
+
     %% Frontend Layer
     GHP[📄 GitHub Pages<br/>Static Frontend<br/>HTML/CSS/JS]
-    
+
     %% Backend Layer
     ACA[☁️ Azure Container Apps<br/>FastAPI Backend]
-    
+
     %% AI Providers
     subgraph AI_Providers[🤖 AI Providers]
         OpenAI[OpenAI<br/>GPT Models]
-        Gemini[Google Gemini]
-        AzureAI[Azure AI]
-        DeepSeek[DeepSeek]
+        Gemini[Google Gemini<br/>Advanced AI]
+        AzureAI[Azure AI<br/>Enterprise AI]
+        DeepSeek[DeepSeek<br/>R1 Models]
     end
-    
+
     %% Image Generation
     DALLE[🎨 DALL-E<br/>Image Generation]
-    
+
     %% Data Flow
     User --> Browser
     Browser --> GHP
     GHP -.->|SSE Connection| ACA
     ACA --> AI_Providers
     ACA --> DALLE
-    
+
     %% Styling
     classDef frontend fill:#e1f5fe
     classDef backend fill:#f3e5f5
     classDef ai fill:#e8f5e8
-    
+    classDef openai fill:#10a37f
+    classDef gemini fill:#4285f4
+    classDef azure fill:#0078d4
+    classDef deepseek fill:#8b5cf6
+
     class GHP frontend
     class ACA backend
-    class AI_Providers,OpenAI,Gemini,AzureAI,DeepSeek,DALLE ai
+    class AI_Providers,DALLE ai
+    class OpenAI openai
+    class Gemini gemini
+    class AzureAI azure
+    class DeepSeek deepseek
 ```
 
 ## Component Flow
@@ -96,12 +140,12 @@ sequenceDiagram
     participant F as Frontend (GitHub Pages)
     participant B as Backend (Azure Container Apps)
     participant AI as AI Provider
-    
+
     U->>F: 1. Enter quiz topic & settings
     F->>B: 2. POST /GenerateQuiz (SSE)
-    
+
     Note over F,B: Server-Sent Events Connection
-    
+
     B->>AI: 3. Generate quiz questions
     AI-->>B: 4. Stream question chunks
     B-->>F: 5. Stream formatted questions
@@ -131,6 +175,7 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
 
 1. **Set Environment Variables**  
    Make sure your API keys are set in your environment or in a `.env` file at the project root:
+
    ```sh
    export OPENAI_API_KEY=your_openai_api_key_here
    export GEMINI_API_KEY=your_gemini_api_key_here
@@ -139,7 +184,9 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
    export DEEPSEEK_API_KEY=your_deepseek_api_key_here
    # ... other API keys
    ```
+
    Or create a `.env` file with:
+
    ```
    OPENAI_API_KEY=your_openai_api_key_here
    GEMINI_API_KEY=your_gemini_api_key_here
@@ -151,22 +198,24 @@ This project uses Docker Compose to run both the FastAPI backend and the fronten
 
 2. **Build and Run with Docker Compose**  
    From the project root, run:
+
    ```sh
    docker-compose up --build
    ```
+
    This command builds and starts both the backend and frontend containers.
 
 3. **Alternative: Run Backend Locally with UV**  
    For faster development iteration:
+
    ```sh
    cd backend
    uv sync --dev
    uv run uvicorn fastapi_generate_quiz:app --reload --host 0.0.0.0 --port 8000
    ```
 
-4. **Access the Services**  
+4. **Access the Services**
    - **Backend API (FastAPI)**: [http://localhost:8000](http://localhost:8000)
    - **Frontend**: [http://localhost:8080](http://localhost:8080)
 
 With these steps, you can easily test both the backend API and the static frontend locally using Docker Compose or UV for faster backend development.
-
