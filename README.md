@@ -94,42 +94,51 @@ graph TB
     GHP[📄 GitHub Pages<br/>Static Frontend<br/>HTML/CSS/JS]
 
     %% Backend Layer
-    ACA[☁️ Azure Container Apps<br/>FastAPI Backend]
+    subgraph ACA[☁️ Azure Container Apps]
+        subgraph Docker[🐳 Docker Container]
+            FastAPI[⚡ FastAPI Backend]
+        end
+    end
 
     %% AI Providers
     subgraph AI_Providers[🤖 AI Providers]
-        OpenAI[OpenAI<br/>GPT Models]
-        Gemini[Google Gemini<br/>Advanced AI]
-        AzureAI[Azure AI<br/>Enterprise AI]
-        DeepSeek[DeepSeek<br/>R1 Models]
+        subgraph OpenAI[OpenAI]
+            GPT35[gpt-3.5-turbo]
+            GPT4[gpt-4-turbo]
+            O3[o3-mini]
+        end
+        subgraph Google[Google]
+            Gemini2[gemini-2.0-flash]
+        end
+        subgraph Microsoft[Microsoft Azure AI]
+            DeepSeekR1[DeepSeek-R1]
+        end
     end
 
     %% Image Generation
-    DALLE[🎨 DALL-E<br/>Image Generation]
+    subgraph ImageGen[🎨 Image Generation]
+        subgraph OpenAI_Images[OpenAI]
+            DALLE[DALL-E 3]
+        end
+    end
 
     %% Data Flow
     User --> Browser
     Browser --> GHP
     GHP -.->|SSE Connection| ACA
-    ACA --> AI_Providers
-    ACA --> DALLE
+    FastAPI -->|/GenerateQuiz Endpoint| AI_Providers
+    FastAPI -->|/GenerateImage Endpoint| ImageGen
 
-    %% Styling
-    classDef frontend fill:#e1f5fe
-    classDef backend fill:#f3e5f5
-    classDef ai fill:#e8f5e8
-    classDef openai fill:#10a37f
-    classDef gemini fill:#4285f4
-    classDef azure fill:#0078d4
-    classDef deepseek fill:#8b5cf6
+    %% Styling - Only color AI model sub-boxes
+    classDef openai fill:#a7f3d0,stroke:#059669,stroke-width:2px,color:#000
+    classDef gemini fill:#bfdbfe,stroke:#2563eb,stroke-width:2px,color:#000
+    classDef azure fill:#bfdbfe,stroke:#1d4ed8,stroke-width:2px,color:#000
+    classDef deepseek fill:#ddd6fe,stroke:#7c3aed,stroke-width:2px,color:#000
 
-    class GHP frontend
-    class ACA backend
-    class AI_Providers,DALLE ai
-    class OpenAI openai
-    class Gemini gemini
-    class AzureAI azure
-    class DeepSeek deepseek
+    class GPT35,GPT4,O3 openai
+    class Gemini2 gemini
+    class DeepSeekR1 deepseek
+    class DALLE openai
 ```
 
 ## Component Flow
