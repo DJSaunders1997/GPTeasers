@@ -149,6 +149,7 @@ sequenceDiagram
     participant F as Frontend (GitHub Pages)
     participant B as Backend (Azure Container Apps)
     participant AI as AI Provider
+    participant IMG as Image Provider
 
     U->>F: 1. Enter quiz topic & settings
     F->>B: 2. POST /GenerateQuiz (SSE)
@@ -159,6 +160,14 @@ sequenceDiagram
     AI-->>B: 4. Stream question chunks
     B-->>F: 5. Stream formatted questions
     F-->>U: 6. Display questions in real-time
+    
+    Note over F,IMG: Image Generation (Optional)
+    
+    F->>B: 7. POST /GenerateImage
+    B->>IMG: 8. Generate topic image
+    IMG-->>B: 9. Return image URL
+    B-->>F: 10. Return image URL
+    F-->>U: 11. Display image with quiz
 ```
 
 ### Architecture Components
