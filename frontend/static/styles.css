@@ -1,201 +1,389 @@
+/* Animated Gradient Background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Flexbox layout and base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-    text-align: center;
-  }
-  
-  /* 
-    Flexbox layout to eliminate scrolling.
-    The entire viewport is divided into header, main, and footer sections.
-    Overflow is hidden to prevent scrolling.
-  */
-  html, body {
-    height: 100%;         /* Allow the body to take up the full viewport height */
-    margin: 0;            /* Remove default margins */
-    /* overflow: hidden;  Prevent scrolling on the entire page */
-  }
-  
-  body {
-    display: flex;        /* Enable flexbox layout */
-    flex-direction: column; /* Stack header, main, footer vertically */
-  }
-  
-  /* Header and footer take only as much space as they need */
-  header, footer {
-    flex: 0 0 auto;
-  }
-  
-  /* The main section fills the remaining space */
-  main {
-    flex: 1 1 auto;
-    /* overflow: hidden; Hide any overflow if the content exceeds the available space */
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #2c3e50;
-    padding: 10px 20px;
-    color: #fff;
-  }
-  
-  .navbar-brand h1 {
-    margin: 0;
-    font-size: 1.5em;
-    color: #fff;
-  }
-  
-  .navbar-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-  }
-  
-  .navbar-links li {
-    margin-left: 20px;
-  }
-  
-  .navbar-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1em;
-    transition: color 0.3s;
-  }
-  
-  .navbar-links a:hover {
-    color: #3498db;
-  }
-  
-  h1 {
-    color: #2c3e50;
-    margin-top: 20px;
-    font-size: 2.5em;
-  }
-  
-  #inputContainer {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 600px;
-    margin: 20px auto;
-  }
-  
-  label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  select,
-  input[type="text"],
-  button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-  }
-  
-  select:focus,
-  input[type="text"]:focus {
-    border-color: #3498db;
-    outline: none;
-  }
-  
-  button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-  }
-  
-  p {
-    margin: 10px 0;
-    color: #555;
-  }
-  
-  #AIImage {
-    display: block;
-    margin: 20px auto;
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  #loadingBarContainer {
-    margin: 20px auto;
-    width: 80%;
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  #loadingBar {
-    height: 30px;
-    background-color: #3498db;
-    transition: width 0.3s;
-  }
-  
-  #quiz-container {
-    display: none;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 600px;
-    margin: 20px auto;
-  }
-  
-  footer {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #2c3e50;
-    color: #fff;
-  }
-  
-  footer a {
-    color: #3498db;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
-  /* 
-    Static scaling for #quizSection to ensure the content fits without cutting off on larger screens.
-    On small screens, the scale remains at 1.
-  */
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: #fff;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header, footer {
+  flex: 0 0 auto;
+}
+
+main {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 15px 30px;
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-size: 1.8em;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.navbar-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.navbar-links li {
+  margin-left: 0;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.navbar-links a:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  color: #fff;
+  margin-top: 30px;
+  font-size: 3em;
+  font-weight: 800;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
+  letter-spacing: -1px;
+}
+
+/* Glassmorphism Input Container - Enhanced Contrast */
+#inputContainer {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  max-width: 600px;
+  margin: 30px auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#inputContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
+}
+
+.input-group {
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #fff;
+  text-align: left;
+  font-size: 1.15em;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+select,
+input[type="text"] {
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 5px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+select:focus,
+input[type="text"]:focus {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+p {
+  margin: 5px 0 10px 0;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: left;
+  font-size: 0.95em;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+#intro {
+  text-align: center;
+  font-size: 1.25em;
+  font-weight: 500;
+  margin: 15px 20px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+#AIImage {
+  display: block;
+  margin: 30px auto;
+  max-width: 90%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+#AIImage:hover {
+  transform: scale(1.02);
+}
+
+#loadingBarContainer {
+  margin: 30px auto;
+  width: 80%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#loadingBar {
+  height: 35px;
+  background: linear-gradient(90deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  transition: width 0.3s;
+}
+
+#loadingMessage {
+  color: #fff;
+  font-size: 1.3em;
+  font-weight: 600;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+  margin: 15px 0;
+}
+
+/* Glassmorphism Quiz Container - Enhanced Contrast */
+#quiz-container {
+  display: none;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+#quiz-container h1,
+#quiz-container h2 {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+#quiz-container button {
+  margin: 10px 5px;
+}
+
+/* Question Cards - Enhanced Contrast */
+.question {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 25px;
+  margin: 20px auto;
+  max-width: 600px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
+}
+
+.question h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.question label {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-weight: 500;
+}
+
+.question label:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.question input[type="radio"] {
+  margin-right: 10px;
+}
+
+.question .explanation {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  border-left: 4px solid rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+footer {
+  display: block !important;
+  visibility: visible !important;
+  margin-top: 0 !important;
+  padding: 30px 20px !important;
+  background: rgba(20, 30, 48, 0.95) !important;
+  border-top: 3px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  min-height: 60px !important;
+}
+
+footer a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+footer a:hover {
+  border-bottom-color: #fff;
+}
+
+/* Static scaling for #quizSection */
+#quizSection {
+  transform: scale(1);
+  transform-origin: top center;
+}
+
+@media (min-width: 1024px) {
   #quizSection {
-    transform: scale(1);
-    transform-origin: top center;
+    transform: scale(0.9);
   }
-  
-  @media (min-width: 1024px) {
-    #quizSection {
-      transform: scale(0.9);
-    }
+}
+
+@media (min-width: 1440px) {
+  #quizSection {
+    transform: scale(0.8);
   }
-  
-  @media (min-width: 1440px) {
-    #quizSection {
-      transform: scale(0.8);
-    }
-  }
-  
+}
