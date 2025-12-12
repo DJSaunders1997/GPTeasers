@@ -120,7 +120,7 @@ class Controller {
   async callImageAPI(prompt) {
     console.log("Generating image for prompt:", prompt);
 
-    const encodedPrompt = encodeURIComponent(prompt + " Pixel art");
+    const encodedPrompt = encodeURIComponent(prompt + " - Modern glassmorphism style with vibrant gradient colors, translucent frosted glass effect, smooth 3D render, clean and minimalist aesthetic");
     const url = `${this.baseURLImage}?code=&prompt=${encodedPrompt}`;
     console.log(`Sending request to: ${url}`);
 
