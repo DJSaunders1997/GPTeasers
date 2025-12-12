@@ -1,201 +1,578 @@
+/* Animated Gradient Background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Flexbox layout and base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-    text-align: center;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  flex: 0 0 auto;
+}
+
+/* Hide duplicate header content on mobile */
+@media (max-width: 768px) {
+  header > h1 {
+    display: none;
   }
   
-  /* 
-    Flexbox layout to eliminate scrolling.
-    The entire viewport is divided into header, main, and footer sections.
-    Overflow is hidden to prevent scrolling.
-  */
-  html, body {
-    height: 100%;         /* Allow the body to take up the full viewport height */
-    margin: 0;            /* Remove default margins */
-    /* overflow: hidden;  Prevent scrolling on the entire page */
+  #intro {
+    display: none;
   }
-  
-  body {
-    display: flex;        /* Enable flexbox layout */
-    flex-direction: column; /* Stack header, main, footer vertically */
-  }
-  
-  /* Header and footer take only as much space as they need */
-  header, footer {
-    flex: 0 0 auto;
-  }
-  
-  /* The main section fills the remaining space */
-  main {
-    flex: 1 1 auto;
-    /* overflow: hidden; Hide any overflow if the content exceeds the available space */
-  }
-  
+}
+
+main {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+main::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+main footer {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Glassmorphism Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 20px;
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+@media (max-width: 768px) {
   .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #2c3e50;
-    padding: 10px 20px;
-    color: #fff;
+    padding: 10px 15px;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .navbar-brand h1 {
-    margin: 0;
     font-size: 1.5em;
-    color: #fff;
   }
   
   .navbar-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-  }
-  
-  .navbar-links li {
-    margin-left: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
   }
   
   .navbar-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1em;
-    transition: color 0.3s;
+    padding: 6px 12px;
+    font-size: 0.9em;
   }
-  
-  .navbar-links a:hover {
-    color: #3498db;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-size: 1.8em;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .navbar-brand h1 {
+    font-size: 1.3em;
   }
-  
+}
+
+.navbar-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.navbar-links li {
+  margin-left: 0;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.navbar-links a:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  color: #fff;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 2.5em;
+  font-weight: 800;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
+  letter-spacing: -1px;
+}
+
+@media (max-width: 768px) {
   h1 {
-    color: #2c3e50;
-    margin-top: 20px;
-    font-size: 2.5em;
-  }
-  
-  #inputContainer {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 600px;
-    margin: 20px auto;
-  }
-  
-  label {
-    display: block;
+    font-size: 1.8em;
     margin-top: 10px;
-    font-weight: bold;
-    color: #555;
+    margin-bottom: 5px;
   }
-  
-  select,
-  input[type="text"],
-  button {
-    width: 100%;
-    padding: 10px;
+}
+
+/* Glassmorphism Input Container - Enhanced Contrast */
+#inputContainer {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  max-width: 600px;
+  margin: 15px auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  #inputContainer {
+    padding: 15px;
+    margin: 10px;
+  }
+}
+
+#inputContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .input-group {
+    margin-bottom: 10px;
+  }
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #fff;
+  text-align: left;
+  font-size: 1.15em;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  label {
+    font-size: 1em;
     margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.3s;
+    margin-bottom: 5px;
   }
-  
-  select:focus,
-  input[type="text"]:focus {
-    border-color: #3498db;
-    outline: none;
+}
+
+select,
+input[type="text"] {
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 5px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  select,
+  input[type="text"] {
+    padding: 10px 12px;
+    margin-top: 0;
   }
-  
+}
+
+select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+select:focus,
+input[type="text"]:focus {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
   button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
   }
-  
-  button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-  }
-  
-  p {
-    margin: 10px 0;
-    color: #555;
-  }
-  
-  #AIImage {
-    display: block;
-    margin: 20px auto;
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  #loadingBarContainer {
-    margin: 20px auto;
-    width: 80%;
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  #loadingBar {
-    height: 30px;
-    background-color: #3498db;
-    transition: width 0.3s;
-  }
-  
-  #quiz-container {
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+p {
+  margin: 5px 0 10px 0;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: left;
+  font-size: 0.95em;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .input-group p {
     display: none;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 600px;
-    margin: 20px auto;
+  }
+}
+
+#intro {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 10px 20px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  #intro {
+    font-size: 0.95em;
+    margin: 8px 15px;
+  }
+}
+
+#AIImage {
+  display: block;
+  margin: 15px auto;
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  #AIImage {
+    max-height: 200px;
+    margin: 10px auto;
+  }
+}
+
+#AIImage:hover {
+  transform: scale(1.02);
+}
+
+#loadingBarContainer {
+  margin: 15px auto;
+  width: 90%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  #loadingBarContainer {
+    margin: 10px auto;
+    width: 95%;
+  }
+}
+
+#loadingBar {
+  height: 35px;
+  background: linear-gradient(90deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  transition: width 0.3s;
+}
+
+@media (max-width: 768px) {
+  #loadingBar {
+    height: 20px;
+  }
+}
+
+#loadingMessage {
+  color: #fff;
+  font-size: 1.3em;
+  font-weight: 600;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+  margin: 15px 0;
+}
+
+@media (max-width: 768px) {
+  #loadingMessage {
+    font-size: 1em;
+    margin: 8px 0;
+  }
+}
+
+/* Glassmorphism Quiz Container - Enhanced Contrast */
+#quiz-container {
+  display: none;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  max-width: 600px;
+  margin: 15px auto;
+}
+
+@media (max-width: 768px) {
+  #quiz-container {
+    padding: 15px;
+    margin: 10px;
+  }
+}
+
+#quiz-container h1,
+#quiz-container h2 {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+#quiz-container button {
+  margin: 8px 5px;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  #quiz-container {
+    display: grid !important;
+    gap: 8px;
   }
   
+  #quiz-container button {
+    margin: 0;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+  }
+}
+
+/* Question Cards - Enhanced Contrast */
+.question {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  padding: 15px;
+  margin: 10px auto;
+  max-width: 600px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .question {
+    padding: 12px;
+    margin: 8px;
+  }
+}
+
+.question:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
+}
+
+.question h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .question h2 {
+    font-size: 1.2em;
+    margin-bottom: 12px;
+  }
+}
+
+.question label {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .question label {
+    padding: 10px;
+    margin: 6px 0;
+    font-size: 0.95em;
+  }
+}
+
+.question label:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.question input[type="radio"] {
+  margin-right: 10px;
+}
+
+.question .explanation {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  border-left: 4px solid rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+footer {
+  display: block;
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-shadow: 0 -8px 32px 0 rgba(31, 38, 135, 0.37);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
   footer {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #2c3e50;
-    color: #fff;
+    padding: 12px 15px;
+    font-size: 12px;
   }
-  
-  footer a {
-    color: #3498db;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
-  /* 
-    Static scaling for #quizSection to ensure the content fits without cutting off on larger screens.
-    On small screens, the scale remains at 1.
-  */
+}
+
+footer a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+footer a:hover {
+  border-bottom-color: #fff;
+}
+
+/* Static scaling for #quizSection */
+#quizSection {
+  transform: scale(1);
+  transform-origin: top center;
+}
+
+@media (min-width: 1024px) {
   #quizSection {
-    transform: scale(1);
-    transform-origin: top center;
+    transform: scale(0.9);
   }
-  
-  @media (min-width: 1024px) {
-    #quizSection {
-      transform: scale(0.9);
-    }
+}
+
+@media (min-width: 1440px) {
+  #quizSection {
+    transform: scale(0.8);
   }
-  
-  @media (min-width: 1440px) {
-    #quizSection {
-      transform: scale(0.8);
-    }
-  }
-  
+}
