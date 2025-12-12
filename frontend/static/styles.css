@@ -40,6 +40,12 @@ main {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+main::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 main footer {
