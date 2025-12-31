@@ -120,7 +120,7 @@ class Controller {
   async callImageAPI(prompt) {
     console.log("Generating image for prompt:", prompt);
 
-    const encodedPrompt = encodeURIComponent(prompt + ", vibrant colors, modern aesthetic");
+    const encodedPrompt = encodeURIComponent(prompt + " vibrant colors, modern aesthetic");
     const url = `${this.baseURLImage}?code=&prompt=${encodedPrompt}`;
     console.log(`Sending request to: ${url}`);
 
