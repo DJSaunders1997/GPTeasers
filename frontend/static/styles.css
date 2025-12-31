@@ -26,19 +26,42 @@ body {
   animation: gradientShift 15s ease infinite;
   color: #fff;
   text-align: center;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-header, footer {
+header {
   flex: 0 0 auto;
+}
+
+/* Hide duplicate header content on mobile */
+@media (max-width: 768px) {
+  header > h1 {
+    display: none;
+  }
+  
+  #intro {
+    display: none;
+  }
 }
 
 main {
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+main::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+main footer {
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 /* Glassmorphism Navbar */
@@ -50,10 +73,33 @@ main {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 15px 30px;
+  padding: 12px 20px;
   color: #fff;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 15px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 1.5em;
+  }
+  
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .navbar-links a {
+    padding: 6px 12px;
+    font-size: 0.9em;
+  }
 }
 
 .navbar-brand h1 {
@@ -62,6 +108,12 @@ main {
   color: #fff;
   font-weight: 700;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .navbar-brand h1 {
+    font-size: 1.3em;
+  }
 }
 
 .navbar-links {
@@ -202,8 +254,9 @@ main {
 
 h1 {
   color: #fff;
-  margin-top: 30px;
-  font-size: 3em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 2.5em;
   font-weight: 800;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
   letter-spacing: -1px;
@@ -212,8 +265,9 @@ h1 {
 /* Mobile responsive typography and spacing */
 @media (max-width: 768px) {
   h1 {
-    font-size: 2.2em;
-    margin-top: 20px;
+    font-size: 1.8em;
+    margin-top: 10px;
+    margin-bottom: 5px;
   }
   
   #intro {
@@ -280,10 +334,17 @@ h1 {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-  padding: 30px;
+  padding: 20px;
   max-width: 600px;
-  margin: 30px auto;
+  margin: 15px auto;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  #inputContainer {
+    padding: 15px;
+    margin: 10px;
+  }
 }
 
 #inputContainer:hover {
@@ -313,7 +374,13 @@ h1 {
 }
 
 .input-group {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .input-group {
+    margin-bottom: 10px;
+  }
 }
 
 label {
@@ -325,6 +392,14 @@ label {
   text-align: left;
   font-size: 1.15em;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  label {
+    font-size: 1em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
 
 select,
@@ -341,6 +416,14 @@ input[type="text"] {
   color: #fff;
   transition: all 0.3s ease;
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  select,
+  input[type="text"] {
+    padding: 10px 12px;
+    margin-top: 0;
+  }
 }
 
 select option {
@@ -378,6 +461,14 @@ button {
   box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+  button {
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+}
+
 button:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-3px);
@@ -398,23 +489,46 @@ p {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
+@media (max-width: 768px) {
+  .input-group p {
+    display: none;
+  }
+}
+
 #intro {
   text-align: center;
-  font-size: 1.25em;
+  font-size: 1.1em;
   font-weight: 500;
-  margin: 15px 20px;
+  margin: 10px 20px;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  #intro {
+    font-size: 0.95em;
+    margin: 8px 15px;
+  }
 }
 
 #AIImage {
   display: block;
-  margin: 30px auto;
-  max-width: 90%;
+  margin: 15px auto;
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
   height: auto;
-  border-radius: 20px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  #AIImage {
+    max-height: 200px;
+    margin: 10px auto;
+  }
 }
 
 #AIImage:hover {
@@ -422,14 +536,21 @@ p {
 }
 
 #loadingBarContainer {
-  margin: 30px auto;
-  width: 80%;
+  margin: 15px auto;
+  width: 90%;
   max-width: 600px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  #loadingBarContainer {
+    margin: 10px auto;
+    width: 95%;
+  }
 }
 
 #loadingBar {
@@ -440,12 +561,25 @@ p {
   transition: width 0.3s;
 }
 
+@media (max-width: 768px) {
+  #loadingBar {
+    height: 20px;
+  }
+}
+
 #loadingMessage {
   color: #fff;
   font-size: 1.3em;
   font-weight: 600;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
   margin: 15px 0;
+}
+
+@media (max-width: 768px) {
+  #loadingMessage {
+    font-size: 1em;
+    margin: 8px 0;
+  }
 }
 
 /* Glassmorphism Quiz Container - Enhanced Contrast */
@@ -457,9 +591,16 @@ p {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-  padding: 30px;
+  padding: 20px;
   max-width: 600px;
-  margin: 30px auto;
+  margin: 15px auto;
+}
+
+@media (max-width: 768px) {
+  #quiz-container {
+    padding: 15px;
+    margin: 10px;
+  }
 }
 
 #quiz-container h1,
@@ -470,7 +611,22 @@ p {
 }
 
 #quiz-container button {
-  margin: 10px 5px;
+  margin: 8px 5px;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  #quiz-container {
+    display: grid !important;
+    gap: 8px;
+  }
+  
+  #quiz-container button {
+    margin: 0;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+  }
 }
 
 /* Question Cards - Enhanced Contrast */
@@ -478,13 +634,20 @@ p {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
+  border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-  padding: 25px;
-  margin: 20px auto;
+  padding: 15px;
+  margin: 10px auto;
   max-width: 600px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .question {
+    padding: 12px;
+    margin: 8px;
+  }
 }
 
 .question:hover {
@@ -499,6 +662,13 @@ p {
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
+@media (max-width: 768px) {
+  .question h2 {
+    font-size: 1.2em;
+    margin-bottom: 12px;
+  }
+}
+
 .question label {
   display: block;
   background: rgba(0, 0, 0, 0.3);
@@ -510,6 +680,14 @@ p {
   transition: all 0.3s ease;
   text-align: left;
   font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .question label {
+    padding: 10px;
+    margin: 6px 0;
+    font-size: 0.95em;
+  }
 }
 
 .question label:hover {
@@ -530,22 +708,26 @@ p {
   margin-top: 15px;
   border-left: 4px solid rgba(255, 255, 255, 0.6);
   font-weight: 500;
+}
+
 footer {
-  display: block !important;
-  visibility: visible !important;
-  margin-top: 0 !important;
-  padding: 30px 20px !important;
-  background: rgba(20, 30, 48, 0.95) !important;
-  border-top: 3px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
-  backdrop-filter: blur(10px) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-  position: relative !important;
-  z-index: 1000 !important;
-  min-height: 60px !important;
+  display: block;
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-shadow: 0 -8px 32px 0 rgba(31, 38, 135, 0.37);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 12px 15px;
+    font-size: 12px;
+  }
 }
 
 footer a {
