@@ -220,6 +220,25 @@ h1 {
     font-size: 1em;
     padding: 0 10px;
   }
+
+  /* Compressed spacing for mobile */
+  #quiz-container {
+    margin: 15px auto;
+    padding: 20px;
+  }
+
+  #AIImage {
+    margin: 15px auto;
+  }
+
+  .question {
+    padding: 10px !important;
+    margin: 10px auto !important;
+  }
+
+  #quiz-container button {
+    margin: 5px 3px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -230,6 +249,26 @@ h1 {
   
   #intro {
     font-size: 0.9em;
+  }
+
+  /* Extra compressed spacing for small screens */
+  #quiz-container {
+    margin: 10px auto;
+    padding: 15px;
+  }
+
+  #AIImage {
+    margin: 10px auto;
+  }
+
+  .question {
+    padding: 8px !important;
+    margin: 8px auto !important;
+  }
+
+  .question label {
+    padding: 8px 12px;
+    margin: 6px 0;
   }
 }
 
