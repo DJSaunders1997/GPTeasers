@@ -14,6 +14,9 @@ class App {
     this.controller = new Controller(this.quiz);
     this.ui = new UI();
 
+    // Initialize mobile menu toggle
+    this.initMobileMenu();
+
     // Load supported models dynamically
     this.loadSupportedModels();
 
@@ -46,6 +49,39 @@ class App {
           document.querySelector("#fetchQuizButton").click(); // Simulate a click on the button
         }
       });
+  }
+
+  /**
+   * Initialize mobile menu toggle functionality
+   */
+  initMobileMenu() {
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const navbarLinks = document.getElementById('navbar-links');
+    
+    if (navbarToggle && navbarLinks) {
+      navbarToggle.addEventListener('click', () => {
+        navbarLinks.classList.toggle('active');
+        
+        // Add animation to hamburger menu
+        navbarToggle.classList.toggle('active');
+      });
+
+      // Close mobile menu when clicking on a link
+      navbarLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navbarLinks.classList.remove('active');
+          navbarToggle.classList.remove('active');
+        });
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (event) => {
+        if (!navbarToggle.contains(event.target) && !navbarLinks.contains(event.target)) {
+          navbarLinks.classList.remove('active');
+          navbarToggle.classList.remove('active');
+        }
+      });
+    }
   }
 
   async fetchQuizData() {
