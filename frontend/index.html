@@ -107,7 +107,7 @@
           ></div>
         </div>
 
-        <div id="quiz-container">
+        <div id="quiz-container" style="display: none;">
           <h1 id="quizTitle">Title</h1>
           <h2 id="question-text">Question</h2>
 
@@ -120,27 +120,6 @@
           <!-- Questions will be dynamically added here -->
         </div>
 
-        <!-- This is a template for each question. It will be hidden by default and cloned for each question. -->
-        <template id="questionTemplate">
-          <div class="question">
-            <h2></h2>
-            <!-- Question text will be inserted here -->
-            <label
-              ><input type="radio" name="answer" value="A" />
-              <span class="optionA"></span
-            ></label>
-            <label
-              ><input type="radio" name="answer" value="B" />
-              <span class="optionB"></span
-            ></label>
-            <label
-              ><input type="radio" name="answer" value="C" />
-              <span class="optionC"></span
-            ></label>
-            <button onclick="checkAnswer(this)">Submit</button>
-            <p class="explanation" style="display: block"></p>
-          </div>
-        </template>
       </section>
       
       <footer>Website by David Saunders.</footer>
