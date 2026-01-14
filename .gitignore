@@ -51,6 +51,7 @@ coverage.xml
 
 # Terraform
 terraform.tfvars
+terraform.tfstate*
 .terraform/
 .pytest_cache/
 cover/
