@@ -109,11 +109,18 @@
 
         <div id="quiz-container" style="display: none;">
           <h1 id="quizTitle">Title</h1>
+          <div id="quizMeta" class="quiz-meta" aria-live="polite">
+            <span id="quizProgress">Question 1 of 10</span>
+            <span id="quizScore">Score: 0</span>
+          </div>
           <h2 id="question-text">Question</h2>
+
+          <div id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite" style="display: none;"></div>
 
           <button id="option-A">A</button>
           <button id="option-B">B</button>
           <button id="option-C">C</button>
+          <button id="nextQuestionButton" style="display: none;">Next Question →</button>
         </div>
 
         <div id="questionsContainer">

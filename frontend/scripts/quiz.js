@@ -43,7 +43,6 @@ class Quiz {
       return this.questions[this.currentIndex];
     } else {
       console.log("Quiz over!");
-      alert("Quiz over!");
       return null;
     }
   }
@@ -71,70 +70,58 @@ class Quiz {
    * Check the answer for the current question.
    *
    * @param {string} selectedOption - The selected answer option.
-   * @returns {boolean} True if the answer is correct, false otherwise.
+    * @returns {Object|null} Structured result containing correctness, metadata, and progress; null if no question is active.
    */
   checkAnswer(selectedOption) {
     if (!selectedOption) {
       console.error("No option selected");
-      return false;
+      return null;
     }
     const currentQuestion = this.getCurrentQuestion();
 
-    if (selectedOption === currentQuestion.answer) {
-      this.score++;
-      const returnMessage =
-        "Correct!" +
-        "\n\nExplanation: " +
-        currentQuestion.explanation +
-        "\n" +
-        currentQuestion.wikipedia +
-        "\nQuestion: " +
-        (this.currentIndex + 1) +
-        " / " +
-        this.numQuestions +
-        "\nScore: " +
-        this.score;
-
-      alert(returnMessage);
-      // return true;
-    } else {
-      const returnMessage =
-        "Wrong!" +
-        "\n\nThe Correct Answer is: " +
-        currentQuestion.answer +
-        "\nExplanation: " +
-        currentQuestion.explanation +
-        "\n" +
-        currentQuestion.wikipedia +
-        "\nQuestion: " +
-        (this.currentIndex + 1) +
-        " / " +
-        this.numQuestions +
-        "\nScore: " +
-        this.score;
-
-      alert(returnMessage);
-      // return false;
+    if (!currentQuestion) {
+      return null;
     }
+
+    const isCorrect = selectedOption === currentQuestion.answer;
+    if (isCorrect) {
+      this.score++;
+    }
+
+    const result = {
+      correct: isCorrect,
+      selected: selectedOption,
+      answer: currentQuestion.answer,
+      explanation: currentQuestion.explanation,
+      wikipedia: currentQuestion.wikipedia,
+      optionA: currentQuestion.A,
+      optionB: currentQuestion.B,
+      optionC: currentQuestion.C,
+      questionNumber: this.currentIndex + 1,
+      totalQuestions: this.numQuestions,
+      score: this.score,
+      isFinished: false,
+    };
+
     if (this.hasMoreQuestions()) {
       this.nextQuestion();
     } else {
-      this.endQuiz();
+      result.isFinished = true;
     }
+
+    return result;
   }
 
   /**
-   * End the quiz and show the final score.
+    * Returns the final quiz summary.
+    *
+    * @returns {{finalScore: number, totalQuestions: number}} Final score and total question count.
    */
   endQuiz() {
-    alert(
-      "Quiz Finished!" +
-        "\nFinal Score: " +
-        this.score +
-        "/" +
-        this.numQuestions
-    );
-    location.reload(); // This will reload the page
+    return {
+      finalScore: this.score,
+      totalQuestions: this.numQuestions,
+    };
   }
 }
 

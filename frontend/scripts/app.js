@@ -38,6 +38,9 @@ class App {
     document
       .querySelector("#option-C")
       .addEventListener("click", () => this.checkAnswer("C"));
+    document
+      .querySelector("#nextQuestionButton")
+      .addEventListener("click", () => this.nextQuestion());
 
     // If Enter key is pressed then simulate button press
     document
@@ -159,12 +162,38 @@ class App {
     const question = this.quiz.getCurrentQuestion();
     // Update UI elements
     this.ui.displayCurrentQuestion(question);
+    this.ui.updateProgress(this.quiz.currentIndex + 1, this.quiz.numQuestions, this.quiz.score);
   }
 
   // Calls quiz check answer method
   // and displays the next question
+  /**
+   * Handles answer selection, renders inline feedback, and advances quiz flow.
+   * @param {"A"|"B"|"C"} answer - Selected option key.
+   */
   checkAnswer(answer) {
-    this.quiz.checkAnswer(answer);
+    const result = this.quiz.checkAnswer(answer);
+
+    if (!result) {
+      return;
+    }
+
+    if (result.isFinished) {
+      this.ui.showFinalScore(result);
+      this.ui.updateProgress(this.quiz.numQuestions, this.quiz.numQuestions, this.quiz.score);
+      return;
+    }
+
+    this.ui.hideAnswerButtons();
+    this.ui.showAnswerFeedback(result);
+    this.ui.showNextQuestionButton();
+    this.ui.updateProgress(this.quiz.currentIndex + 1, this.quiz.numQuestions, this.quiz.score);
+  }
+
+  nextQuestion() {
+    this.ui.hideFeedback();
+    this.ui.hideNextQuestionButton();
+    this.ui.showAnswerButtons();
     this.showQuestion();
   }
 

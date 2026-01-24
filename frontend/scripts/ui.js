@@ -17,12 +17,16 @@ class UI {
     //Quiz elements
     this.quizContainer = document.getElementById("quiz-container");
     this.quizTitle = document.getElementById("quizTitle");
+    this.quizProgress = document.getElementById("quizProgress");
+    this.quizScore = document.getElementById("quizScore");
     this.questionText = document.getElementById("question-text");
+    this.quizFeedback = document.getElementById("quizFeedback");
     this.buttonA = document.getElementById("option-A");
     this.buttonB = document.getElementById("option-B");
     this.buttonC = document.getElementById("option-C");
     // Ensure this is hidden by default
     this.hideQuizContainer();
+    this.hideFeedback();
   }
 
   // When loading show loading clues, disable quiz generation button, and show loading bar.
@@ -55,6 +59,14 @@ class UI {
     this.quizContainer.style.display = "none";
   }
 
+  hideFeedback() {
+    if (this.quizFeedback) {
+      this.quizFeedback.style.display = "none";
+      this.quizFeedback.innerHTML = "";
+      this.quizFeedback.classList.remove("feedback-final");
+    }
+  }
+
   showAIImage(data){
     this.AIImage.style.display = "block"
     this.AIImage.src = data;
@@ -74,6 +86,145 @@ class UI {
 
   getModel() {
     return this.quizModel.value;
+  }
+
+  /**
+   * Updates the on-screen quiz meta strip with progress and score.
+   * @param {number} currentQuestionNumber - 1-based index of the active question.
+   * @param {number} totalQuestions - Total questions in the quiz.
+   * @param {number} score - Current user score.
+   */
+  updateProgress(currentQuestionNumber, totalQuestions, score) {
+    if (this.quizProgress) {
+      this.quizProgress.textContent = `Question ${currentQuestionNumber} of ${totalQuestions}`;
+    }
+    if (this.quizScore) {
+      this.quizScore.textContent = `Score: ${score}`;
+    }
+  }
+
+  /**
+   * Renders inline answer feedback (correctness, explanation, wiki link, and summary).
+   * @param {Object} result - Structured answer result from Quiz.checkAnswer.
+   */
+  showAnswerFeedback(result) {
+    if (!this.quizFeedback) {
+      return;
+    }
+
+    this.quizFeedback.style.display = "block";
+    this.quizFeedback.innerHTML = "";
+
+    const status = document.createElement("p");
+    status.textContent = result.correct ? "Correct!" : "Wrong.";
+    status.className = result.correct ? "feedback-correct" : "feedback-wrong";
+    this.quizFeedback.appendChild(status);
+
+    // Show answer choices with indication of selected and correct
+    const choicesDiv = document.createElement("div");
+    choicesDiv.className = "feedback-choices";
+    const choices = [
+      { key: "A", value: result.optionA },
+      { key: "B", value: result.optionB },
+      { key: "C", value: result.optionC },
+    ];
+
+    choices.forEach((choice) => {
+      const choiceP = document.createElement("p");
+      let marker = "";
+      if (choice.key === result.selected) {
+        marker += " ← Your answer";
+      }
+      if (choice.key === result.answer) {
+        marker += " ✓ Correct";
+      }
+      choiceP.textContent = `${choice.key}: ${choice.value}${marker}`;
+      choiceP.className =
+        choice.key === result.answer ? "choice-correct" : "choice-neutral";
+      choicesDiv.appendChild(choiceP);
+    });
+
+    this.quizFeedback.appendChild(choicesDiv);
+
+    if (result.explanation) {
+      const explanation = document.createElement("p");
+      explanation.textContent = `Explanation: ${result.explanation}`;
+      this.quizFeedback.appendChild(explanation);
+    }
+
+    if (result.wikipedia) {
+      const wikiLink = document.createElement("a");
+      wikiLink.href = result.wikipedia;
+      wikiLink.target = "_blank";
+      wikiLink.rel = "noopener noreferrer";
+      wikiLink.textContent = "Read more";
+      this.quizFeedback.appendChild(wikiLink);
+    }
+
+    const summary = document.createElement("p");
+    summary.textContent = `Question ${result.questionNumber} of ${result.totalQuestions} • Score: ${result.score}`;
+    this.quizFeedback.appendChild(summary);
+  }
+
+  /**
+   * Displays the final score summary and disables further inputs.
+   * @param {Object} result - Final answer result payload from Quiz.checkAnswer.
+   */
+  showFinalScore(result) {
+    this.showAnswerFeedback(result);
+    this.quizFeedback.classList.add("feedback-final");
+    this.disableAnswerButtons();
+  }
+
+  disableAnswerButtons() {
+    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+      if (button) {
+        button.disabled = true;
+      }
+    });
+  }
+
+  /**
+   * Hides answer option buttons (A, B, C).
+   */
+  hideAnswerButtons() {
+    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+      if (button) {
+        button.style.display = "none";
+      }
+    });
+  }
+
+  /**
+   * Shows answer option buttons (A, B, C) and re-enables them.
+   */
+  showAnswerButtons() {
+    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+      if (button) {
+        button.style.display = "block";
+        button.disabled = false;
+      }
+    });
+  }
+
+  /**
+   * Shows the Next Question button.
+   */
+  showNextQuestionButton() {
+    const nextBtn = document.getElementById("nextQuestionButton");
+    if (nextBtn) {
+      nextBtn.style.display = "block";
+    }
+  }
+
+  /**
+   * Hides the Next Question button.
+   */
+  hideNextQuestionButton() {
+    const nextBtn = document.getElementById("nextQuestionButton");
+    if (nextBtn) {
+      nextBtn.style.display = "none";
+    }
   }
 
   /**
