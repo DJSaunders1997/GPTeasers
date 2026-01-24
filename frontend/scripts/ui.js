@@ -1,30 +1,13 @@
 import LoadingBar from "./loadingbar.js";
+import { CSS_CLASSES} from "./config.js";
+import DOMElements from "./domElements.js";
 
 class UI {
   constructor() {
-    this.inputContainer = document.getElementById("inputContainer");
-    this.intro = document.getElementById("intro");
-    this.topicInput = document.getElementById("quizTopic");
-    this.quizDifficulty = document.getElementById("quizDifficulty");
-    this.quizModel = document.getElementById("quizModel")
-    this.button = document.querySelector("button");
-
-    //Image elements
-    this.AIImage = document.getElementById("AIImage");
-
+    this.elements = new DOMElements();
     this.loadingBar = new LoadingBar();
     
-    //Quiz elements
-    this.quizContainer = document.getElementById("quiz-container");
-    this.quizTitle = document.getElementById("quizTitle");
-    this.quizProgress = document.getElementById("quizProgress");
-    this.quizScore = document.getElementById("quizScore");
-    this.questionText = document.getElementById("question-text");
-    this.quizFeedback = document.getElementById("quizFeedback");
-    this.buttonA = document.getElementById("option-A");
-    this.buttonB = document.getElementById("option-B");
-    this.buttonC = document.getElementById("option-C");
-    // Ensure this is hidden by default
+    // Ensure UI is hidden by default
     this.hideQuizContainer();
     this.hideFeedback();
   }
@@ -33,7 +16,7 @@ class UI {
   showLoading() {
     console.log("Showing loading clues")
     document.body.style.cursor = "wait";
-    this.button.disabled = true;
+    this.elements.fetchButton.disabled = true;
     this.loadingBar.start();
   }
 
@@ -41,51 +24,50 @@ class UI {
   hideLoading() {
     console.log("Hiding loading clues")
     document.body.style.cursor = "default";
-    this.button.disabled = false;
+    this.elements.fetchButton.disabled = false;
     this.loadingBar.stop();
   }
 
   showQuizContainer(quizTitle) {
-
     // Hide button inputs
-    this.inputContainer.style.display = "none"
-    this.intro.style.display = "none" 
+    this.elements.inputContainer.style.display = "none"
+    this.elements.intro.style.display = "none" 
 
-    this.quizContainer.style.display = "block";
-    this.quizTitle.textContent = quizTitle;
+    this.elements.quizContainer.style.display = "block";
+    this.elements.quizTitle.textContent = quizTitle;
   }
 
   hideQuizContainer() {
-    this.quizContainer.style.display = "none";
+    this.elements.quizContainer.style.display = "none";
   }
 
   hideFeedback() {
-    if (this.quizFeedback) {
-      this.quizFeedback.style.display = "none";
-      this.quizFeedback.innerHTML = "";
-      this.quizFeedback.classList.remove("feedback-final");
+    if (this.elements.quizFeedback) {
+      this.elements.quizFeedback.style.display = "none";
+      this.elements.quizFeedback.innerHTML = "";
+      this.elements.quizFeedback.classList.remove("feedback-final");
     }
   }
 
   showAIImage(data){
-    this.AIImage.style.display = "block"
-    this.AIImage.src = data;
+    this.elements.AIImage.style.display = "block"
+    this.elements.AIImage.src = data;
   }
 
   hideAIImage(){
-    this.AIImage.style.display = "none"
+    this.elements.AIImage.style.display = "none"
   }
 
   getTopic(){
-    return this.topicInput.value;
+    return this.elements.topicInput.value;
   }
 
   getDifficulty(){
-    return this.quizDifficulty.value;
+    return this.elements.quizDifficulty.value;
   }
 
   getModel() {
-    return this.quizModel.value;
+    return this.elements.quizModel.value;
   }
 
   /**
@@ -95,11 +77,11 @@ class UI {
    * @param {number} score - Current user score.
    */
   updateProgress(currentQuestionNumber, totalQuestions, score) {
-    if (this.quizProgress) {
-      this.quizProgress.textContent = `Question ${currentQuestionNumber} of ${totalQuestions}`;
+    if (this.elements.quizProgress) {
+      this.elements.quizProgress.textContent = `Question ${currentQuestionNumber} of ${totalQuestions}`;
     }
-    if (this.quizScore) {
-      this.quizScore.textContent = `Score: ${score}`;
+    if (this.elements.quizScore) {
+      this.elements.quizScore.textContent = `Score: ${score}`;
     }
   }
 
@@ -108,21 +90,21 @@ class UI {
    * @param {Object} result - Structured answer result from Quiz.checkAnswer.
    */
   showAnswerFeedback(result) {
-    if (!this.quizFeedback) {
+    if (!this.elements.quizFeedback) {
       return;
     }
 
-    this.quizFeedback.style.display = "block";
-    this.quizFeedback.innerHTML = "";
+    this.elements.quizFeedback.style.display = "block";
+    this.elements.quizFeedback.innerHTML = "";
 
     const status = document.createElement("p");
     status.textContent = result.correct ? "Correct!" : "Wrong.";
-    status.className = result.correct ? "feedback-correct" : "feedback-wrong";
-    this.quizFeedback.appendChild(status);
+    status.className = result.correct ? CSS_CLASSES.feedbackCorrect : CSS_CLASSES.feedbackWrong;
+    this.elements.quizFeedback.appendChild(status);
 
     // Show answer choices with indication of selected and correct
     const choicesDiv = document.createElement("div");
-    choicesDiv.className = "feedback-choices";
+    choicesDiv.className = CSS_CLASSES.feedbackChoices;
     const choices = [
       { key: "A", value: result.optionA },
       { key: "B", value: result.optionB },
@@ -140,16 +122,16 @@ class UI {
       }
       choiceP.textContent = `${choice.key}: ${choice.value}${marker}`;
       choiceP.className =
-        choice.key === result.answer ? "choice-correct" : "choice-neutral";
+        choice.key === result.answer ? CSS_CLASSES.choiceCorrect : CSS_CLASSES.choiceNeutral;
       choicesDiv.appendChild(choiceP);
     });
 
-    this.quizFeedback.appendChild(choicesDiv);
+    this.elements.quizFeedback.appendChild(choicesDiv);
 
     if (result.explanation) {
       const explanation = document.createElement("p");
       explanation.textContent = `Explanation: ${result.explanation}`;
-      this.quizFeedback.appendChild(explanation);
+      this.elements.quizFeedback.appendChild(explanation);
     }
 
     if (result.wikipedia) {
@@ -158,12 +140,12 @@ class UI {
       wikiLink.target = "_blank";
       wikiLink.rel = "noopener noreferrer";
       wikiLink.textContent = "Read more";
-      this.quizFeedback.appendChild(wikiLink);
+      this.elements.quizFeedback.appendChild(wikiLink);
     }
 
     const summary = document.createElement("p");
     summary.textContent = `Question ${result.questionNumber} of ${result.totalQuestions} • Score: ${result.score}`;
-    this.quizFeedback.appendChild(summary);
+    this.elements.quizFeedback.appendChild(summary);
   }
 
   /**
@@ -172,12 +154,12 @@ class UI {
    */
   showFinalScore(result) {
     this.showAnswerFeedback(result);
-    this.quizFeedback.classList.add("feedback-final");
+    this.elements.quizFeedback.classList.add(CSS_CLASSES.feedbackFinal);
     this.disableAnswerButtons();
   }
 
   disableAnswerButtons() {
-    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+    this.elements.getAnswerButtons().forEach((button) => {
       if (button) {
         button.disabled = true;
       }
@@ -188,7 +170,7 @@ class UI {
    * Hides answer option buttons (A, B, C).
    */
   hideAnswerButtons() {
-    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+    this.elements.getAnswerButtons().forEach((button) => {
       if (button) {
         button.style.display = "none";
       }
@@ -199,7 +181,7 @@ class UI {
    * Shows answer option buttons (A, B, C) and re-enables them.
    */
   showAnswerButtons() {
-    [this.buttonA, this.buttonB, this.buttonC].forEach((button) => {
+    this.elements.getAnswerButtons().forEach((button) => {
       if (button) {
         button.style.display = "block";
         button.disabled = false;
@@ -211,9 +193,8 @@ class UI {
    * Shows the Next Question button.
    */
   showNextQuestionButton() {
-    const nextBtn = document.getElementById("nextQuestionButton");
-    if (nextBtn) {
-      nextBtn.style.display = "block";
+    if (this.elements.nextQuestionButton) {
+      this.elements.nextQuestionButton.style.display = "block";
     }
   }
 
@@ -221,9 +202,8 @@ class UI {
    * Hides the Next Question button.
    */
   hideNextQuestionButton() {
-    const nextBtn = document.getElementById("nextQuestionButton");
-    if (nextBtn) {
-      nextBtn.style.display = "none";
+    if (this.elements.nextQuestionButton) {
+      this.elements.nextQuestionButton.style.display = "none";
     }
   }
 
@@ -238,7 +218,7 @@ class UI {
     console.log("Populating model dropdown with:", models);
     
     // Clear existing options
-    this.quizModel.innerHTML = '';
+    this.elements.quizModel.innerHTML = '';
     
     // Create and add new options
     models.forEach(model => {
@@ -251,12 +231,12 @@ class UI {
         option.selected = true;
       }
       
-      this.quizModel.appendChild(option);
+      this.elements.quizModel.appendChild(option);
     });
     
     // If no default was provided or found, select the first option
     if (!defaultModel && models.length > 0) {
-      this.quizModel.selectedIndex = 0;
+      this.elements.quizModel.selectedIndex = 0;
     }
   }
 
@@ -277,10 +257,10 @@ class UI {
     console.log("Showing question: ", currentQuestion);
 
     if (currentQuestion) {
-      this.questionText.textContent = currentQuestion.question;
-      this.buttonA.textContent = "A: " + currentQuestion.A;
-      this.buttonB.textContent = "B: " + currentQuestion.B;
-      this.buttonC.textContent = "C: " + currentQuestion.C;
+      this.elements.questionText.textContent = currentQuestion.question;
+      this.elements.buttonA.textContent = "A: " + currentQuestion.A;
+      this.elements.buttonB.textContent = "B: " + currentQuestion.B;
+      this.elements.buttonC.textContent = "C: " + currentQuestion.C;
     } else {
       console.error("No current question to display");
     }

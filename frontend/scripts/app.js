@@ -20,36 +20,33 @@ class App {
     // Load supported models dynamically
     this.loadSupportedModels();
 
-    // Initialise button event listeners.
-    // The arrow function implicitly binds the method to the current instance of this class.
-    document
-      .querySelector("#fetchQuizButton")
-      .addEventListener("click", () => this.fetchQuizData());
-    document
-      .querySelector("#fetchQuizButton")
-      .addEventListener("click", () => this.fetchAIImage());
-    // Answer buttons aren't visible when the page first loads
-    document
-      .querySelector("#option-A")
-      .addEventListener("click", () => this.checkAnswer("A"));
-    document
-      .querySelector("#option-B")
-      .addEventListener("click", () => this.checkAnswer("B"));
-    document
-      .querySelector("#option-C")
-      .addEventListener("click", () => this.checkAnswer("C"));
-    document
-      .querySelector("#nextQuestionButton")
-      .addEventListener("click", () => this.nextQuestion());
+    // Initialise button event listeners
+    this.bindButtonEvents();
+    this.bindEnterKeyToQuizButton();
+  }
 
-    // If Enter key is pressed then simulate button press
-    document
-      .getElementById("quizTopic")
-      .addEventListener("keydown", function (event) {
-        // Check if the pressed key was the Enter key
-        if (event.key === "Enter") {
-          event.preventDefault(); // Prevent any default action
-          document.querySelector("#fetchQuizButton").click(); // Simulate a click on the button
+  /**
+   * Bind event listeners to quiz control buttons.
+   * @private
+   */
+  bindButtonEvents() {
+    this.ui.elements.fetchButton.addEventListener("click", () => this.fetchQuizData());
+    this.ui.elements.fetchButton.addEventListener("click", () => this.fetchAIImage());
+    this.ui.elements.buttonA.addEventListener("click", () => this.checkAnswer("A"));
+    this.ui.elements.buttonB.addEventListener("click", () => this.checkAnswer("B"));
+    this.ui.elements.buttonC.addEventListener("click", () => this.checkAnswer("C"));
+    this.ui.elements.nextQuestionButton.addEventListener("click", () => this.nextQuestion());
+  }
+
+  /**
+   * Bind Enter key on quiz topic input to trigger quiz generation.
+   * @private
+   */
+  bindEnterKeyToQuizButton() {
+    this.ui.elements.topicInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.ui.elements.fetchButton.click();
         }
       });
   }
@@ -58,8 +55,8 @@ class App {
    * Initialize mobile menu toggle functionality
    */
   initMobileMenu() {
-    const navbarToggle = document.getElementById('navbar-toggle');
-    const navbarLinks = document.getElementById('navbar-links');
+    const navbarToggle = this.ui.elements.navbarToggle;
+    const navbarLinks = this.ui.elements.navbarLinks;
     
     if (navbarToggle && navbarLinks) {
       navbarToggle.addEventListener('click', () => {
@@ -131,7 +128,7 @@ class App {
 
   async fetchAIImage() {
     // Use the topic as a prompt to image
-    const prompt = document.getElementById("quizTopic").value;
+    const prompt = this.ui.elements.topicInput.value;
 
     // Check if prompt is empty or contains only whitespace
     if (!prompt.trim()) {
