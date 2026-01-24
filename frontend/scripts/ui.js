@@ -35,6 +35,11 @@ class UI {
 
     this.elements.quizContainer.style.display = "block";
     this.elements.quizTitle.textContent = quizTitle;
+
+    // Hide history when actively taking a quiz
+    if (this.elements.historySection) {
+      this.elements.historySection.style.display = "none";
+    }
   }
 
   hideQuizContainer() {
@@ -64,6 +69,16 @@ class UI {
 
   getDifficulty(){
     return this.elements.quizDifficulty.value;
+  }
+
+  getNumQuestions() {
+    const inputEl = this.elements.numQuestionsInput;
+    const parsed = Number.parseInt(inputEl?.value, 10);
+    const bounded = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), 10) : 5;
+    if (inputEl) {
+      inputEl.value = bounded;
+    }
+    return bounded;
   }
 
   getModel() {
@@ -233,6 +248,15 @@ class UI {
    */
   renderHistory(history) {
     if (!this.elements.historySection || !this.elements.historyList) {
+      return;
+    }
+
+    // If the quiz container is visible, keep history hidden
+    const quizVisible =
+      this.elements.quizContainer &&
+      this.elements.quizContainer.style.display !== "none";
+    if (quizVisible) {
+      this.elements.historySection.style.display = "none";
       return;
     }
 

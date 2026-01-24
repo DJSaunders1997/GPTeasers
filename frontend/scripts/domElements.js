@@ -11,6 +11,7 @@ class DOMElements {
     this.inputContainer = getElement(HTML_ELEMENT_IDS.inputContainer);
     this.intro = getElement(HTML_ELEMENT_IDS.intro);
     this.topicInput = getElement(HTML_ELEMENT_IDS.quizTopic);
+    this.numQuestionsInput = getElement(HTML_ELEMENT_IDS.quizNumQuestions);
     this.quizDifficulty = getElement(HTML_ELEMENT_IDS.quizDifficulty);
     this.quizModel = getElement(HTML_ELEMENT_IDS.quizModel);
     this.fetchButton = document.querySelector("button"); // First button on page

@@ -7,6 +7,7 @@ export const HTML_ELEMENT_IDS = {
   // Quiz generation
   fetchQuizButton: "#fetchQuizButton",
   quizTopic: "#quizTopic",
+  quizNumQuestions: "#quizNumQuestions",
   quizDifficulty: "#quizDifficulty",
   quizModel: "#quizModel",
 

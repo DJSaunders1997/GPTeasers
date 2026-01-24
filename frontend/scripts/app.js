@@ -8,10 +8,9 @@ import Quiz from "./quiz.js";
 
 class App {
   constructor() {
-    const numQuestions = 10;
     // Initialise app elements as JS objects.
-    this.quiz = new Quiz(numQuestions);
-    this.controller = new Controller(this.quiz);
+    this.quiz = null; // created on demand per quiz run
+    this.controller = new Controller();
     this.ui = new UI();
     this.quizHistory = this.loadQuizHistory();
     this.currentTopic = "";
@@ -97,11 +96,17 @@ class App {
     const topic = this.ui.getTopic();
     const difficulty = this.ui.getDifficulty();
     const model = this.ui.getModel();
+    const numQuestions = this.ui.getNumQuestions();
 
     // Persist current quiz metadata for history logging
     this.currentTopic = topic;
     this.currentDifficulty = difficulty;
     this.currentModel = model;
+
+    // Create fresh quiz state with requested number of questions
+    this.quiz = new Quiz(numQuestions);
+    this.controller.quiz = this.quiz;
+    this.controller.numQuestions = numQuestions;
 
     // Check if topic is empty or contains only whitespace
     if (!topic.trim()) {

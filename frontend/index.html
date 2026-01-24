@@ -80,6 +80,18 @@
         </div>
 
         <div class="input-group">
+          <label for="quizNumQuestions">Number of Questions:</label>
+          <p>How many questions should this quiz have?</p>
+          <input
+            type="number"
+            id="quizNumQuestions"
+            min="1"
+            max="10"
+            value="5"
+          />
+        </div>
+
+        <div class="input-group">
           <label for="quizModel">Select Model Provider:</label>
           <p>Select the AI model to generate your quiz.</p>
           <select id="quizModel">
