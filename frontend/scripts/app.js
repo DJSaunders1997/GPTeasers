@@ -36,6 +36,7 @@ class App {
     this.ui.elements.buttonB.addEventListener("click", () => this.checkAnswer("B"));
     this.ui.elements.buttonC.addEventListener("click", () => this.checkAnswer("C"));
     this.ui.elements.nextQuestionButton.addEventListener("click", () => this.nextQuestion());
+    this.ui.elements.newQuizButton.addEventListener("click", () => location.reload());
   }
 
   /**
@@ -184,12 +185,12 @@ class App {
     this.ui.hideAnswerButtons();
     this.ui.showAnswerFeedback(result);
     this.ui.showNextQuestionButton();
-    this.ui.updateProgress(this.quiz.currentIndex + 1, this.quiz.numQuestions, this.quiz.score);
   }
 
   nextQuestion() {
     this.ui.hideFeedback();
     this.ui.hideNextQuestionButton();
+    this.ui.hideNewQuizButton();
     this.ui.showAnswerButtons();
     this.showQuestion();
   }

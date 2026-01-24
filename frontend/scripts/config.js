@@ -15,6 +15,7 @@ export const HTML_ELEMENT_IDS = {
   optionB: "#option-B",
   optionC: "#option-C",
   nextQuestionButton: "#nextQuestionButton",
+  newQuizButton: "#newQuizButton",
 
   // UI containers
   inputContainer: "#inputContainer",

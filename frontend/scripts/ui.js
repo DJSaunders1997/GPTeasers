@@ -156,6 +156,8 @@ class UI {
     this.showAnswerFeedback(result);
     this.elements.quizFeedback.classList.add(CSS_CLASSES.feedbackFinal);
     this.disableAnswerButtons();
+    this.hideAnswerButtons();
+    this.showNewQuizButton();
   }
 
   disableAnswerButtons() {
@@ -204,6 +206,24 @@ class UI {
   hideNextQuestionButton() {
     if (this.elements.nextQuestionButton) {
       this.elements.nextQuestionButton.style.display = "none";
+    }
+  }
+
+  /**
+   * Shows the New Quiz button.
+   */
+  showNewQuizButton() {
+    if (this.elements.newQuizButton) {
+      this.elements.newQuizButton.style.display = "block";
+    }
+  }
+
+  /**
+   * Hides the New Quiz button.
+   */
+  hideNewQuizButton() {
+    if (this.elements.newQuizButton) {
+      this.elements.newQuizButton.style.display = "none";
     }
   }
 

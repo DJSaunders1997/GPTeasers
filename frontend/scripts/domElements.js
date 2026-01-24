@@ -31,6 +31,7 @@ class DOMElements {
     this.buttonB = getElement(HTML_ELEMENT_IDS.optionB);
     this.buttonC = getElement(HTML_ELEMENT_IDS.optionC);
     this.nextQuestionButton = getElement(HTML_ELEMENT_IDS.nextQuestionButton);
+    this.newQuizButton = getElement(HTML_ELEMENT_IDS.newQuizButton);
 
     // Loading indicators
     this.loadingMessage = getElement(HTML_ELEMENT_IDS.loadingMessage);
