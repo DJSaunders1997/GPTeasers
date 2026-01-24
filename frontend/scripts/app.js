@@ -13,6 +13,13 @@ class App {
     this.quiz = new Quiz(numQuestions);
     this.controller = new Controller(this.quiz);
     this.ui = new UI();
+    this.quizHistory = this.loadQuizHistory();
+    this.currentTopic = "";
+    this.currentDifficulty = "";
+    this.currentModel = "";
+
+    // Render any existing history on load
+    this.ui.renderHistory(this.quizHistory);
 
     // Initialize mobile menu toggle
     this.initMobileMenu();
@@ -90,6 +97,11 @@ class App {
     const topic = this.ui.getTopic();
     const difficulty = this.ui.getDifficulty();
     const model = this.ui.getModel();
+
+    // Persist current quiz metadata for history logging
+    this.currentTopic = topic;
+    this.currentDifficulty = difficulty;
+    this.currentModel = model;
 
     // Check if topic is empty or contains only whitespace
     if (!topic.trim()) {
@@ -177,6 +189,7 @@ class App {
     }
 
     if (result.isFinished) {
+      this.saveQuizResult(result);
       this.ui.showFinalScore(result);
       this.ui.updateProgress(this.quiz.numQuestions, this.quiz.numQuestions, this.quiz.score);
       return;
@@ -216,6 +229,58 @@ class App {
       console.error("Failed to load supported models:", error);
       // Don't alert the user as this is a background operation
       // The dropdown will keep its existing hardcoded options if this fails
+    }
+  }
+
+  /**
+   * Retrieve quiz history from localStorage.
+   * @returns {Array} Stored quiz attempts.
+   */
+  loadQuizHistory() {
+    try {
+      const raw = localStorage.getItem("gptQuizHistory");
+      return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+      console.warn("Failed to load quiz history from localStorage", error);
+      return [];
+    }
+  }
+
+  /**
+   * Append the current quiz result to localStorage history.
+   * @param {Object} result - Final quiz result payload.
+   */
+  saveQuizResult(result) {
+    const entry = {
+      topic: this.currentTopic,
+      difficulty: this.currentDifficulty,
+      model: this.currentModel,
+      score: result.score,
+      totalQuestions: result.totalQuestions,
+      finishedAt: new Date().toISOString(),
+    };
+
+    try {
+      const history = this.loadQuizHistory();
+      history.push(entry);
+      localStorage.setItem("gptQuizHistory", JSON.stringify(history));
+      this.quizHistory = history;
+      this.ui.renderHistory(history);
+    } catch (error) {
+      console.warn("Failed to save quiz history to localStorage", error);
+    }
+  }
+
+  /**
+   * Clear quiz history from localStorage and UI.
+   */
+  clearQuizHistory() {
+    try {
+      localStorage.removeItem("gptQuizHistory");
+      this.quizHistory = [];
+      this.ui.renderHistory([]);
+    } catch (error) {
+      console.warn("Failed to clear quiz history", error);
     }
   }
 }

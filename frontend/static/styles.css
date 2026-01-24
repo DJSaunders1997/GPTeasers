@@ -815,6 +815,52 @@ footer a:hover {
   border-bottom-color: #fff;
 }
 
+/* Quiz History Panel */
+#quizHistory {
+  display: none;
+  margin: 30px auto;
+  max-width: 640px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #f7f9fb;
+}
+
+#quizHistory h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.3em;
+  letter-spacing: 0.02em;
+}
+
+#historyEmptyMessage {
+  margin: 0 0 8px 0;
+  color: rgba(247, 249, 251, 0.75);
+  font-style: italic;
+}
+
+#quizHistoryList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  display: grid;
+  gap: 8px;
+}
+
+#quizHistoryList li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f7f9fb;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+
 /* Static scaling for #quizSection */
 #quizSection {
   transform: scale(1);

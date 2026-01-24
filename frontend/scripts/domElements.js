@@ -33,6 +33,11 @@ class DOMElements {
     this.nextQuestionButton = getElement(HTML_ELEMENT_IDS.nextQuestionButton);
     this.newQuizButton = getElement(HTML_ELEMENT_IDS.newQuizButton);
 
+    // History elements
+    this.historySection = getElement(HTML_ELEMENT_IDS.historySection);
+    this.historyList = getElement(HTML_ELEMENT_IDS.historyList);
+    this.historyEmptyMessage = getElement(HTML_ELEMENT_IDS.historyEmptyMessage);
+
     // Loading indicators
     this.loadingMessage = getElement(HTML_ELEMENT_IDS.loadingMessage);
     this.loadingBarContainer = getElement(HTML_ELEMENT_IDS.loadingBarContainer);

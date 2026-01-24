@@ -228,6 +228,41 @@ class UI {
   }
 
   /**
+   * Render quiz history list from stored entries.
+   * @param {Array} history - Array of quiz attempts.
+   */
+  renderHistory(history) {
+    if (!this.elements.historySection || !this.elements.historyList) {
+      return;
+    }
+
+    const hasHistory = Array.isArray(history) && history.length > 0;
+    this.elements.historySection.style.display = hasHistory ? "block" : "none";
+
+    if (this.elements.historyEmptyMessage) {
+      this.elements.historyEmptyMessage.style.display = hasHistory ? "none" : "block";
+    }
+
+    this.elements.historyList.innerHTML = "";
+
+    if (!hasHistory) {
+      return;
+    }
+
+    history
+      .slice()
+      .reverse()
+      .forEach((entry) => {
+        const li = document.createElement("li");
+        const date = entry.finishedAt
+          ? new Date(entry.finishedAt).toLocaleString()
+          : "";
+        li.textContent = `${entry.topic || "(no topic)"} • ${entry.difficulty || ""} • ${entry.model || ""} • ${entry.score}/${entry.totalQuestions} • ${date}`;
+        this.elements.historyList.appendChild(li);
+      });
+  }
+
+  /**
    * Populates the model dropdown with the provided list of models.
    * Clears existing options and creates new ones.
    *

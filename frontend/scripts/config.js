@@ -17,6 +17,11 @@ export const HTML_ELEMENT_IDS = {
   nextQuestionButton: "#nextQuestionButton",
   newQuizButton: "#newQuizButton",
 
+  // History
+  historySection: "#quizHistory",
+  historyList: "#quizHistoryList",
+  historyEmptyMessage: "#historyEmptyMessage",
+
   // UI containers
   inputContainer: "#inputContainer",
   intro: "#intro",
