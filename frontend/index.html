@@ -80,6 +80,18 @@
         </div>
 
         <div class="input-group">
+          <label for="quizNumQuestions">Number of Questions:</label>
+          <p>How many questions should this quiz have?</p>
+          <input
+            type="number"
+            id="quizNumQuestions"
+            min="1"
+            max="10"
+            value="5"
+          />
+        </div>
+
+        <div class="input-group">
           <label for="quizModel">Select Model Provider:</label>
           <p>Select the AI model to generate your quiz.</p>
           <select id="quizModel">
@@ -109,17 +121,31 @@
 
         <div id="quiz-container" style="display: none;">
           <h1 id="quizTitle">Title</h1>
+          <div id="quizMeta" class="quiz-meta" aria-live="polite">
+            <span id="quizProgress">Question 1 of 10</span>
+            <span id="quizScore">Score: 0</span>
+          </div>
           <h2 id="question-text">Question</h2>
+
+          <div id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite" style="display: none;"></div>
 
           <button id="option-A">A</button>
           <button id="option-B">B</button>
           <button id="option-C">C</button>
+          <button id="nextQuestionButton" style="display: none;">Next Question →</button>
+          <button id="newQuizButton" style="display: none;">New Quiz</button>
         </div>
 
         <div id="questionsContainer">
           <!-- Questions will be dynamically added here -->
         </div>
 
+      </section>
+
+      <section id="quizHistory" aria-label="Quiz history" style="display: none;">
+        <h2>Your Quiz History</h2>
+        <p id="historyEmptyMessage">No quiz attempts yet.</p>
+        <ul id="quizHistoryList"></ul>
       </section>
       
       <footer>Website by David Saunders.</footer>

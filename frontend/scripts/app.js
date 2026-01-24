@@ -8,11 +8,17 @@ import Quiz from "./quiz.js";
 
 class App {
   constructor() {
-    const numQuestions = 10;
     // Initialise app elements as JS objects.
-    this.quiz = new Quiz(numQuestions);
-    this.controller = new Controller(this.quiz);
+    this.quiz = null; // created on demand per quiz run
+    this.controller = new Controller();
     this.ui = new UI();
+    this.quizHistory = this.loadQuizHistory();
+    this.currentTopic = "";
+    this.currentDifficulty = "";
+    this.currentModel = "";
+
+    // Render any existing history on load
+    this.ui.renderHistory(this.quizHistory);
 
     // Initialize mobile menu toggle
     this.initMobileMenu();
@@ -20,33 +26,34 @@ class App {
     // Load supported models dynamically
     this.loadSupportedModels();
 
-    // Initialise button event listeners.
-    // The arrow function implicitly binds the method to the current instance of this class.
-    document
-      .querySelector("#fetchQuizButton")
-      .addEventListener("click", () => this.fetchQuizData());
-    document
-      .querySelector("#fetchQuizButton")
-      .addEventListener("click", () => this.fetchAIImage());
-    // Answer buttons aren't visible when the page first loads
-    document
-      .querySelector("#option-A")
-      .addEventListener("click", () => this.checkAnswer("A"));
-    document
-      .querySelector("#option-B")
-      .addEventListener("click", () => this.checkAnswer("B"));
-    document
-      .querySelector("#option-C")
-      .addEventListener("click", () => this.checkAnswer("C"));
+    // Initialise button event listeners
+    this.bindButtonEvents();
+    this.bindEnterKeyToQuizButton();
+  }
 
-    // If Enter key is pressed then simulate button press
-    document
-      .getElementById("quizTopic")
-      .addEventListener("keydown", function (event) {
-        // Check if the pressed key was the Enter key
-        if (event.key === "Enter") {
-          event.preventDefault(); // Prevent any default action
-          document.querySelector("#fetchQuizButton").click(); // Simulate a click on the button
+  /**
+   * Bind event listeners to quiz control buttons.
+   * @private
+   */
+  bindButtonEvents() {
+    this.ui.elements.fetchButton.addEventListener("click", () => this.fetchQuizData());
+    this.ui.elements.fetchButton.addEventListener("click", () => this.fetchAIImage());
+    this.ui.elements.buttonA.addEventListener("click", () => this.checkAnswer("A"));
+    this.ui.elements.buttonB.addEventListener("click", () => this.checkAnswer("B"));
+    this.ui.elements.buttonC.addEventListener("click", () => this.checkAnswer("C"));
+    this.ui.elements.nextQuestionButton.addEventListener("click", () => this.nextQuestion());
+    this.ui.elements.newQuizButton.addEventListener("click", () => location.reload());
+  }
+
+  /**
+   * Bind Enter key on quiz topic input to trigger quiz generation.
+   * @private
+   */
+  bindEnterKeyToQuizButton() {
+    this.ui.elements.topicInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.ui.elements.fetchButton.click();
         }
       });
   }
@@ -55,8 +62,8 @@ class App {
    * Initialize mobile menu toggle functionality
    */
   initMobileMenu() {
-    const navbarToggle = document.getElementById('navbar-toggle');
-    const navbarLinks = document.getElementById('navbar-links');
+    const navbarToggle = this.ui.elements.navbarToggle;
+    const navbarLinks = this.ui.elements.navbarLinks;
     
     if (navbarToggle && navbarLinks) {
       navbarToggle.addEventListener('click', () => {
@@ -89,6 +96,17 @@ class App {
     const topic = this.ui.getTopic();
     const difficulty = this.ui.getDifficulty();
     const model = this.ui.getModel();
+    const numQuestions = this.ui.getNumQuestions();
+
+    // Persist current quiz metadata for history logging
+    this.currentTopic = topic;
+    this.currentDifficulty = difficulty;
+    this.currentModel = model;
+
+    // Create fresh quiz state with requested number of questions
+    this.quiz = new Quiz(numQuestions);
+    this.controller.quiz = this.quiz;
+    this.controller.numQuestions = numQuestions;
 
     // Check if topic is empty or contains only whitespace
     if (!topic.trim()) {
@@ -128,7 +146,7 @@ class App {
 
   async fetchAIImage() {
     // Use the topic as a prompt to image
-    const prompt = document.getElementById("quizTopic").value;
+    const prompt = this.ui.elements.topicInput.value;
 
     // Check if prompt is empty or contains only whitespace
     if (!prompt.trim()) {
@@ -159,12 +177,39 @@ class App {
     const question = this.quiz.getCurrentQuestion();
     // Update UI elements
     this.ui.displayCurrentQuestion(question);
+    this.ui.updateProgress(this.quiz.currentIndex + 1, this.quiz.numQuestions, this.quiz.score);
   }
 
   // Calls quiz check answer method
   // and displays the next question
+  /**
+   * Handles answer selection, renders inline feedback, and advances quiz flow.
+   * @param {"A"|"B"|"C"} answer - Selected option key.
+   */
   checkAnswer(answer) {
-    this.quiz.checkAnswer(answer);
+    const result = this.quiz.checkAnswer(answer);
+
+    if (!result) {
+      return;
+    }
+
+    if (result.isFinished) {
+      this.saveQuizResult(result);
+      this.ui.showFinalScore(result);
+      this.ui.updateProgress(this.quiz.numQuestions, this.quiz.numQuestions, this.quiz.score);
+      return;
+    }
+
+    this.ui.hideAnswerButtons();
+    this.ui.showAnswerFeedback(result);
+    this.ui.showNextQuestionButton();
+  }
+
+  nextQuestion() {
+    this.ui.hideFeedback();
+    this.ui.hideNextQuestionButton();
+    this.ui.hideNewQuizButton();
+    this.ui.showAnswerButtons();
     this.showQuestion();
   }
 
@@ -189,6 +234,58 @@ class App {
       console.error("Failed to load supported models:", error);
       // Don't alert the user as this is a background operation
       // The dropdown will keep its existing hardcoded options if this fails
+    }
+  }
+
+  /**
+   * Retrieve quiz history from localStorage.
+   * @returns {Array} Stored quiz attempts.
+   */
+  loadQuizHistory() {
+    try {
+      const raw = localStorage.getItem("gptQuizHistory");
+      return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+      console.warn("Failed to load quiz history from localStorage", error);
+      return [];
+    }
+  }
+
+  /**
+   * Append the current quiz result to localStorage history.
+   * @param {Object} result - Final quiz result payload.
+   */
+  saveQuizResult(result) {
+    const entry = {
+      topic: this.currentTopic,
+      difficulty: this.currentDifficulty,
+      model: this.currentModel,
+      score: result.score,
+      totalQuestions: result.totalQuestions,
+      finishedAt: new Date().toISOString(),
+    };
+
+    try {
+      const history = this.loadQuizHistory();
+      history.push(entry);
+      localStorage.setItem("gptQuizHistory", JSON.stringify(history));
+      this.quizHistory = history;
+      this.ui.renderHistory(history);
+    } catch (error) {
+      console.warn("Failed to save quiz history to localStorage", error);
+    }
+  }
+
+  /**
+   * Clear quiz history from localStorage and UI.
+   */
+  clearQuizHistory() {
+    try {
+      localStorage.removeItem("gptQuizHistory");
+      this.quizHistory = [];
+      this.ui.renderHistory([]);
+    } catch (error) {
+      console.warn("Failed to clear quiz history", error);
     }
   }
 }
