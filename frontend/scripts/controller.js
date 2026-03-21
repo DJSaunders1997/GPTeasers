@@ -9,7 +9,7 @@ class Controller {
    * @constructor
    * @param {Quiz} quiz - The quiz object to be initialized.
    */
-  constructor(quiz) {
+  constructor(quiz = null, defaultNumQuestions = 5) {
     this.eventSource = null;
     this.messageCount = 0;
     // Determine if we are running locally based on the hostname.
@@ -24,8 +24,8 @@ class Controller {
     this.baseURLQuiz = `${this.baseURL}/GenerateQuiz`;
     this.baseURLImage = `${this.baseURL}/GenerateImage`;
     this.baseURLModels = `${this.baseURL}/SupportedModels`;
-    this.quiz = quiz; // this will be initialized as a quiz object
-    this.numQuestions = this.quiz.numQuestions;    
+    this.quiz = quiz; // may be set later by App
+    this.numQuestions = defaultNumQuestions;
   }
 
   /**
