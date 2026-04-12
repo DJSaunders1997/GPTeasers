@@ -242,6 +242,189 @@ class UI {
     }
   }
 
+  showReviewButton() {
+    if (this.elements.reviewButton) {
+      this.elements.reviewButton.style.display = "block";
+    }
+  }
+
+  hideReviewButton() {
+    if (this.elements.reviewButton) {
+      this.elements.reviewButton.style.display = "none";
+    }
+  }
+
+  showShareButton() {
+    if (this.elements.shareButton) {
+      this.elements.shareButton.style.display = "block";
+    }
+  }
+
+  hideShareButton() {
+    if (this.elements.shareButton) {
+      this.elements.shareButton.style.display = "none";
+    }
+  }
+
+  showKeyboardHint(text) {
+    if (this.elements.keyboardHint) {
+      this.elements.keyboardHint.textContent = text;
+      this.elements.keyboardHint.style.display = "block";
+    }
+  }
+
+  hideKeyboardHint() {
+    if (this.elements.keyboardHint) {
+      this.elements.keyboardHint.style.display = "none";
+    }
+  }
+
+  /**
+   * Reset UI back to the input screen without a page reload.
+   */
+  resetToInput() {
+    this.hideQuizContainer();
+    this.hideFeedback();
+    this.hideNextQuestionButton();
+    this.hideNewQuizButton();
+    this.hideReviewButton();
+    this.hideShareButton();
+    this.hideKeyboardHint();
+    this.hideReviewContainer();
+    this.hideAIImage();
+    this.showAnswerButtons();
+
+    this.elements.inputContainer.style.display = "";
+    this.elements.intro.style.display = "";
+  }
+
+  /**
+   * Renders the quiz review screen showing all questions with answers.
+   */
+  showReviewScreen(answers, topic, score, totalQuestions) {
+    this.hideQuizContainer();
+    this.hideKeyboardHint();
+
+    const container = this.elements.reviewContainer;
+    if (!container) return;
+
+    container.style.display = "block";
+    container.innerHTML = "";
+
+    // Header
+    const header = document.createElement("div");
+    header.className = "review-header";
+
+    const title = document.createElement("h2");
+    title.textContent = `Quiz Review: ${topic}`;
+    header.appendChild(title);
+
+    const pct = Math.round((score / totalQuestions) * 100);
+    const scoreSummary = document.createElement("p");
+    scoreSummary.className = "review-score";
+    scoreSummary.textContent = `Score: ${score}/${totalQuestions} (${pct}%)`;
+    header.appendChild(scoreSummary);
+
+    container.appendChild(header);
+
+    // Question cards
+    answers.forEach((result) => {
+      const card = document.createElement("div");
+      card.className = `${CSS_CLASSES.reviewCard} ${result.correct ? CSS_CLASSES.reviewCardCorrect : CSS_CLASSES.reviewCardWrong}`;
+
+      const qText = document.createElement("h3");
+      qText.textContent = `${result.questionNumber}. ${result.question}`;
+      card.appendChild(qText);
+
+      const choices = [
+        { key: "A", value: result.optionA },
+        { key: "B", value: result.optionB },
+        { key: "C", value: result.optionC },
+      ];
+
+      choices.forEach((choice) => {
+        const p = document.createElement("p");
+        let marker = "";
+        let className = CSS_CLASSES.choiceNeutral;
+
+        if (choice.key === result.answer) {
+          marker += " \u2713";
+          className = CSS_CLASSES.choiceCorrect;
+        }
+        if (choice.key === result.selected && choice.key !== result.answer) {
+          marker += " \u2717";
+          className = CSS_CLASSES.choiceWrong;
+        }
+
+        p.textContent = `${choice.key}: ${choice.value}${marker}`;
+        p.className = className;
+        card.appendChild(p);
+      });
+
+      if (result.explanation) {
+        const exp = document.createElement("p");
+        exp.className = "review-explanation";
+        exp.textContent = result.explanation;
+        card.appendChild(exp);
+      }
+
+      if (result.wikipedia) {
+        const link = document.createElement("a");
+        link.href = result.wikipedia;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Read more";
+        link.className = "review-link";
+        card.appendChild(link);
+      }
+
+      container.appendChild(card);
+    });
+
+    // Bottom buttons
+    const buttonRow = document.createElement("div");
+    buttonRow.className = "review-buttons";
+
+    const shareBtn = document.createElement("button");
+    shareBtn.textContent = "Copy Results";
+    shareBtn.id = "reviewShareButton";
+    buttonRow.appendChild(shareBtn);
+
+    const newQuizBtn = document.createElement("button");
+    newQuizBtn.textContent = "New Quiz";
+    newQuizBtn.id = "reviewNewQuizButton";
+    buttonRow.appendChild(newQuizBtn);
+
+    container.appendChild(buttonRow);
+  }
+
+  hideReviewContainer() {
+    if (this.elements.reviewContainer) {
+      this.elements.reviewContainer.style.display = "none";
+      this.elements.reviewContainer.innerHTML = "";
+    }
+  }
+
+  /**
+   * Copies text to clipboard and shows brief feedback on the given button.
+   */
+  async copyToClipboard(text, buttonEl) {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (buttonEl) {
+        const original = buttonEl.textContent;
+        buttonEl.textContent = "Copied! \u2713";
+        buttonEl.classList.add(CSS_CLASSES.shareCopied);
+        setTimeout(() => {
+          buttonEl.textContent = original;
+          buttonEl.classList.remove(CSS_CLASSES.shareCopied);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  }
+
   /**
    * Render quiz history list from stored entries.
    * @param {Array} history - Array of quiz attempts.

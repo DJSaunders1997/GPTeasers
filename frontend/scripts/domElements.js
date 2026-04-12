@@ -33,16 +33,26 @@ class DOMElements {
     this.buttonC = getElement(HTML_ELEMENT_IDS.optionC);
     this.nextQuestionButton = getElement(HTML_ELEMENT_IDS.nextQuestionButton);
     this.newQuizButton = getElement(HTML_ELEMENT_IDS.newQuizButton);
+    this.reviewButton = getElement(HTML_ELEMENT_IDS.reviewButton);
+    this.shareButton = getElement(HTML_ELEMENT_IDS.shareButton);
+    this.keyboardHint = getElement(HTML_ELEMENT_IDS.keyboardHint);
 
     // History elements
     this.historySection = getElement(HTML_ELEMENT_IDS.historySection);
     this.historyList = getElement(HTML_ELEMENT_IDS.historyList);
     this.historyEmptyMessage = getElement(HTML_ELEMENT_IDS.historyEmptyMessage);
 
+    // Review screen
+    this.reviewContainer = getElement(HTML_ELEMENT_IDS.reviewContainer);
+
     // Loading indicators
     this.loadingMessage = getElement(HTML_ELEMENT_IDS.loadingMessage);
     this.loadingBarContainer = getElement(HTML_ELEMENT_IDS.loadingBarContainer);
     this.loadingBar = getElement(HTML_ELEMENT_IDS.loadingBar);
+
+    // Navigation
+    this.navbarToggle = getElement(HTML_ELEMENT_IDS.navbarToggle);
+    this.navbarLinks = getElement(HTML_ELEMENT_IDS.navbarLinks);
   }
 
   /**

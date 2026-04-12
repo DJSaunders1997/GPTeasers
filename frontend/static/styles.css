@@ -691,6 +691,11 @@ p {
   color: rgba(255, 255, 255, 0.85);
 }
 
+.choice-wrong {
+  color: #ff9f9f;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   #quiz-container {
     display: grid !important;
@@ -880,4 +885,120 @@ footer a:hover {
   #quizSection {
     transform: scale(0.8);
   }
+}
+
+/* Keyboard hint */
+.keyboard-hint {
+  text-align: center !important;
+  font-size: 0.82em;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 4px 0 0 0;
+  font-weight: 400;
+  text-shadow: none;
+}
+
+/* Review Screen */
+#reviewContainer {
+  max-width: 600px;
+  margin: 15px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+  #reviewContainer {
+    margin: 10px;
+    padding: 15px;
+  }
+}
+
+.review-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.review-header h2 {
+  margin: 0 0 6px 0;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.review-score {
+  font-size: 1.15em;
+  font-weight: 700;
+  text-align: center !important;
+  color: #fff;
+}
+
+.review-card {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.review-card-correct {
+  border-left: 4px solid #7cf29c;
+}
+
+.review-card-wrong {
+  border-left: 4px solid #ff9f9f;
+}
+
+.review-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.05em;
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.review-card p {
+  margin: 4px 0;
+  font-size: 0.93em;
+}
+
+.review-explanation {
+  margin-top: 8px !important;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.review-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #9fd8ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.review-link:hover {
+  text-decoration: underline;
+}
+
+.review-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.review-buttons button {
+  flex: 1;
+}
+
+/* Share button copied feedback */
+.share-copied {
+  background: rgba(124, 242, 156, 0.25) !important;
+  border-color: #7cf29c !important;
 }

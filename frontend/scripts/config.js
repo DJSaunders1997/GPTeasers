@@ -17,6 +17,12 @@ export const HTML_ELEMENT_IDS = {
   optionC: "#option-C",
   nextQuestionButton: "#nextQuestionButton",
   newQuizButton: "#newQuizButton",
+  reviewButton: "#reviewButton",
+  shareButton: "#shareButton",
+  keyboardHint: "#keyboardHint",
+
+  // Review screen
+  reviewContainer: "#reviewContainer",
 
   // History
   historySection: "#quizHistory",
@@ -56,7 +62,13 @@ export const CSS_CLASSES = {
   feedbackChoices: "feedback-choices",
   choiceCorrect: "choice-correct",
   choiceNeutral: "choice-neutral",
+  choiceWrong: "choice-wrong",
   navbarActive: "active",
+  reviewCard: "review-card",
+  reviewCardCorrect: "review-card-correct",
+  reviewCardWrong: "review-card-wrong",
+  shareCopied: "share-copied",
+  keyboardHint: "keyboard-hint",
 };
 
 /**

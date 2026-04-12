@@ -13,6 +13,7 @@ class Quiz {
     this.score = 0;
     this.numQuestions = numQuestions;
     this.numCurrentQuestions = this.questions.length;
+    this.answers = [];
   }
 
   /**
@@ -92,6 +93,7 @@ class Quiz {
       correct: isCorrect,
       selected: selectedOption,
       answer: currentQuestion.answer,
+      question: currentQuestion.question,
       explanation: currentQuestion.explanation,
       wikipedia: currentQuestion.wikipedia,
       optionA: currentQuestion.A,
@@ -109,6 +111,7 @@ class Quiz {
       result.isFinished = true;
     }
 
+    this.answers.push(result);
     return result;
   }
 

@@ -29,6 +29,7 @@ class App {
     // Initialise button event listeners
     this.bindButtonEvents();
     this.bindEnterKeyToQuizButton();
+    this.bindKeyboardEvents();
   }
 
   /**
@@ -42,7 +43,19 @@ class App {
     this.ui.elements.buttonB.addEventListener("click", () => this.checkAnswer("B"));
     this.ui.elements.buttonC.addEventListener("click", () => this.checkAnswer("C"));
     this.ui.elements.nextQuestionButton.addEventListener("click", () => this.nextQuestion());
-    this.ui.elements.newQuizButton.addEventListener("click", () => location.reload());
+    this.ui.elements.newQuizButton.addEventListener("click", () => this.resetQuiz());
+    this.ui.elements.reviewButton.addEventListener("click", () => this.showReview());
+    this.ui.elements.shareButton.addEventListener("click", () => this.shareResults(this.ui.elements.shareButton));
+
+    // Event delegation for dynamically created review screen buttons
+    this.ui.elements.reviewContainer.addEventListener("click", (event) => {
+      if (event.target.id === "reviewShareButton") {
+        this.shareResults(event.target);
+      }
+      if (event.target.id === "reviewNewQuizButton") {
+        this.resetQuiz();
+      }
+    });
   }
 
   /**
@@ -56,6 +69,56 @@ class App {
         this.ui.elements.fetchButton.click();
         }
       });
+  }
+
+  /**
+   * Bind keyboard shortcuts for quiz interaction.
+   * A/B/C or 1/2/3 to select answers, Enter for next/new quiz, R for review.
+   * @private
+   */
+  bindKeyboardEvents() {
+    document.addEventListener("keydown", (event) => {
+      // Don't capture when typing in form fields
+      const tag = event.target.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") {
+        return;
+      }
+
+      const key = event.key.toUpperCase();
+
+      // Answer selection: A/B/C or 1/2/3
+      const answerMap = { A: "A", B: "B", C: "C", 1: "A", 2: "B", 3: "C" };
+      if (answerMap[key]) {
+        const btn = this.ui.elements[`button${answerMap[key]}`];
+        if (btn && btn.style.display !== "none" && !btn.disabled) {
+          this.checkAnswer(answerMap[key]);
+          return;
+        }
+      }
+
+      // Enter: Next question or New quiz
+      if (event.key === "Enter") {
+        const nextBtn = this.ui.elements.nextQuestionButton;
+        if (nextBtn && nextBtn.style.display !== "none") {
+          this.nextQuestion();
+          return;
+        }
+        const newBtn = this.ui.elements.newQuizButton;
+        if (newBtn && newBtn.style.display !== "none") {
+          this.resetQuiz();
+          return;
+        }
+      }
+
+      // R: Review answers
+      if (key === "R") {
+        const reviewBtn = this.ui.elements.reviewButton;
+        if (reviewBtn && reviewBtn.style.display !== "none") {
+          this.showReview();
+          return;
+        }
+      }
+    });
   }
 
   /**
@@ -178,6 +241,7 @@ class App {
     // Update UI elements
     this.ui.displayCurrentQuestion(question);
     this.ui.updateProgress(this.quiz.currentIndex + 1, this.quiz.numQuestions, this.quiz.score);
+    this.ui.showKeyboardHint("Press A, B, or C to answer");
   }
 
   // Calls quiz check answer method
@@ -197,12 +261,16 @@ class App {
       this.saveQuizResult(result);
       this.ui.showFinalScore(result);
       this.ui.updateProgress(this.quiz.numQuestions, this.quiz.numQuestions, this.quiz.score);
+      this.ui.showReviewButton();
+      this.ui.showShareButton();
+      this.ui.showKeyboardHint("Press R to review \u00b7 Enter for new quiz");
       return;
     }
 
     this.ui.hideAnswerButtons();
     this.ui.showAnswerFeedback(result);
     this.ui.showNextQuestionButton();
+    this.ui.showKeyboardHint("Press Enter to continue");
   }
 
   nextQuestion() {
@@ -211,6 +279,49 @@ class App {
     this.ui.hideNewQuizButton();
     this.ui.showAnswerButtons();
     this.showQuestion();
+  }
+
+  /**
+   * Reset app state and return to the input screen without a page reload.
+   */
+  resetQuiz() {
+    this.quiz = null;
+    this.ui.resetToInput();
+    this.ui.renderHistory(this.quizHistory);
+  }
+
+  /**
+   * Show the review screen with all questions and answers.
+   */
+  showReview() {
+    if (!this.quiz) return;
+    this.ui.showReviewScreen(
+      this.quiz.answers,
+      this.currentTopic,
+      this.quiz.score,
+      this.quiz.numQuestions
+    );
+  }
+
+  /**
+   * Copy a formatted quiz result summary to the clipboard.
+   * @param {HTMLElement} buttonEl - The button to show "Copied!" feedback on.
+   */
+  shareResults(buttonEl) {
+    if (!this.quiz) return;
+    const score = this.quiz.score;
+    const total = this.quiz.numQuestions;
+    const pct = Math.round((score / total) * 100);
+
+    const text = [
+      `GPTeasers Quiz: ${this.currentTopic}`,
+      `Difficulty: ${this.currentDifficulty} | Model: ${this.currentModel}`,
+      `Score: ${score}/${total} (${pct}%)`,
+      ``,
+      `Try it yourself: https://djsaunders1997.github.io/GPTeasers/`,
+    ].join("\n");
+
+    this.ui.copyToClipboard(text, buttonEl);
   }
 
   /**
