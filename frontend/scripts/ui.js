@@ -33,7 +33,7 @@ class UI {
     this.elements.inputContainer.style.display = "none"
     this.elements.intro.style.display = "none" 
 
-    this.elements.quizContainer.style.display = "block";
+    this.elements.quizContainer.classList.add("active");
     this.elements.quizTitle.textContent = quizTitle;
 
     // Hide history when actively taking a quiz
@@ -43,7 +43,7 @@ class UI {
   }
 
   hideQuizContainer() {
-    this.elements.quizContainer.style.display = "none";
+    this.elements.quizContainer.classList.remove("active");
   }
 
   hideFeedback() {
@@ -437,7 +437,7 @@ class UI {
     // If the quiz container is visible, keep history hidden
     const quizVisible =
       this.elements.quizContainer &&
-      this.elements.quizContainer.style.display !== "none";
+      this.elements.quizContainer.classList.contains("active");
     if (quizVisible) {
       this.elements.historySection.style.display = "none";
       return;

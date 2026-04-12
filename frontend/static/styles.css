@@ -599,6 +599,10 @@ p {
   margin: 15px auto;
 }
 
+#quiz-container.active {
+  display: block;
+}
+
 @media (max-width: 768px) {
   #quiz-container {
     padding: 15px;
@@ -697,11 +701,11 @@ p {
 }
 
 @media (max-width: 768px) {
-  #quiz-container {
-    display: grid !important;
+  #quiz-container.active {
+    display: grid;
     gap: 8px;
   }
-  
+
   #quiz-container button {
     margin: 0;
     padding: 10px;
