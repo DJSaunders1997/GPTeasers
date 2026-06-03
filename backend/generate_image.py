@@ -38,7 +38,7 @@ class ImageGenerator:
 
         self.client = OpenAI(api_key=api_key)
 
-    def generate_image(self, prompt: str, n: int = 1, size: str = "256x256") -> Optional[str]:
+    def generate_image(self, prompt: str, n: int = 1, size: str = "1024x1024") -> Optional[str]:
         """Generates an image based on the provided prompt.
 
         Args:
@@ -68,8 +68,11 @@ class ImageGenerator:
             or `None` if an error occurred.
         """
         try:
-            response = self.client.images.generate(prompt=prompt, n=n, size=size)
-            return response.data[0].url
+            response = self.client.images.generate(model="gpt-image-1", prompt=prompt, n=n, size=size)
+            image_data = response.data[0]
+            if hasattr(image_data, "url") and image_data.url:
+                return image_data.url
+            return f"data:image/png;base64,{image_data.b64_json}"
         except Exception as e:
             logger.error(f"Error when calling OpenAI API: {e}")
             return None

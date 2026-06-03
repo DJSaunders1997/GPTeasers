@@ -49,6 +49,28 @@ class TestImageGeneratorUnit:
         url = image_generator.generate_image("A dragon flying over mountains", size="512x512")
         assert url == "https://example.com/custom_size_image.png"
 
+    def test_generate_image_passes_model_parameter(self, mocker, image_generator):
+        """Test that generate_image passes the model parameter to the API call."""
+        mock_response = mocker.Mock()
+        mock_response.data = [SimpleNamespace(url="https://example.com/image.png")]
+
+        mock_generate = mocker.patch.object(
+            image_generator.client.images, "generate", return_value=mock_response
+        )
+
+        image_generator.generate_image("A test prompt")
+        mock_generate.assert_called_once_with(model="gpt-image-1", prompt="A test prompt", n=1, size="1024x1024")
+
+    def test_generate_image_returns_base64_data_uri(self, mocker, image_generator):
+        """Test that generate_image returns a data URI when the API returns base64."""
+        mock_response = mocker.Mock()
+        mock_response.data = [SimpleNamespace(url=None, b64_json="abc123")]
+
+        mocker.patch.object(image_generator.client.images, "generate", return_value=mock_response)
+
+        result = image_generator.generate_image("A test prompt")
+        assert result == "data:image/png;base64,abc123"
+
     def test_generate_image_api_failure(self, mocker, image_generator):
         """Test generate_image when OpenAI API raises an exception."""
         mocker.patch.object(
