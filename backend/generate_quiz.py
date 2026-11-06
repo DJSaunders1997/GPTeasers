@@ -23,8 +23,8 @@ logging.basicConfig(
 class QuizGenerator:
     # Define the list of supported models.
     SUPPORTED_MODELS = [
-        "gpt-3.5-turbo",
-        "gpt-4-turbo",
+        "gpt-4o-mini",
+        "gpt-4o",
         "o3-mini",
         "gemini/gemini-2.0-flash",
         "azure_ai/DeepSeek-R1",
@@ -100,14 +100,14 @@ class QuizGenerator:
             str: A supported model name.
         """
         if model not in QuizGenerator.SUPPORTED_MODELS:
-            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4-turbo'.")
-            return "gpt-4-turbo"
+            logger.warning(f"Model '{model}' is not supported. Defaulting to 'gpt-4o-mini'.")
+            return "gpt-4o-mini"
         return model
 
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: str = "gpt-3.5-turbo",
+        model: str = "gpt-4o-mini",
     ):
         """
         Initializes the QuizGenerator.
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     print(f"Supported models: {QuizGenerator.SUPPORTED_MODELS}")
 
     # quiz_generator = QuizGenerator(model="o1-mini")
-    quiz_generator = QuizGenerator(model="gpt-3.5-turbo")
+    quiz_generator = QuizGenerator(model="gpt-4o-mini")
 
     topic = "Crested Gecko"
     difficulty = "Medium"

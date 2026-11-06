@@ -334,8 +334,8 @@ class App {
       const models = await this.controller.fetchSupportedModels();
       
       if (models && models.length > 0) {
-        // Use gpt-3.5-turbo as default 
-        const defaultModel = "gpt-3.5-turbo";
+        // Use gpt-4o-mini as default
+        const defaultModel = "gpt-4o-mini";
         this.ui.populateModelDropdown(models, defaultModel);
         console.log("Successfully populated model dropdown");
       } else {
