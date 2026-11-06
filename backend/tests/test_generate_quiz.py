@@ -35,9 +35,9 @@ class TestQuizGenerator:
     """Unit tests for the QuizGenerator class."""
 
     def test_check_model_is_supported(self):
-        """Test that unsupported models default to 'gpt-4-turbo'."""
-        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4-turbo"
-        assert QuizGenerator.check_model_is_supported("gpt-3.5-turbo") == "gpt-3.5-turbo"
+        """Test that unsupported models default to 'gpt-4o-mini'."""
+        assert QuizGenerator.check_model_is_supported("unsupported-model") == "gpt-4o-mini"
+        assert QuizGenerator.check_model_is_supported("gpt-4o-mini") == "gpt-4o-mini"
 
     def test_environment_variable_not_set(self, monkeypatch):
         """
