@@ -37,9 +37,8 @@ app = FastAPI(
     - **Dynamic Model Discovery**: Frontend automatically syncs with available models
 
     ### Supported AI Models:
-    - OpenAI: gpt-4o-mini, gpt-4o, o3-mini
-    - Google Gemini: gemini-2.0-flash, gemini-1.5-pro-latest
-    - Azure AI: DeepSeek-R1 and other Azure-hosted models
+    - OpenAI: gpt-4o-mini, gpt-4o
+    - Google Gemini: gemini-2.5-flash
 
     ### Usage Examples:
     - Quiz Generation: `/GenerateQuiz?topic=Python&difficulty=medium&n_questions=5`

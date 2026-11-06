@@ -25,9 +25,7 @@ class QuizGenerator:
     SUPPORTED_MODELS = [
         "gpt-4o-mini",
         "gpt-4o",
-        "o3-mini",
-        "gemini/gemini-2.0-flash",
-        "azure_ai/DeepSeek-R1",
+        "gemini/gemini-2.5-flash",
     ]
 
     example_question_1 = json.dumps(
